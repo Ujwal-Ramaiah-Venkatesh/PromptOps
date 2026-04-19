@@ -1,0 +1,172 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PromptOps Command Library Schema",
+  "description": "Schema for parsed PM commands. This is the contract between NLP Parser and all downstream agents.",
+  "version": "0.1.0",
+  "type": "object",
+  "required": [
+    "intent_type",
+    "target_service",
+    "target_env",
+    "parameters",
+    "confidence_score",
+    "timestamp",
+    "command_id"
+  ],
+  "properties": {
+    "command_id": {
+      "type": "string",
+      "description": "Unique identifier for this command (UUID v4)",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when command was parsed"
+    },
+    "intent_type": {
+      "type": "string",
+      "enum": [
+        "deploy",
+        "scale",
+        "rollback",
+        "monitor",
+        "audit",
+        "cost",
+        "security",
+        "diagnose"
+      ],
+      "description": "The primary intent category of the PM command"
+    },
+    "target_service": {
+      "type": "string",
+      "description": "The service, application, or resource being acted upon (e.g., 'api', 'frontend', 'database')"
+    },
+    "target_env": {
+      "type": "string",
+      "enum": ["dev", "staging", "prod", "production", "development"],
+      "description": "Target environment for the action"
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Intent-specific parameters",
+      "properties": {
+        "action_verb": {
+          "type": "string",
+          "description": "Specific action: 'create', 'update', 'delete', 'restart', 'increase', 'decrease', etc."
+        },
+        "resource_type": {
+          "type": "string",
+          "description": "AWS resource type: 'ec2', 'rds', 'lambda', 's3', 'vpc', etc."
+        },
+        "quantity": {
+          "type": ["number", "string"],
+          "description": "Numeric value or expression (e.g., 5, '2x', '50%')"
+        },
+        "region": {
+          "type": "string",
+          "description": "AWS region (e.g., 'us-east-1')"
+        },
+        "tags": {
+          "type": "object",
+          "description": "Resource tags for filtering or applying actions",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "time_range": {
+          "type": "object",
+          "description": "For monitor/audit intents",
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "end": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "confidence_score": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "LLM confidence score for this parse (0.0-1.0). If < 0.85, clarification is required."
+    },
+    "ambiguity_detected": {
+      "type": "boolean",
+      "description": "True if confidence_score < 0.85 or multiple interpretations possible"
+    },
+    "clarification_needed": {
+      "type": "object",
+      "description": "Present if ambiguity_detected is true",
+      "properties": {
+        "question": {
+          "type": "string",
+          "description": "Question to ask PM for clarification"
+        },
+        "options": {
+          "type": "array",
+          "description": "List of possible interpretations",
+          "items": {
+            "type": "object",
+            "properties": {
+              "option_id": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "target_service": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "original_input": {
+      "type": "string",
+      "description": "Original PM command text (sanitized)"
+    },
+    "pm_user_id": {
+      "type": "string",
+      "description": "ID of the PM who issued the command"
+    },
+    "requires_approval": {
+      "type": "boolean",
+      "description": "True if action is risky (touches prod, DELETE, TERMINATE)"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "extreme"],
+      "description": "Risk assessment of the action"
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "command_id": "550e8400-e29b-41d4-a716-446655440000",
+      "timestamp": "2026-04-19T10:30:00Z",
+      "intent_type": "scale",
+      "target_service": "api",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "increase",
+        "resource_type": "ec2",
+        "quantity": 5,
+        "region": "us-east-1"
+      },
+      "confidence_score": 0.92,
+      "ambiguity_detected": false,
+      "original_input": "Scale up the API in production to 5 instances",
+      "pm_user_id": "pm-12345",
+      "requires_approval": true,
+      "risk_level": "medium"
+    }
+  ]
+}
