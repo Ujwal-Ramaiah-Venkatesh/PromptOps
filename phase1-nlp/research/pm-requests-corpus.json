@@ -1,0 +1,1374 @@
+{
+  "metadata": {
+    "collection_date": "2026-04-19",
+    "total_requests": 143,
+    "sources": ["github"],
+    "note": "Real infrastructure requests collected from GitHub issue trackers across multiple repositories. Focus on conversational, plain-English descriptions from users describing infrastructure needs."
+  },
+  "requests": [
+    {
+      "id": "req-001",
+      "original_text": "Deploy the finalized Vite build to Netlify",
+      "source": "github-issue",
+      "source_url": "CISC-480-GreenStep/sp26_team2_greenstepchallenge_admin #34",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-002",
+      "original_text": "As a developer, I want to deploy the system so that users can access it",
+      "source": "github-issue",
+      "source_url": "suprice4/CAPENDIT_IT3172526-2Sem #198",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-003",
+      "original_text": "Deployment to Production/Staging",
+      "source": "github-issue",
+      "source_url": "biayciii/devops-capstone-project #18",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-004",
+      "original_text": "Deploy AviationIQ to Vercel for production use",
+      "source": "github-issue",
+      "source_url": "MateoHeras77/AviationIQ #9",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-005",
+      "original_text": "Deploy relay server to production",
+      "source": "github-issue",
+      "source_url": "ThatXliner/quillium-landing #18",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-006",
+      "original_text": "Deploy to production domain",
+      "source": "github-issue",
+      "source_url": "wiebe-xyz/github-tamagotchi #81",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-007",
+      "original_text": "Deploy ELK to production - Production-grade ELK with 3-node Elasticsearch",
+      "source": "github-issue",
+      "source_url": "damnthonyy/azure-k8s-infrastructure #39",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-008",
+      "original_text": "Deploy to Vercel. Verify production build. Update any hardcoded URLs",
+      "source": "github-issue",
+      "source_url": "LasaK97/my-portfolio-v2 #41",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-009",
+      "original_text": "Approve production deployment",
+      "source": "github-issue",
+      "source_url": "Isol8AI/goosetown #156",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-010",
+      "original_text": "Connect GitHub repo to Vercel project - Configure environment variables",
+      "source": "github-issue",
+      "source_url": "MateoHeras77/AviationIQ #9",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-011",
+      "original_text": "conduct a final Smoke Test of the end-to-end admin workflow",
+      "source": "github-issue",
+      "source_url": "CISC-480-GreenStep/sp26_team2_greenstepchallenge_admin #34",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-012",
+      "original_text": "Configure CORS for production frontend domain",
+      "source": "github-issue",
+      "source_url": "ThatXliner/quillium-landing #18",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-013",
+      "original_text": "Set up health check endpoint",
+      "source": "github-issue",
+      "source_url": "ThatXliner/quillium-landing #18",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-014",
+      "original_text": "Scale up DNS service... still believe that scaling up the number of DNS servers would increase the capacity for high volume traffic",
+      "source": "github-issue",
+      "source_url": "Vessel9817/dns-spoofer #4",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-015",
+      "original_text": "horizontally scale the backend by spinning up multiple instances of the Node.js server behind a load balancer",
+      "source": "github-issue",
+      "source_url": "loadlink56-creator/ai-load #2",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-016",
+      "original_text": "Set up Cloud Proxy Servers... Find the best cloud service and configuration - Set up the proxies",
+      "source": "github-issue",
+      "source_url": "ThisIsNotANamepng/search_engine #23",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-017",
+      "original_text": "Scale up engine for dozens of servers... boot up 100 servers, and split up the load evenly",
+      "source": "github-issue",
+      "source_url": "TanishqM1/TradingEngine #3",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-018",
+      "original_text": "I wanted to open up a discussion about concurrency... this topic makes it feel impossible for a mid-large scale production",
+      "source": "github-issue",
+      "source_url": "prism-php/prism #919",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-019",
+      "original_text": "Why the performance is better without Mipo?",
+      "source": "github-issue",
+      "source_url": "EricTan7/Veritas #6",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-020",
+      "original_text": "Why Slow",
+      "source": "github-issue",
+      "source_url": "jha-coyax/Supporting-Image #17",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-021",
+      "original_text": "Why is Gemma e4b running significantly slower on my oneplus 15 when using LLM Hub compared to when it s running via Google Edge AI Gallery?",
+      "source": "github-issue",
+      "source_url": "timmyy123/LLM-Hub #72",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-022",
+      "original_text": "Why is it so slow? i even tried using the paid API and it still was super slow",
+      "source": "github-issue",
+      "source_url": "google-gemini/gemini-cli #21256",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-023",
+      "original_text": "Why prefetch L2 cause kernel slower?",
+      "source": "github-issue",
+      "source_url": "NVIDIA/cutlass #3127",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-024",
+      "original_text": "Performance Analysis of rename Operations: Why is Rename so Time-Consuming with Large File Counts?",
+      "source": "github-issue",
+      "source_url": "littlefs-project/littlefs #1204",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-025",
+      "original_text": "Very slow when use gpu",
+      "source": "github-issue",
+      "source_url": "alichherawalla/off-grid-mobile-ai #229",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-026",
+      "original_text": "Why Do Images Load Slowly and Inconsistently? Possible Vercel Edge Cache Issues",
+      "source": "github-issue",
+      "source_url": "payloadcms/payload #16299",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-027",
+      "original_text": "Deployment of commit 631be2270bc7f90726abc124009f63f4bb4afe6b failed. Rolled back to: `` Please investigate",
+      "source": "github-issue",
+      "source_url": "KarasiewiczStephane/ml-cicd-pipeline #9",
+      "preliminary_intent": "rollback",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-028",
+      "original_text": "Maintain full deployment history per container and support one-click rollback to any previously successful version",
+      "source": "github-issue",
+      "source_url": "labring/brain #15",
+      "preliminary_intent": "rollback",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-029",
+      "original_text": "If a deployment fails, the device should rollback to the last good working state",
+      "source": "github-issue",
+      "source_url": "aws-greengrass/aws-greengrass-lite #1089",
+      "preliminary_intent": "rollback",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-030",
+      "original_text": "Document rollback procedures - Test rollback scenarios - Add deployment versioning",
+      "source": "github-issue",
+      "source_url": "Fracverse/InheritX #461",
+      "preliminary_intent": "rollback",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-031",
+      "original_text": "Validate rollback readiness",
+      "source": "github-issue",
+      "source_url": "harshi12musigma-stack/ragchatbot #68",
+      "preliminary_intent": "rollback",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-032",
+      "original_text": "Set up alerts for key monitoring measurements",
+      "source": "github-issue",
+      "source_url": "booxter/nix #241",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-033",
+      "original_text": "Set up monitoring and alerting",
+      "source": "github-issue",
+      "source_url": "cargaona/yarr #33",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-034",
+      "original_text": "Set up Prometheus and Grafana monitoring stack",
+      "source": "github-issue",
+      "source_url": "jemilahabiodun-oss/Soroban-Loyalty #73",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-035",
+      "original_text": "Set up container health monitoring and alerting - Add Uptime Kuma to monitor bot, API, dashboard, and DB containers",
+      "source": "github-issue",
+      "source_url": "ayoubbenrezig/Firesong-Herald #38",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-036",
+      "original_text": "Set up basic uptime monitoring and alerts",
+      "source": "github-issue",
+      "source_url": "imshengli/openclaw-main #98",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-037",
+      "original_text": "Set up alerting rules - Alerts on important events: 5xx server errors, user storage capacity above 80%",
+      "source": "github-issue",
+      "source_url": "AzehLM/ft_transcendence #11",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-038",
+      "original_text": "Set up security monitoring and real-time alerting",
+      "source": "github-issue",
+      "source_url": "taishaau-prog/ispot #13",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-039",
+      "original_text": "Set up error monitoring with Sentry - Email alerts on new errors, Prod only",
+      "source": "github-issue",
+      "source_url": "raggopaluni/NeighborPickd #40",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-040",
+      "original_text": "how much are we spending on S3?",
+      "source": "github-issue",
+      "source_url": "pangeo-data/gcp-billing #2",
+      "preliminary_intent": "cost",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-041",
+      "original_text": "Risk of runaway API costs without spending caps",
+      "source": "github-issue",
+      "source_url": "openclaw/openclaw #9244",
+      "preliminary_intent": "cost",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-042",
+      "original_text": "How Much Does it Cost?",
+      "source": "github-issue",
+      "source_url": "dwyl/image-classifier #98",
+      "preliminary_intent": "cost",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-043",
+      "original_text": "AWS Regions — what they are and how to choose one (compliance, latency, cost)",
+      "source": "github-issue",
+      "source_url": "wrongway801/Note3PA #1",
+      "preliminary_intent": "cost",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-044",
+      "original_text": "Develop a spending plan",
+      "source": "github-issue",
+      "source_url": "NixOS/foundation #129",
+      "preliminary_intent": "cost",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-045",
+      "original_text": "track and manage cloud costs efficiently across environments like AWS, Azure",
+      "source": "github-issue",
+      "source_url": "FOCUS_Spec #1064",
+      "preliminary_intent": "cost",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-046",
+      "original_text": "Clarification on Split Cost Calculation",
+      "source": "github-issue",
+      "source_url": "aws-batch-operational-dashboards #36",
+      "preliminary_intent": "cost",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-047",
+      "original_text": "daily burn notices",
+      "source": "github-issue",
+      "source_url": "pangeo-data/gcp-billing #2",
+      "preliminary_intent": "cost",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-048",
+      "original_text": "No budget controls",
+      "source": "github-issue",
+      "source_url": "openclaw/openclaw #9244",
+      "preliminary_intent": "cost",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-049",
+      "original_text": "when I compare the numbers across tools, they don't quite line up",
+      "source": "github-issue",
+      "source_url": "aws-batch-operational-dashboards #36",
+      "preliminary_intent": "cost",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-050",
+      "original_text": "Automated dependency vulnerability scanning",
+      "source": "github-issue",
+      "source_url": "songifi/dabdub #733",
+      "preliminary_intent": "security",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-051",
+      "original_text": "Dependency @fastify/static has a security vulnerability",
+      "source": "github-issue",
+      "source_url": "netlify/cli #8169",
+      "preliminary_intent": "security",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-052",
+      "original_text": "Code patch required for critical security vulnerability",
+      "source": "github-issue",
+      "source_url": "ChaitanyaCodes55/FlowMind #18",
+      "preliminary_intent": "security",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-053",
+      "original_text": "Security patch for authentication service",
+      "source": "github-issue",
+      "source_url": "ChaitanyaCodes55/FlowMind #15",
+      "preliminary_intent": "security",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-054",
+      "original_text": "Vulnerability patching within defined SLA",
+      "source": "github-issue",
+      "source_url": "chrisrogers37/really-personal-finance #32",
+      "preliminary_intent": "security",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-055",
+      "original_text": "Security Vulnerability Disclosure Channel Needed",
+      "source": "github-issue",
+      "source_url": "kiwicom/pytest-recording #195",
+      "preliminary_intent": "security",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-056",
+      "original_text": "Vulnerability Scanning & Patch Management",
+      "source": "github-issue",
+      "source_url": "parralax-nde/ai-subscription-trimmer #92",
+      "preliminary_intent": "security",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-057",
+      "original_text": "Constant 503 Errors on Gemini 2.5 Pro and Flash – Severe Product Impact",
+      "source": "github-issue",
+      "source_url": "googleapis/python-genai #1373",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-058",
+      "original_text": "Please investigate this outage for Gemini 2.5 Pro and Flash as soon as possible",
+      "source": "github-issue",
+      "source_url": "googleapis/python-genai #1373",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-059",
+      "original_text": "Gateway fails to auto-restart after SIGTERM",
+      "source": "github-issue",
+      "source_url": "openclaw/openclaw #50070",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-060",
+      "original_text": "Results in multi-hour outages requiring manual openclaw gateway start to recover",
+      "source": "github-issue",
+      "source_url": "openclaw/openclaw #50070",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-061",
+      "original_text": "WhatsApp Gateway Instability — 10 Disconnections in 15 Hours",
+      "source": "github-issue",
+      "source_url": "seva/hearth-interface #139",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-062",
+      "original_text": "VM1 — Virtual Machine Deallocated (Not Running)",
+      "source": "github-issue",
+      "source_url": "MVSHoneywellOrg #2",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-063",
+      "original_text": "If unplanned: Escalate to infrastructure team for root cause analysis",
+      "source": "github-issue",
+      "source_url": "MVSHoneywellOrg #2",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-064",
+      "original_text": "Better handling of incidents, maintenance, downtime",
+      "source": "github-issue",
+      "source_url": "modrinth/code #5036",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-065",
+      "original_text": "CRITICAL: Embedding API 502 - vLLM unreachable",
+      "source": "github-issue",
+      "source_url": "jsboige/jsboige-mcp-servers #68",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-066",
+      "original_text": "Add Downtime Notifications",
+      "source": "github-issue",
+      "source_url": "department-of-veterans-affairs #113643",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-067",
+      "original_text": "Continuing to serve requests during known incidents is unacceptable",
+      "source": "github-issue",
+      "source_url": "anthropics/claude-code #37206",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-068",
+      "original_text": "Proxy not working?",
+      "source": "github-issue",
+      "source_url": "Tribler/tribler #8969",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-069",
+      "original_text": "there doesn't seem to be anything happening. It also seems like the debug buttons are broken",
+      "source": "github-issue",
+      "source_url": "downloadableduck/horizon #1",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-070",
+      "original_text": "why is it that I feel like I'm constantly repeating myself to Claude...It doesn't read the memory. It doesn't read his task",
+      "source": "github-issue",
+      "source_url": "anthropics/claude-code #48397",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-071",
+      "original_text": "PowerShell Gallery Search is Not Working...Any information on why search is not working?",
+      "source": "github-issue",
+      "source_url": "PowerShell/PowerShellGallery #345",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-072",
+      "original_text": "not all content is present in 1.20.1, why?...doesn't have the beds or paws or anything",
+      "source": "github-issue",
+      "source_url": "jlortiz0/PlayerCollars #108",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-073",
+      "original_text": "Search grounding not working - recent regression",
+      "source": "github-issue",
+      "source_url": "googleapis/python-genai #2249",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-074",
+      "original_text": "Git module not found after Kiro update — commit message generation broken",
+      "source": "github-issue",
+      "source_url": "kirodotdev/Kiro #7570",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-075",
+      "original_text": "Set up the test infrastructure so the project is ready to run automated tests",
+      "source": "github-issue",
+      "source_url": "delivery-time-prediction #3",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-076",
+      "original_text": "Set up environment configuration for backend API integration including base URLs for development",
+      "source": "github-issue",
+      "source_url": "ajentica-team-management-ng #42",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-077",
+      "original_text": "Create .env files for different environments (dev, staging, production)",
+      "source": "github-issue",
+      "source_url": "SQueue-Care/frontend #18",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-078",
+      "original_text": "Setup .env file and environment configuration. Includes: PORT, MONGO_URI, JWT_SECRET",
+      "source": "github-issue",
+      "source_url": "packetFlow #17",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-079",
+      "original_text": "Containers sobem com um único comando",
+      "source": "github-issue",
+      "source_url": "payments-engine #2",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-080",
+      "original_text": "Set up a separate test database so that running automated tests does not accidentally delete...real user data",
+      "source": "github-issue",
+      "source_url": "Pulse-API #4",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-081",
+      "original_text": "Install required packages and dependencies - Configure the local environment",
+      "source": "github-issue",
+      "source_url": "devops-capstone-project #1",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-082",
+      "original_text": "Create Vercel project & configure environments",
+      "source": "github-issue",
+      "source_url": "okr-tracker #16",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-083",
+      "original_text": "Setup Docker environment",
+      "source": "github-issue",
+      "source_url": "StudyMatch-TICS420 #2",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-084",
+      "original_text": "Document setup instructions in the README",
+      "source": "github-issue",
+      "source_url": "devops-capstone-project #1",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-085",
+      "original_text": "Increase shuttle/transport capacity for resources",
+      "source": "github-issue",
+      "source_url": "seanr87/Mars-Project #19",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-086",
+      "original_text": "Reserve idle resources on a node",
+      "source": "github-issue",
+      "source_url": "kubernetes-sigs/karpenter #1826",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-087",
+      "original_text": "Add quota and capacity pre-flight checks before ARM deployment",
+      "source": "github-issue",
+      "source_url": "Azure/azure-dev #6800",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-088",
+      "original_text": "When demand for the application increases[decreases] Then I can scale application resources up[down] as needed",
+      "source": "github-issue",
+      "source_url": "wcscherer/lab-agile-planning #9",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-089",
+      "original_text": "Create a background monitoring loop that detects if the Wazuh Agent service has stopped",
+      "source": "github-issue",
+      "source_url": "ADORSYS-GIS/wazuh-agent-status #114",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-090",
+      "original_text": "The application fails to connect to the MySQL database after a server restart",
+      "source": "github-issue",
+      "source_url": "wesleywillians/adk-issue-creator #77",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-091",
+      "original_text": "I ve been having an issue when the computer restarts. It throws an error that can be seen in the event viewer",
+      "source": "github-issue",
+      "source_url": "mtkennerly/shawl #74",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-092",
+      "original_text": "I want the launcher to swap the current filesystem link and restart the application services",
+      "source": "github-issue",
+      "source_url": "C4G/BLIS #170",
+      "preliminary_intent": "deploy",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-093",
+      "original_text": "Error When Restarting CSF",
+      "source": "github-issue",
+      "source_url": "Aetherinox/csf-firewall #101",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-094",
+      "original_text": "Users should be able to back up and restore their data. Requirements: - One-click backup to user-chosen location",
+      "source": "github-issue",
+      "source_url": "vibecheck-dashboard #41",
+      "preliminary_intent": "backup",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-095",
+      "original_text": "Write a script that uses pg_dump to take a daily snapshot of the PostgreSQL database, encrypts it, and uploads it to an off-site S3 bucket",
+      "source": "github-issue",
+      "source_url": "Vesting-Vault/backend #262",
+      "preliminary_intent": "backup",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-096",
+      "original_text": "ensure automatic backups are enabled 2. Document restore procedure — step-by-step for restoring from",
+      "source": "github-issue",
+      "source_url": "Association-Organizer #42",
+      "preliminary_intent": "backup",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-097",
+      "original_text": "I want database backups so that data is not lost in case of failure",
+      "source": "github-issue",
+      "source_url": "ALERTA #48",
+      "preliminary_intent": "backup",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-098",
+      "original_text": "There is currently no automated database backup procedure, putting all user and financial data at risk of permanent loss",
+      "source": "github-issue",
+      "source_url": "StellarKraal #85",
+      "preliminary_intent": "backup",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-099",
+      "original_text": "Manual backup and restore: the user can export the full SQLite database to a location they choose",
+      "source": "github-issue",
+      "source_url": "MyPrivateStatistics #11",
+      "preliminary_intent": "backup",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-100",
+      "original_text": "Backups are scheduled at regular intervals - Backup files are stored securely - Data can be restored from backup successfully",
+      "source": "github-issue",
+      "source_url": "ALERTA #48",
+      "preliminary_intent": "backup",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-101",
+      "original_text": "upgrade java version to 21",
+      "source": "github-issue",
+      "source_url": "yogeshn/springboot-azure-app-service #260",
+      "preliminary_intent": "update",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-102",
+      "original_text": "Storybook is now on version 10.x, but we are still running on 7.x... Update to the most recent version",
+      "source": "github-issue",
+      "source_url": "RockefellerArchiveCenter/styles #296",
+      "preliminary_intent": "update",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-103",
+      "original_text": "I would like to see github actions updated from v4 to v5... update all github actions templates to v5",
+      "source": "github-issue",
+      "source_url": "Retlek-Systems-Inc/rs_cmake #42",
+      "preliminary_intent": "update",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-104",
+      "original_text": "Copilot SDK version upgrade... Many breaking changes - need to carefully update",
+      "source": "github-issue",
+      "source_url": "Nightmare99/clanker #8",
+      "preliminary_intent": "update",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-105",
+      "original_text": "Error in production parsing resume br - Find ways to reproduce the bug - Document the causes - Fix + mitigate",
+      "source": "github-issue",
+      "source_url": "Mamungit512/Mamun-co-foundr #222",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-106",
+      "original_text": "Identify and fix issues related to incorrect asset paths (CSS, JS, images) in the production build, especially when deployed to GitHub Pages",
+      "source": "github-issue",
+      "source_url": "GroAnita/SP_2 #85",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-107",
+      "original_text": "[RESUBMISSION] Fix required issues - API Issues - Model is NOT loaded inside the endpoint - API returns JSON response (not raw string)",
+      "source": "github-issue",
+      "source_url": "stanleykwembe/setup #1",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-108",
+      "original_text": "[GlitchTip][PRODUCTION] AssetController::exportLabelsPdf error - Environment: production",
+      "source": "github-issue",
+      "source_url": "kamilgaraev/proexpert #12",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-109",
+      "original_text": "SRE Alert: Production issue detected in employee-service-srv",
+      "source": "github-issue",
+      "source_url": "biznetworkhackathon2026/employee-service #9",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-110",
+      "original_text": "Production deployment failed",
+      "source": "github-issue",
+      "source_url": "martinsantos/licitometro #98",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-111",
+      "original_text": "META-ISSUE: Error handling and robustness issues (18+ issues) - exc_info in Production - Stack traces logged unconditionally",
+      "source": "github-issue",
+      "source_url": "Sanazxd/jukebox-music-player #97",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-112",
+      "original_text": "Show me timestamps in 'Manage logs and telemetry' on dashboard",
+      "source": "github-issue",
+      "source_url": "microsoft/aspire #15957",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-113",
+      "original_text": "Show me the last 10 executions",
+      "source": "github-issue",
+      "source_url": "machina-sports/machina-skills #2",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-114",
+      "original_text": "Show me all the services that have tracing enabled",
+      "source": "github-issue",
+      "source_url": "pilhuhn/otel-oql #5",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-115",
+      "original_text": "Service checkout-api is alerting. Show me the active alerts, when they started... error logs from the last",
+      "source": "github-issue",
+      "source_url": "SigNoz/signoz-mcp-server #108",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-116",
+      "original_text": "Dashboard: on panel refresh, it shows no data and then renders new data",
+      "source": "github-issue",
+      "source_url": "openobserve/openobserve #11204",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-117",
+      "original_text": "Outbound calls dashboard — logs, outcomes & billing metrics",
+      "source": "github-issue",
+      "source_url": "danny901233/portal-frontend #21",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-118",
+      "original_text": "Enable partial pipeline reload to reduce downtime",
+      "source": "github-issue",
+      "source_url": "open-telemetry/opentelemetry-collector #14529",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-119",
+      "original_text": "Feature Request: Multi-frps Support with Failover & Load Balancing",
+      "source": "github-issue",
+      "source_url": "luckjiawei/podux #4",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-120",
+      "original_text": "MCP Server High Availability and Scaling - Multiple replicas ensure...servers remain available even if individual pods fail",
+      "source": "github-issue",
+      "source_url": "obot-platform/obot #4625",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-121",
+      "original_text": "Add fallback registry support and alternative image mapping in docker-compose",
+      "source": "github-issue",
+      "source_url": "docker/compose #13733",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-122",
+      "original_text": "Standardize Liveness and Readiness Probe Strategy - reduce unnecessary restarts - improve response times and reliability",
+      "source": "github-issue",
+      "source_url": "department-of-veterans-affairs/va.gov-team #139548",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-123",
+      "original_text": "improved reliability...These enhancements reduce friction...minimize downtime",
+      "source": "github-issue",
+      "source_url": "github/roadmap #1194",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-124",
+      "original_text": "API Resilience under stress or failure...Reduce downtime caused by unavailability...Decrease Mean Time to Recovery",
+      "source": "github-issue",
+      "source_url": "YuezhenQin/javaweb #133",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-125",
+      "original_text": "Replace current in-memory storage for users, challenges, and messages with a persistent MongoDB database",
+      "source": "github-issue",
+      "source_url": "kong104/pesapes #3",
+      "preliminary_intent": "migrate",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-126",
+      "original_text": "Database configuration for production Metabase is migrated into Terraform IAC",
+      "source": "github-issue",
+      "source_url": "cal-itp/data-infra #5101",
+      "preliminary_intent": "migrate",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-127",
+      "original_text": "Migrate Clawrium data storage to SQLite",
+      "source": "github-issue",
+      "source_url": "ric03uec/clawrium #10",
+      "preliminary_intent": "migrate",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-128",
+      "original_text": "Migrate activities data from in-memory store to persistent database",
+      "source": "github-issue",
+      "source_url": "adorablaru/skills-integrate-mcp-with-copilot #13",
+      "preliminary_intent": "migrate",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-129",
+      "original_text": "Move existing language configuration to database",
+      "source": "github-issue",
+      "source_url": "Tadreeb-LMS/tadreeblms #450",
+      "preliminary_intent": "migrate",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-130",
+      "original_text": "Production and self-hosted installs can hit P3005 (database schema is not empty — Prisma Migrate has no baseline)",
+      "source": "github-issue",
+      "source_url": "versiongate-labs/VersionGate #51",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-131",
+      "original_text": "Move Solid Queue and Solid Cable to separate databases",
+      "source": "github-issue",
+      "source_url": "SplitTime/OpenSplitTime #1752",
+      "preliminary_intent": "migrate",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-132",
+      "original_text": "Replace in-memory activity data with a persistent relational data model",
+      "source": "github-issue",
+      "source_url": "mayur-msb-7/skills-integrate-mcp-with-copilot #10",
+      "preliminary_intent": "migrate",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-133",
+      "original_text": "Evaluate database for Metis (move off JSON files)",
+      "source": "github-issue",
+      "source_url": "yangyang-how/metis #8",
+      "preliminary_intent": "migrate",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-134",
+      "original_text": "Migrate to new path, stacks gone",
+      "source": "github-issue",
+      "source_url": "Finsys/dockhand #904",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-135",
+      "original_text": "Need to migrate from SQLite to PostgreSQL first",
+      "source": "github-issue",
+      "source_url": "cozydenis/Strata #13",
+      "preliminary_intent": "migrate",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-136",
+      "original_text": "Rollback time 10 minutes",
+      "source": "github-issue",
+      "source_url": "Fracverse/InheritX #461",
+      "preliminary_intent": "rollback",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-137",
+      "original_text": "design... a conceptual model for scaling credential issuance... make it possible for a scalable fleet",
+      "source": "github-issue",
+      "source_url": "jasoncolburne/kels #77",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-138",
+      "original_text": "Effective missing support for multiple service servers in Docker deployment... Scaling up the scaler also has no effective influence",
+      "source": "github-issue",
+      "source_url": "CybercentreCanada/assemblyline #425",
+      "preliminary_intent": "scale",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-139",
+      "original_text": "trained performed 10% slower than the original results",
+      "source": "github-issue",
+      "source_url": "EricTan7/Veritas #6",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-140",
+      "original_text": "maybe tma prefetch waste the bandwidth?",
+      "source": "github-issue",
+      "source_url": "NVIDIA/cutlass #3127",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-141",
+      "original_text": "Add configurable notification delay for downtime alerts",
+      "source": "github-issue",
+      "source_url": "operacle/checkcle #176",
+      "preliminary_intent": "monitor",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-142",
+      "original_text": "Manage DNS config programatically",
+      "source": "github-issue",
+      "source_url": "2i2c-org/infrastructure #7946",
+      "preliminary_intent": "configure",
+      "collected_date": "2026-04-19"
+    },
+    {
+      "id": "req-143",
+      "original_text": "This needs investigation to validate it won't trigger any downtime",
+      "source": "github-issue",
+      "source_url": "2i2c-org/infrastructure #7946",
+      "preliminary_intent": "diagnose",
+      "collected_date": "2026-04-19"
+    }
+  ],
+  "linguistic_patterns": {
+    "deploy_phrases": [
+      "deploy to production",
+      "deploy to [platform]",
+      "deployment to [environment]",
+      "deploy for production use",
+      "approve production deployment",
+      "verify production build",
+      "conduct final smoke test",
+      "configure environment variables"
+    ],
+    "scale_phrases": [
+      "scale up",
+      "scale the backend",
+      "spinning up multiple instances",
+      "boot up 100 servers",
+      "split up the load",
+      "horizontally scale",
+      "increase capacity",
+      "add load balancer",
+      "scale application resources up/down",
+      "increase shuttle/transport capacity"
+    ],
+    "rollback_phrases": [
+      "rolled back to",
+      "rollback to the last good working state",
+      "one-click rollback",
+      "rollback procedures",
+      "validate rollback readiness",
+      "rollback time [duration]"
+    ],
+    "monitor_phrases": [
+      "set up monitoring",
+      "set up alerts",
+      "set up alerting rules",
+      "show me [logs/metrics]",
+      "show me the last [N] executions",
+      "health check endpoint",
+      "uptime monitoring",
+      "error monitoring with [tool]",
+      "email alerts on [events]",
+      "alerting rules",
+      "show timestamps",
+      "display dashboard"
+    ],
+    "cost_phrases": [
+      "how much are we spending on [service]",
+      "how much does it cost",
+      "track and manage cloud costs",
+      "develop a spending plan",
+      "runaway API costs",
+      "spending caps",
+      "budget controls",
+      "daily burn notices",
+      "clarification on cost calculation"
+    ],
+    "security_phrases": [
+      "security vulnerability",
+      "vulnerability scanning",
+      "patch management",
+      "security patch for [component]",
+      "code patch required",
+      "critical security vulnerability",
+      "vulnerability patching within defined SLA",
+      "automated dependency vulnerability scanning"
+    ],
+    "diagnose_phrases": [
+      "why is [it] slow",
+      "why is [component] not working",
+      "investigate outage",
+      "investigate this issue",
+      "please investigate",
+      "root cause analysis",
+      "constant [error code] errors",
+      "fails to auto-restart",
+      "gateway instability",
+      "virtual machine deallocated",
+      "production issue detected",
+      "deployment failed",
+      "error in production",
+      "fix issues related to",
+      "not working",
+      "broken",
+      "performance analysis"
+    ],
+    "configure_phrases": [
+      "set up [infrastructure]",
+      "setup [component]",
+      "configure environment",
+      "create .env files",
+      "install required packages",
+      "configure the local environment",
+      "document setup instructions"
+    ],
+    "backup_phrases": [
+      "back up and restore",
+      "database backups",
+      "automated backup procedure",
+      "one-click backup",
+      "daily snapshot",
+      "restore from backup",
+      "ensure automatic backups are enabled"
+    ],
+    "update_phrases": [
+      "upgrade [component] version",
+      "update to the most recent version",
+      "version upgrade",
+      "update from v[X] to v[Y]"
+    ],
+    "migrate_phrases": [
+      "migrate to [database]",
+      "move [data] to [location]",
+      "replace [storage] with [storage]",
+      "migrate into Terraform IAC",
+      "move off JSON files"
+    ],
+    "ambiguous_patterns": [
+      {
+        "phrase": "restart the service",
+        "ambiguity": "Could be deploy (planned restart), diagnose (troubleshooting), or configure (applying changes)"
+      },
+      {
+        "phrase": "set up [component]",
+        "ambiguity": "Could be initial configure, deploy, or scale depending on context"
+      },
+      {
+        "phrase": "fix issues",
+        "ambiguity": "Could be diagnose (investigation) or a direct request to repair"
+      },
+      {
+        "phrase": "improve reliability",
+        "ambiguity": "Could involve monitor (better observability), configure (health checks), or scale (redundancy)"
+      },
+      {
+        "phrase": "reduce downtime",
+        "ambiguity": "Could be scale (HA setup), configure (health checks), or monitor (better alerting)"
+      }
+    ],
+    "common_modifiers": [
+      "production",
+      "staging",
+      "development",
+      "critical",
+      "urgent",
+      "automated",
+      "manual",
+      "one-click",
+      "final",
+      "basic"
+    ],
+    "temporal_indicators": [
+      "as soon as possible",
+      "daily",
+      "at regular intervals",
+      "after [event]",
+      "before [event]",
+      "10 minutes",
+      "multi-hour"
+    ],
+    "emotional_indicators": [
+      "severe impact",
+      "unacceptable",
+      "critical",
+      "at risk of permanent loss",
+      "I feel like",
+      "constant",
+      "still"
+    ],
+    "question_patterns": [
+      "Why [is/does] [X]?",
+      "How much [cost/spending]?",
+      "Can you [action]?",
+      "Show me [data]",
+      "Any information on why?"
+    ],
+    "user_story_patterns": [
+      "As a [role], I want [action] so that [benefit]",
+      "When [condition] Then [action]",
+      "Given [state] Then [outcome]"
+    ]
+  },
+  "intent_distribution": {
+    "deploy": 16,
+    "scale": 13,
+    "diagnose": 48,
+    "monitor": 19,
+    "cost": 10,
+    "security": 7,
+    "rollback": 6,
+    "configure": 15,
+    "backup": 7,
+    "update": 4,
+    "migrate": 11
+  },
+  "analysis_notes": {
+    "common_characteristics": [
+      "Questions starting with 'Why' are almost always diagnostic requests",
+      "Requests with 'set up' or 'setup' are typically configuration or monitoring",
+      "Cost requests often phrased as questions: 'how much', 'what are we spending'",
+      "Deploy requests frequently mention specific platforms (Vercel, Netlify, AWS)",
+      "Scale requests emphasize capacity, load, or multiple instances",
+      "Security requests often include urgency indicators like 'critical' or 'patch'",
+      "Diagnostic requests show frustration or confusion ('why', 'not working', 'broken')",
+      "Backup requests emphasize data protection and restore capability"
+    ],
+    "edge_cases": [
+      "Multi-intent requests: 'Deploy to Vercel. Verify production build. Update URLs' combines deploy, diagnose, and configure",
+      "Negative phrasing: 'No budget controls' implies a cost monitoring request",
+      "Implicit requests: 'Production deployment failed' implies diagnose + rollback",
+      "Comparative requests: 'Why is X slower than Y' requires diagnostic analysis"
+    ],
+    "non_english_examples": [
+      "Portuguese: 'Containers sobem com um único comando' (Containers start with a single command)"
+    ],
+    "technical_debt_indicators": [
+      "Requests mentioning 'missing', 'not yet supported', 'no automated procedure'",
+      "Migration requests often indicate technical debt from legacy systems",
+      "Update requests citing version lag (e.g., 'v7.x' when 'v10.x' available)"
+    ]
+  }
+}

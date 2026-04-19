@@ -167,6 +167,896 @@
       "pm_user_id": "pm-12345",
       "requires_approval": true,
       "risk_level": "medium"
+    },
+    {
+      "command_id": "7f3e8b2a-4c91-4d6f-b7e8-3a5d9c1f2e4b",
+      "timestamp": "2026-04-19T11:00:00Z",
+      "intent_type": "deploy",
+      "target_service": "vite-app",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "deploy",
+        "resource_type": "application",
+        "platform": "netlify"
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "Deploy the finalized Vite build to Netlify",
+      "pm_user_id": "pm-23456",
+      "requires_approval": true,
+      "risk_level": "high"
+    },
+    {
+      "command_id": "a9b7c5d3-e1f2-4a8b-9c6d-7e3f5a2b8c1d",
+      "timestamp": "2026-04-19T11:15:00Z",
+      "intent_type": "deploy",
+      "target_service": "aviationiq",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "deploy",
+        "resource_type": "application",
+        "platform": "vercel"
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "Deploy AviationIQ to Vercel for production use",
+      "pm_user_id": "pm-34567",
+      "requires_approval": true,
+      "risk_level": "high"
+    },
+    {
+      "command_id": "b2c8d4e6-f7a3-4b9c-8d5e-6f2a7b3c9d4e",
+      "timestamp": "2026-04-19T11:30:00Z",
+      "intent_type": "deploy",
+      "target_service": "elk",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "deploy",
+        "resource_type": "infrastructure",
+        "components": ["elasticsearch", "logstash", "kibana"],
+        "quantity": 3,
+        "cluster_type": "elasticsearch"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Deploy ELK to production - Production-grade ELK with 3-node Elasticsearch",
+      "pm_user_id": "pm-45678",
+      "requires_approval": true,
+      "risk_level": "high"
+    },
+    {
+      "command_id": "c3d9e5f7-a1b4-4c8d-9e6f-7a2b8c3d4e5f",
+      "timestamp": "2026-04-19T11:45:00Z",
+      "intent_type": "deploy",
+      "target_service": "frontend",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "deploy",
+        "resource_type": "application",
+        "platform": "vercel",
+        "additional_steps": ["verify", "update_urls"]
+      },
+      "confidence_score": 0.88,
+      "ambiguity_detected": false,
+      "original_input": "Deploy to Vercel. Verify production build. Update any hardcoded URLs",
+      "pm_user_id": "pm-56789",
+      "requires_approval": true,
+      "risk_level": "high"
+    },
+    {
+      "command_id": "d4e1f6a8-b2c5-4d9e-8f7a-3b4c9d5e6f1a",
+      "timestamp": "2026-04-19T12:00:00Z",
+      "intent_type": "deploy",
+      "target_service": "relay-server",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "deploy",
+        "resource_type": "service"
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "Deploy relay server to production",
+      "pm_user_id": "pm-67890",
+      "requires_approval": true,
+      "risk_level": "high"
+    },
+    {
+      "command_id": "e5f2a7b9-c3d6-4e1f-9a8b-7c4d5e6f2a3b",
+      "timestamp": "2026-04-19T12:15:00Z",
+      "intent_type": "deploy",
+      "target_service": "system",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "approve",
+        "resource_type": "deployment"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Approve production deployment",
+      "pm_user_id": "pm-78901",
+      "requires_approval": true,
+      "risk_level": "high"
+    },
+    {
+      "command_id": "f6a3b8c1-d4e7-4f2a-8b9c-5d6e7f3a4b5c",
+      "timestamp": "2026-04-19T12:30:00Z",
+      "intent_type": "deploy",
+      "target_service": "frontend",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "configure",
+        "resource_type": "cors",
+        "domain": "production"
+      },
+      "confidence_score": 0.90,
+      "ambiguity_detected": false,
+      "original_input": "Configure CORS for production frontend domain",
+      "pm_user_id": "pm-89012",
+      "requires_approval": true,
+      "risk_level": "medium"
+    },
+    {
+      "command_id": "a1b2c3d4-e5f6-4a7b-8c9d-1e2f3a4b5c6d",
+      "timestamp": "2026-04-19T12:45:00Z",
+      "intent_type": "deploy",
+      "target_service": "database",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "migrate",
+        "resource_type": "database",
+        "source": "in-memory",
+        "destination": "mongodb"
+      },
+      "confidence_score": 0.90,
+      "ambiguity_detected": false,
+      "original_input": "Replace current in-memory storage for users, challenges, and messages with a persistent MongoDB database",
+      "pm_user_id": "pm-90123",
+      "requires_approval": true,
+      "risk_level": "extreme"
+    },
+    {
+      "command_id": "b2c3d4e5-f6a7-4b8c-9d1e-2f3a4b5c6d7e",
+      "timestamp": "2026-04-19T13:00:00Z",
+      "intent_type": "deploy",
+      "target_service": "database",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "migrate",
+        "resource_type": "database",
+        "source": "sqlite",
+        "destination": "postgresql"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Need to migrate from SQLite to PostgreSQL first",
+      "pm_user_id": "pm-01234",
+      "requires_approval": true,
+      "risk_level": "extreme"
+    },
+    {
+      "command_id": "c3d4e5f6-a7b8-4c9d-1e2f-3a4b5c6d7e8f",
+      "timestamp": "2026-04-19T13:15:00Z",
+      "intent_type": "diagnose",
+      "target_service": "api",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "investigate",
+        "issue_type": "performance"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Why is the API so slow?",
+      "pm_user_id": "pm-12345",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "d4e5f6a7-b8c9-4d1e-2f3a-4b5c6d7e8f9a",
+      "timestamp": "2026-04-19T13:30:00Z",
+      "intent_type": "diagnose",
+      "target_service": "llm-hub",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "investigate",
+        "issue_type": "performance",
+        "comparison": "gemma_e4b_vs_google_edge"
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "Why is Gemma e4b running significantly slower on my oneplus 15 when using LLM Hub compared to when it's running via Google Edge AI Gallery?",
+      "pm_user_id": "pm-23456",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "e5f6a7b8-c9d1-4e2f-3a4b-5c6d7e8f9a1b",
+      "timestamp": "2026-04-19T13:45:00Z",
+      "intent_type": "diagnose",
+      "target_service": "images",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "investigate",
+        "issue_type": "performance",
+        "platform": "vercel",
+        "suspected_cause": "edge_cache"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Why Do Images Load Slowly and Inconsistently? Possible Vercel Edge Cache Issues",
+      "pm_user_id": "pm-34567",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "f6a7b8c9-d1e2-4f3a-4b5c-6d7e8f9a1b2c",
+      "timestamp": "2026-04-19T14:00:00Z",
+      "intent_type": "diagnose",
+      "target_service": "gemini-api",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "investigate",
+        "issue_type": "error",
+        "error_code": "503",
+        "severity": "critical",
+        "models": ["gemini-2.5-pro", "gemini-2.5-flash"]
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "Constant 503 Errors on Gemini 2.5 Pro and Flash – Severe Product Impact",
+      "pm_user_id": "pm-45678",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "a7b8c9d1-e2f3-4a4b-5c6d-7e8f9a1b2c3d",
+      "timestamp": "2026-04-19T14:15:00Z",
+      "intent_type": "diagnose",
+      "target_service": "gateway",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "investigate",
+        "issue_type": "restart_failure",
+        "trigger": "sigterm"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Gateway fails to auto-restart after SIGTERM",
+      "pm_user_id": "pm-56789",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "b8c9d1e2-f3a4-4b5c-6d7e-8f9a1b2c3d4e",
+      "timestamp": "2026-04-19T14:30:00Z",
+      "intent_type": "diagnose",
+      "target_service": "whatsapp-gateway",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "investigate",
+        "issue_type": "instability",
+        "metrics": "10_disconnections_in_15_hours"
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "WhatsApp Gateway Instability — 10 Disconnections in 15 Hours",
+      "pm_user_id": "pm-67890",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "c9d1e2f3-a4b5-4c6d-7e8f-9a1b2c3d4e5f",
+      "timestamp": "2026-04-19T14:45:00Z",
+      "intent_type": "diagnose",
+      "target_service": "application",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "investigate",
+        "issue_type": "connectivity",
+        "related_service": "mysql",
+        "trigger": "restart"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "The application fails to connect to the MySQL database after a server restart",
+      "pm_user_id": "pm-78901",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "d1e2f3a4-b5c6-4d7e-8f9a-1b2c3d4e5f6a",
+      "timestamp": "2026-04-19T15:00:00Z",
+      "intent_type": "diagnose",
+      "target_service": "employee-service",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "investigate",
+        "issue_type": "sre_alert",
+        "alert_type": "production_issue"
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "SRE Alert: Production issue detected in employee-service-srv",
+      "pm_user_id": "pm-89012",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "e2f3a4b5-c6d7-4e8f-9a1b-2c3d4e5f6a7b",
+      "timestamp": "2026-04-19T15:15:00Z",
+      "intent_type": "monitor",
+      "target_service": "api",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "setup",
+        "resource_type": "health_check"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Set up health check endpoint",
+      "pm_user_id": "pm-90123",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "f3a4b5c6-d7e8-4f9a-1b2c-3d4e5f6a7b8c",
+      "timestamp": "2026-04-19T15:30:00Z",
+      "intent_type": "monitor",
+      "target_service": "system",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "setup",
+        "resource_type": "monitoring",
+        "tools": ["prometheus", "grafana"]
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "Set up Prometheus and Grafana monitoring stack",
+      "pm_user_id": "pm-01234",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "a4b5c6d7-e8f9-4a1b-2c3d-4e5f6a7b8c9d",
+      "timestamp": "2026-04-19T15:45:00Z",
+      "intent_type": "monitor",
+      "target_service": "containers",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "setup",
+        "resource_type": "health_monitoring",
+        "tool": "uptime-kuma",
+        "targets": ["bot", "api", "dashboard", "db"]
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Set up container health monitoring and alerting - Add Uptime Kuma to monitor bot, API, dashboard, and DB containers",
+      "pm_user_id": "pm-12345",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "b5c6d7e8-f9a1-4b2c-3d4e-5f6a7b8c9d1e",
+      "timestamp": "2026-04-19T16:00:00Z",
+      "intent_type": "monitor",
+      "target_service": "application",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "setup",
+        "resource_type": "alert_rules",
+        "conditions": ["5xx_errors", "storage_capacity_80_percent"]
+      },
+      "confidence_score": 0.93,
+      "ambiguity_detected": false,
+      "original_input": "Set up alerting rules - Alerts on important events: 5xx server errors, user storage capacity above 80%",
+      "pm_user_id": "pm-23456",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "c6d7e8f9-a1b2-4c3d-4e5f-6a7b8c9d1e2f",
+      "timestamp": "2026-04-19T16:15:00Z",
+      "intent_type": "monitor",
+      "target_service": "application",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "setup",
+        "resource_type": "error_monitoring",
+        "tool": "sentry",
+        "alert_method": "email"
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "Set up error monitoring with Sentry - Email alerts on new errors, Prod only",
+      "pm_user_id": "pm-34567",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "d7e8f9a1-b2c3-4d4e-5f6a-7b8c9d1e2f3a",
+      "timestamp": "2026-04-19T16:30:00Z",
+      "intent_type": "monitor",
+      "target_service": "wazuh-agent",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "setup",
+        "resource_type": "monitoring_loop",
+        "check_type": "service_status"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Create a background monitoring loop that detects if the Wazuh Agent service has stopped",
+      "pm_user_id": "pm-45678",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "e8f9a1b2-c3d4-4e5f-6a7b-8c9d1e2f3a4b",
+      "timestamp": "2026-04-19T16:45:00Z",
+      "intent_type": "monitor",
+      "target_service": "checkout-api",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "query",
+        "resource_type": "alerts",
+        "query_type": "active_alerts_with_logs"
+      },
+      "confidence_score": 0.90,
+      "ambiguity_detected": false,
+      "original_input": "Service checkout-api is alerting. Show me the active alerts, when they started... error logs from the last",
+      "pm_user_id": "pm-56789",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "f9a1b2c3-d4e5-4f6a-7b8c-9d1e2f3a4b5c",
+      "timestamp": "2026-04-19T17:00:00Z",
+      "intent_type": "scale",
+      "target_service": "dns",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "increase",
+        "resource_type": "servers",
+        "reason": "high_volume_traffic"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Scale up DNS service... still believe that scaling up the number of DNS servers would increase the capacity for high volume traffic",
+      "pm_user_id": "pm-67890",
+      "requires_approval": true,
+      "risk_level": "high"
+    },
+    {
+      "command_id": "a1b2c3d4-e5f6-4a7b-8c9d-1e2f3a4b5c6d",
+      "timestamp": "2026-04-19T17:15:00Z",
+      "intent_type": "scale",
+      "target_service": "backend",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "increase",
+        "resource_type": "instances",
+        "scaling_type": "horizontal",
+        "platform": "nodejs",
+        "load_balancer": true
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "horizontally scale the backend by spinning up multiple instances of the Node.js server behind a load balancer",
+      "pm_user_id": "pm-78901",
+      "requires_approval": false,
+      "risk_level": "medium"
+    },
+    {
+      "command_id": "b2c3d4e5-f6a7-4b8c-9d1e-2f3a4b5c6d7e",
+      "timestamp": "2026-04-19T17:30:00Z",
+      "intent_type": "scale",
+      "target_service": "trading-engine",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "increase",
+        "resource_type": "servers",
+        "quantity": 100,
+        "load_distribution": "even"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Scale up engine for dozens of servers... boot up 100 servers, and split up the load evenly",
+      "pm_user_id": "pm-89012",
+      "requires_approval": true,
+      "risk_level": "high"
+    },
+    {
+      "command_id": "c3d4e5f6-a7b8-4c9d-1e2f-3a4b5c6d7e8f",
+      "timestamp": "2026-04-19T17:45:00Z",
+      "intent_type": "scale",
+      "target_service": "application",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "increase",
+        "resource_type": "resources",
+        "trigger": "demand_increase",
+        "auto_scaling": true
+      },
+      "confidence_score": 0.90,
+      "ambiguity_detected": false,
+      "original_input": "When demand for the application increases Then I can scale application resources up as needed",
+      "pm_user_id": "pm-90123",
+      "requires_approval": false,
+      "risk_level": "medium"
+    },
+    {
+      "command_id": "d4e5f6a7-b8c9-4d1e-2f3a-4b5c6d7e8f9a",
+      "timestamp": "2026-04-19T18:00:00Z",
+      "intent_type": "scale",
+      "target_service": "mcp-server",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "increase",
+        "resource_type": "replicas",
+        "high_availability": true
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "MCP Server High Availability and Scaling - Multiple replicas ensure...servers remain available even if individual pods fail",
+      "pm_user_id": "pm-01234",
+      "requires_approval": false,
+      "risk_level": "medium"
+    },
+    {
+      "command_id": "e5f6a7b8-c9d1-4e2f-3a4b-5c6d7e8f9a1b",
+      "timestamp": "2026-04-19T18:15:00Z",
+      "intent_type": "scale",
+      "target_service": "frps",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "increase",
+        "resource_type": "servers",
+        "features": ["failover", "load_balancing"]
+      },
+      "confidence_score": 0.92,
+      "ambiguity_detected": false,
+      "original_input": "Feature Request: Multi-frps Support with Failover & Load Balancing",
+      "pm_user_id": "pm-12345",
+      "requires_approval": false,
+      "risk_level": "medium"
+    },
+    {
+      "command_id": "f6a7b8c9-d1e2-4f3a-4b5c-6d7e8f9a1b2c",
+      "timestamp": "2026-04-19T18:30:00Z",
+      "intent_type": "cost",
+      "target_service": "s3",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "query",
+        "resource_type": "spending",
+        "service": "s3"
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "how much are we spending on S3?",
+      "pm_user_id": "pm-23456",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "a7b8c9d1-e2f3-4a4b-5c6d-7e8f9a1b2c3d",
+      "timestamp": "2026-04-19T18:45:00Z",
+      "intent_type": "cost",
+      "target_service": "api",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "setup",
+        "resource_type": "spending_caps",
+        "issue": "runaway_costs"
+      },
+      "confidence_score": 0.90,
+      "ambiguity_detected": false,
+      "original_input": "Risk of runaway API costs without spending caps",
+      "pm_user_id": "pm-34567",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "b8c9d1e2-f3a4-4b5c-6d7e-8f9a1b2c3d4e",
+      "timestamp": "2026-04-19T19:00:00Z",
+      "intent_type": "cost",
+      "target_service": "all",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "track",
+        "resource_type": "cloud_costs",
+        "platforms": ["aws", "azure"]
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "track and manage cloud costs efficiently across environments like AWS, Azure",
+      "pm_user_id": "pm-45678",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "c9d1e2f3-a4b5-4c6d-7e8f-9a1b2c3d4e5f",
+      "timestamp": "2026-04-19T19:15:00Z",
+      "intent_type": "cost",
+      "target_service": "all",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "query",
+        "resource_type": "spending",
+        "frequency": "daily"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "daily burn notices",
+      "pm_user_id": "pm-56789",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "d1e2f3a4-b5c6-4d7e-8f9a-1b2c3d4e5f6a",
+      "timestamp": "2026-04-19T19:30:00Z",
+      "intent_type": "cost",
+      "target_service": "all",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "setup",
+        "resource_type": "budget_controls",
+        "issue": "missing"
+      },
+      "confidence_score": 0.85,
+      "ambiguity_detected": true,
+      "clarification_needed": {
+        "question": "Do you want to set up budget controls or just report the issue?",
+        "options": [
+          {"option_id": "1", "description": "Set up budget controls", "action": "setup"},
+          {"option_id": "2", "description": "Report the issue", "action": "report"}
+        ]
+      },
+      "original_input": "No budget controls",
+      "pm_user_id": "pm-67890",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "e2f3a4b5-c6d7-4e8f-9a1b-2c3d4e5f6a7b",
+      "timestamp": "2026-04-19T19:45:00Z",
+      "intent_type": "cost",
+      "target_service": "batch",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "query",
+        "resource_type": "cost_calculation",
+        "issue": "split_cost_clarification"
+      },
+      "confidence_score": 0.92,
+      "ambiguity_detected": false,
+      "original_input": "Clarification on Split Cost Calculation",
+      "pm_user_id": "pm-78901",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "f3a4b5c6-d7e8-4f9a-1b2c-3d4e5f6a7b8c",
+      "timestamp": "2026-04-19T20:00:00Z",
+      "intent_type": "security",
+      "target_service": "dependencies",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "setup",
+        "resource_type": "vulnerability_scanning",
+        "automation": true
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "Automated dependency vulnerability scanning",
+      "pm_user_id": "pm-89012",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "a4b5c6d7-e8f9-4a1b-2c3d-4e5f6a7b8c9d",
+      "timestamp": "2026-04-19T20:15:00Z",
+      "intent_type": "security",
+      "target_service": "fastify",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "patch",
+        "resource_type": "dependency",
+        "dependency_name": "@fastify/static",
+        "issue_type": "vulnerability"
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "Dependency @fastify/static has a security vulnerability",
+      "pm_user_id": "pm-90123",
+      "requires_approval": true,
+      "risk_level": "high"
+    },
+    {
+      "command_id": "b5c6d7e8-f9a1-4b2c-3d4e-5f6a7b8c9d1e",
+      "timestamp": "2026-04-19T20:30:00Z",
+      "intent_type": "security",
+      "target_service": "application",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "patch",
+        "resource_type": "code",
+        "severity": "critical",
+        "issue_type": "vulnerability"
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "Code patch required for critical security vulnerability",
+      "pm_user_id": "pm-01234",
+      "requires_approval": true,
+      "risk_level": "extreme"
+    },
+    {
+      "command_id": "c6d7e8f9-a1b2-4c3d-4e5f-6a7b8c9d1e2f",
+      "timestamp": "2026-04-19T20:45:00Z",
+      "intent_type": "security",
+      "target_service": "authentication",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "patch",
+        "resource_type": "service",
+        "issue_type": "vulnerability"
+      },
+      "confidence_score": 0.98,
+      "ambiguity_detected": false,
+      "original_input": "Security patch for authentication service",
+      "pm_user_id": "pm-12345",
+      "requires_approval": true,
+      "risk_level": "extreme"
+    },
+    {
+      "command_id": "d7e8f9a1-b2c3-4d4e-5f6a-7b8c9d1e2f3a",
+      "timestamp": "2026-04-19T21:00:00Z",
+      "intent_type": "security",
+      "target_service": "all",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "patch",
+        "resource_type": "vulnerabilities",
+        "sla_requirement": true
+      },
+      "confidence_score": 0.92,
+      "ambiguity_detected": false,
+      "original_input": "Vulnerability patching within defined SLA",
+      "pm_user_id": "pm-23456",
+      "requires_approval": true,
+      "risk_level": "high"
+    },
+    {
+      "command_id": "e8f9a1b2-c3d4-4e5f-6a7b-8c9d1e2f3a4b",
+      "timestamp": "2026-04-19T21:15:00Z",
+      "intent_type": "security",
+      "target_service": "database",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "setup",
+        "resource_type": "backup",
+        "issue": "missing",
+        "data_types": ["user", "financial"],
+        "risk": "data_loss"
+      },
+      "confidence_score": 0.88,
+      "ambiguity_detected": false,
+      "original_input": "There is currently no automated database backup procedure, putting all user and financial data at risk of permanent loss",
+      "pm_user_id": "pm-34567",
+      "requires_approval": false,
+      "risk_level": "high"
+    },
+    {
+      "command_id": "f9a1b2c3-d4e5-4f6a-7b8c-9d1e2f3a4b5c",
+      "timestamp": "2026-04-19T21:30:00Z",
+      "intent_type": "rollback",
+      "target_service": "deployment",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "investigate",
+        "resource_type": "deployment_failure",
+        "commit_hash": "631be2270bc7f90726abc124009f63f4bb4afe6b"
+      },
+      "confidence_score": 0.90,
+      "ambiguity_detected": false,
+      "original_input": "Deployment of commit 631be2270bc7f90726abc124009f63f4bb4afe6b failed. Rolled back to: `` Please investigate",
+      "pm_user_id": "pm-45678",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "a1b2c3d4-e5f6-4a7b-8c9d-1e2f3a4b5c6d",
+      "timestamp": "2026-04-19T21:45:00Z",
+      "intent_type": "rollback",
+      "target_service": "container",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "setup",
+        "resource_type": "rollback_capability",
+        "feature": "one_click_rollback",
+        "history": "full"
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "Maintain full deployment history per container and support one-click rollback to any previously successful version",
+      "pm_user_id": "pm-56789",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "b2c3d4e5-f6a7-4b8c-9d1e-2f3a4b5c6d7e",
+      "timestamp": "2026-04-19T22:00:00Z",
+      "intent_type": "rollback",
+      "target_service": "device",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "rollback",
+        "resource_type": "deployment",
+        "trigger": "deployment_failure",
+        "target_version": "last_good",
+        "automation": true
+      },
+      "confidence_score": 0.95,
+      "ambiguity_detected": false,
+      "original_input": "If a deployment fails, the device should rollback to the last good working state",
+      "pm_user_id": "pm-67890",
+      "requires_approval": false,
+      "risk_level": "medium"
+    },
+    {
+      "command_id": "c3d4e5f6-a7b8-4c9d-1e2f-3a4b5c6d7e8f",
+      "timestamp": "2026-04-19T22:15:00Z",
+      "intent_type": "rollback",
+      "target_service": "all",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "validate",
+        "resource_type": "rollback_capability"
+      },
+      "confidence_score": 0.90,
+      "ambiguity_detected": false,
+      "original_input": "Validate rollback readiness",
+      "pm_user_id": "pm-78901",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "d4e5f6a7-b8c9-4d1e-2f3a-4b5c6d7e8f9a",
+      "timestamp": "2026-04-19T22:30:00Z",
+      "intent_type": "audit",
+      "target_service": "all",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "query",
+        "resource_type": "deployment_history",
+        "time_range": {
+          "duration": "1_month"
+        }
+      },
+      "confidence_score": 0.92,
+      "ambiguity_detected": false,
+      "original_input": "Show me the deployment history for the last month",
+      "pm_user_id": "pm-89012",
+      "requires_approval": false,
+      "risk_level": "low"
+    },
+    {
+      "command_id": "e5f6a7b8-c9d1-4e2f-3a4b-5c6d7e8f9a1b",
+      "timestamp": "2026-04-19T22:45:00Z",
+      "intent_type": "audit",
+      "target_service": "all",
+      "target_env": "prod",
+      "parameters": {
+        "action_verb": "document",
+        "resource_type": "procedures",
+        "procedure_type": "rollback"
+      },
+      "confidence_score": 0.90,
+      "ambiguity_detected": false,
+      "original_input": "Document rollback procedures - Test rollback scenarios - Add deployment versioning",
+      "pm_user_id": "pm-90123",
+      "requires_approval": false,
+      "risk_level": "low"
     }
   ]
 }

@@ -1,0 +1,1143 @@
+{
+  "metadata": {
+    "classification_date": "2026-04-19",
+    "total_requests": 143,
+    "classifier": "Claude Sonnet 4.5",
+    "categories": 8,
+    "notes": "Classification based on primary intent. Requests with multiple intents classified by most dominant action."
+  },
+  "classifications": [
+    {
+      "request_id": "req-001",
+      "original_text": "Deploy the finalized Vite build to Netlify",
+      "classified_intent": "deploy",
+      "confidence": 0.98,
+      "reasoning": "Clear deployment action to specific platform (Netlify)"
+    },
+    {
+      "request_id": "req-002",
+      "original_text": "As a developer, I want to deploy the system so that users can access it",
+      "classified_intent": "deploy",
+      "confidence": 0.95,
+      "reasoning": "User story explicitly requesting deployment"
+    },
+    {
+      "request_id": "req-003",
+      "original_text": "Deployment to Production/Staging",
+      "classified_intent": "deploy",
+      "confidence": 0.95,
+      "reasoning": "Direct deployment request to environments"
+    },
+    {
+      "request_id": "req-004",
+      "original_text": "Deploy AviationIQ to Vercel for production use",
+      "classified_intent": "deploy",
+      "confidence": 0.98,
+      "reasoning": "Explicit deployment to Vercel platform"
+    },
+    {
+      "request_id": "req-005",
+      "original_text": "Deploy relay server to production",
+      "classified_intent": "deploy",
+      "confidence": 0.98,
+      "reasoning": "Deploy server to production environment"
+    },
+    {
+      "request_id": "req-006",
+      "original_text": "Deploy to production domain",
+      "classified_intent": "deploy",
+      "confidence": 0.95,
+      "reasoning": "Deployment to production"
+    },
+    {
+      "request_id": "req-007",
+      "original_text": "Deploy ELK to production - Production-grade ELK with 3-node Elasticsearch",
+      "classified_intent": "deploy",
+      "confidence": 0.98,
+      "reasoning": "Deploy ELK stack to production with specific configuration"
+    },
+    {
+      "request_id": "req-008",
+      "original_text": "Deploy to Vercel. Verify production build. Update any hardcoded URLs",
+      "classified_intent": "deploy",
+      "confidence": 0.90,
+      "reasoning": "Primary action is deployment, though includes verification and updates"
+    },
+    {
+      "request_id": "req-009",
+      "original_text": "Approve production deployment",
+      "classified_intent": "deploy",
+      "confidence": 0.95,
+      "reasoning": "Deployment approval action"
+    },
+    {
+      "request_id": "req-010",
+      "original_text": "Connect GitHub repo to Vercel project - Configure environment variables",
+      "classified_intent": "deploy",
+      "confidence": 0.90,
+      "reasoning": "Setting up deployment pipeline to Vercel"
+    },
+    {
+      "request_id": "req-011",
+      "original_text": "conduct a final Smoke Test of the end-to-end admin workflow",
+      "classified_intent": "monitor",
+      "confidence": 0.75,
+      "reasoning": "Testing/validation is a form of monitoring to verify system health"
+    },
+    {
+      "request_id": "req-012",
+      "original_text": "Configure CORS for production frontend domain",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Configuration for production deployment"
+    },
+    {
+      "request_id": "req-013",
+      "original_text": "Set up health check endpoint",
+      "classified_intent": "monitor",
+      "confidence": 0.95,
+      "reasoning": "Health checks are monitoring infrastructure"
+    },
+    {
+      "request_id": "req-014",
+      "original_text": "Scale up DNS service... still believe that scaling up the number of DNS servers would increase the capacity for high volume traffic",
+      "classified_intent": "scale",
+      "confidence": 0.98,
+      "reasoning": "Explicitly requesting to scale up DNS servers for capacity"
+    },
+    {
+      "request_id": "req-015",
+      "original_text": "horizontally scale the backend by spinning up multiple instances of the Node.js server behind a load balancer",
+      "classified_intent": "scale",
+      "confidence": 0.99,
+      "reasoning": "Clear horizontal scaling with load balancing"
+    },
+    {
+      "request_id": "req-016",
+      "original_text": "Set up Cloud Proxy Servers... Find the best cloud service and configuration - Set up the proxies",
+      "classified_intent": "scale",
+      "confidence": 0.85,
+      "reasoning": "Setting up proxies for distributed traffic handling"
+    },
+    {
+      "request_id": "req-017",
+      "original_text": "Scale up engine for dozens of servers... boot up 100 servers, and split up the load evenly",
+      "classified_intent": "scale",
+      "confidence": 0.99,
+      "reasoning": "Explicit scaling to 100 servers with load distribution"
+    },
+    {
+      "request_id": "req-018",
+      "original_text": "I wanted to open up a discussion about concurrency... this topic makes it feel impossible for a mid-large scale production",
+      "classified_intent": "scale",
+      "confidence": 0.80,
+      "reasoning": "Discussion about scaling challenges for production"
+    },
+    {
+      "request_id": "req-019",
+      "original_text": "Why the performance is better without Mipo?",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Question about performance difference - diagnostic investigation"
+    },
+    {
+      "request_id": "req-020",
+      "original_text": "Why Slow",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Performance diagnostic question"
+    },
+    {
+      "request_id": "req-021",
+      "original_text": "Why is Gemma e4b running significantly slower on my oneplus 15 when using LLM Hub compared to when it s running via Google Edge AI Gallery?",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Detailed performance comparison - diagnostic investigation"
+    },
+    {
+      "request_id": "req-022",
+      "original_text": "Why is it so slow? i even tried using the paid API and it still was super slow",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Performance complaint requiring investigation"
+    },
+    {
+      "request_id": "req-023",
+      "original_text": "Why prefetch L2 cause kernel slower?",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Performance question about kernel behavior"
+    },
+    {
+      "request_id": "req-024",
+      "original_text": "Performance Analysis of rename Operations: Why is Rename so Time-Consuming with Large File Counts?",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Performance analysis request"
+    },
+    {
+      "request_id": "req-025",
+      "original_text": "Very slow when use gpu",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Performance issue with GPU usage"
+    },
+    {
+      "request_id": "req-026",
+      "original_text": "Why Do Images Load Slowly and Inconsistently? Possible Vercel Edge Cache Issues",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Performance investigation with suspected root cause"
+    },
+    {
+      "request_id": "req-027",
+      "original_text": "Deployment of commit 631be2270bc7f90726abc124009f63f4bb4afe6b failed. Rolled back to: `` Please investigate",
+      "classified_intent": "diagnose",
+      "confidence": 0.90,
+      "reasoning": "Investigation of deployment failure (rollback already happened, need diagnosis)"
+    },
+    {
+      "request_id": "req-028",
+      "original_text": "Maintain full deployment history per container and support one-click rollback to any previously successful version",
+      "classified_intent": "rollback",
+      "confidence": 0.95,
+      "reasoning": "Feature request for rollback capability"
+    },
+    {
+      "request_id": "req-029",
+      "original_text": "If a deployment fails, the device should rollback to the last good working state",
+      "classified_intent": "rollback",
+      "confidence": 0.95,
+      "reasoning": "Automated rollback requirement"
+    },
+    {
+      "request_id": "req-030",
+      "original_text": "Document rollback procedures - Test rollback scenarios - Add deployment versioning",
+      "classified_intent": "rollback",
+      "confidence": 0.95,
+      "reasoning": "Rollback process documentation and testing"
+    },
+    {
+      "request_id": "req-031",
+      "original_text": "Validate rollback readiness",
+      "classified_intent": "rollback",
+      "confidence": 0.90,
+      "reasoning": "Rollback preparation and validation"
+    },
+    {
+      "request_id": "req-032",
+      "original_text": "Set up alerts for key monitoring measurements",
+      "classified_intent": "monitor",
+      "confidence": 0.98,
+      "reasoning": "Setting up monitoring alerts"
+    },
+    {
+      "request_id": "req-033",
+      "original_text": "Set up monitoring and alerting",
+      "classified_intent": "monitor",
+      "confidence": 0.98,
+      "reasoning": "Direct monitoring setup request"
+    },
+    {
+      "request_id": "req-034",
+      "original_text": "Set up Prometheus and Grafana monitoring stack",
+      "classified_intent": "monitor",
+      "confidence": 0.98,
+      "reasoning": "Deploying monitoring stack"
+    },
+    {
+      "request_id": "req-035",
+      "original_text": "Set up container health monitoring and alerting - Add Uptime Kuma to monitor bot, API, dashboard, and DB containers",
+      "classified_intent": "monitor",
+      "confidence": 0.98,
+      "reasoning": "Container health monitoring setup"
+    },
+    {
+      "request_id": "req-036",
+      "original_text": "Set up basic uptime monitoring and alerts",
+      "classified_intent": "monitor",
+      "confidence": 0.98,
+      "reasoning": "Uptime monitoring setup"
+    },
+    {
+      "request_id": "req-037",
+      "original_text": "Set up alerting rules - Alerts on important events: 5xx server errors, user storage capacity above 80%",
+      "classified_intent": "monitor",
+      "confidence": 0.98,
+      "reasoning": "Alert rule configuration"
+    },
+    {
+      "request_id": "req-038",
+      "original_text": "Set up security monitoring and real-time alerting",
+      "classified_intent": "monitor",
+      "confidence": 0.92,
+      "reasoning": "Security monitoring (monitoring category takes precedence over security)"
+    },
+    {
+      "request_id": "req-039",
+      "original_text": "Set up error monitoring with Sentry - Email alerts on new errors, Prod only",
+      "classified_intent": "monitor",
+      "confidence": 0.98,
+      "reasoning": "Error monitoring system setup"
+    },
+    {
+      "request_id": "req-040",
+      "original_text": "how much are we spending on S3?",
+      "classified_intent": "cost",
+      "confidence": 0.98,
+      "reasoning": "Direct cost inquiry about S3 spending"
+    },
+    {
+      "request_id": "req-041",
+      "original_text": "Risk of runaway API costs without spending caps",
+      "classified_intent": "cost",
+      "confidence": 0.95,
+      "reasoning": "Cost management concern"
+    },
+    {
+      "request_id": "req-042",
+      "original_text": "How Much Does it Cost?",
+      "classified_intent": "cost",
+      "confidence": 0.98,
+      "reasoning": "Direct cost question"
+    },
+    {
+      "request_id": "req-043",
+      "original_text": "AWS Regions — what they are and how to choose one (compliance, latency, cost)",
+      "classified_intent": "cost",
+      "confidence": 0.70,
+      "reasoning": "Multi-factor decision including cost as one factor (cost appears as key consideration)"
+    },
+    {
+      "request_id": "req-044",
+      "original_text": "Develop a spending plan",
+      "classified_intent": "cost",
+      "confidence": 0.95,
+      "reasoning": "Budget planning request"
+    },
+    {
+      "request_id": "req-045",
+      "original_text": "track and manage cloud costs efficiently across environments like AWS, Azure",
+      "classified_intent": "cost",
+      "confidence": 0.98,
+      "reasoning": "Cost tracking and management"
+    },
+    {
+      "request_id": "req-046",
+      "original_text": "Clarification on Split Cost Calculation",
+      "classified_intent": "cost",
+      "confidence": 0.95,
+      "reasoning": "Cost calculation question"
+    },
+    {
+      "request_id": "req-047",
+      "original_text": "daily burn notices",
+      "classified_intent": "cost",
+      "confidence": 0.90,
+      "reasoning": "Daily spending notifications - cost monitoring"
+    },
+    {
+      "request_id": "req-048",
+      "original_text": "No budget controls",
+      "classified_intent": "cost",
+      "confidence": 0.92,
+      "reasoning": "Issue about missing cost controls"
+    },
+    {
+      "request_id": "req-049",
+      "original_text": "when I compare the numbers across tools, they don't quite line up",
+      "classified_intent": "cost",
+      "confidence": 0.85,
+      "reasoning": "Cost reporting discrepancy investigation (context from previous requests)"
+    },
+    {
+      "request_id": "req-050",
+      "original_text": "Automated dependency vulnerability scanning",
+      "classified_intent": "security",
+      "confidence": 0.98,
+      "reasoning": "Security vulnerability scanning automation"
+    },
+    {
+      "request_id": "req-051",
+      "original_text": "Dependency @fastify/static has a security vulnerability",
+      "classified_intent": "security",
+      "confidence": 0.98,
+      "reasoning": "Security vulnerability in dependency"
+    },
+    {
+      "request_id": "req-052",
+      "original_text": "Code patch required for critical security vulnerability",
+      "classified_intent": "security",
+      "confidence": 0.98,
+      "reasoning": "Critical security patch needed"
+    },
+    {
+      "request_id": "req-053",
+      "original_text": "Security patch for authentication service",
+      "classified_intent": "security",
+      "confidence": 0.98,
+      "reasoning": "Security patch for auth service"
+    },
+    {
+      "request_id": "req-054",
+      "original_text": "Vulnerability patching within defined SLA",
+      "classified_intent": "security",
+      "confidence": 0.98,
+      "reasoning": "Security patching requirement"
+    },
+    {
+      "request_id": "req-055",
+      "original_text": "Security Vulnerability Disclosure Channel Needed",
+      "classified_intent": "security",
+      "confidence": 0.95,
+      "reasoning": "Security disclosure process setup"
+    },
+    {
+      "request_id": "req-056",
+      "original_text": "Vulnerability Scanning & Patch Management",
+      "classified_intent": "security",
+      "confidence": 0.98,
+      "reasoning": "Security vulnerability management"
+    },
+    {
+      "request_id": "req-057",
+      "original_text": "Constant 503 Errors on Gemini 2.5 Pro and Flash – Severe Product Impact",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Service error investigation"
+    },
+    {
+      "request_id": "req-058",
+      "original_text": "Please investigate this outage for Gemini 2.5 Pro and Flash as soon as possible",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Outage investigation request"
+    },
+    {
+      "request_id": "req-059",
+      "original_text": "Gateway fails to auto-restart after SIGTERM",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Service restart failure diagnosis"
+    },
+    {
+      "request_id": "req-060",
+      "original_text": "Results in multi-hour outages requiring manual openclaw gateway start to recover",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Outage pattern requiring investigation"
+    },
+    {
+      "request_id": "req-061",
+      "original_text": "WhatsApp Gateway Instability — 10 Disconnections in 15 Hours",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Service stability investigation"
+    },
+    {
+      "request_id": "req-062",
+      "original_text": "VM1 — Virtual Machine Deallocated (Not Running)",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "VM state issue requiring investigation"
+    },
+    {
+      "request_id": "req-063",
+      "original_text": "If unplanned: Escalate to infrastructure team for root cause analysis",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Root cause analysis request"
+    },
+    {
+      "request_id": "req-064",
+      "original_text": "Better handling of incidents, maintenance, downtime",
+      "classified_intent": "monitor",
+      "confidence": 0.85,
+      "reasoning": "Incident management and notification improvement"
+    },
+    {
+      "request_id": "req-065",
+      "original_text": "CRITICAL: Embedding API 502 - vLLM unreachable",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Critical API error investigation"
+    },
+    {
+      "request_id": "req-066",
+      "original_text": "Add Downtime Notifications",
+      "classified_intent": "monitor",
+      "confidence": 0.95,
+      "reasoning": "Downtime notification feature - monitoring"
+    },
+    {
+      "request_id": "req-067",
+      "original_text": "Continuing to serve requests during known incidents is unacceptable",
+      "classified_intent": "diagnose",
+      "confidence": 0.85,
+      "reasoning": "Incident handling issue requiring investigation and fix"
+    },
+    {
+      "request_id": "req-068",
+      "original_text": "Proxy not working?",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Service functionality question - diagnostic"
+    },
+    {
+      "request_id": "req-069",
+      "original_text": "there doesn't seem to be anything happening. It also seems like the debug buttons are broken",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Multiple functionality issues requiring investigation"
+    },
+    {
+      "request_id": "req-070",
+      "original_text": "why is it that I feel like I'm constantly repeating myself to Claude...It doesn't read the memory. It doesn't read his task",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "System behavior investigation"
+    },
+    {
+      "request_id": "req-071",
+      "original_text": "PowerShell Gallery Search is Not Working...Any information on why search is not working?",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Feature not working - investigation needed"
+    },
+    {
+      "request_id": "req-072",
+      "original_text": "not all content is present in 1.20.1, why?...doesn't have the beds or paws or anything",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Missing content investigation"
+    },
+    {
+      "request_id": "req-073",
+      "original_text": "Search grounding not working - recent regression",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Regression investigation"
+    },
+    {
+      "request_id": "req-074",
+      "original_text": "Git module not found after Kiro update — commit message generation broken",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Broken functionality after update - diagnostic"
+    },
+    {
+      "request_id": "req-075",
+      "original_text": "Set up the test infrastructure so the project is ready to run automated tests",
+      "classified_intent": "deploy",
+      "confidence": 0.80,
+      "reasoning": "Setting up infrastructure for testing - initial deployment of test system"
+    },
+    {
+      "request_id": "req-076",
+      "original_text": "Set up environment configuration for backend API integration including base URLs for development",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Environment configuration for deployment"
+    },
+    {
+      "request_id": "req-077",
+      "original_text": "Create .env files for different environments (dev, staging, production)",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Environment setup for deployments"
+    },
+    {
+      "request_id": "req-078",
+      "original_text": "Setup .env file and environment configuration. Includes: PORT, MONGO_URI, JWT_SECRET",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Environment configuration for deployment"
+    },
+    {
+      "request_id": "req-079",
+      "original_text": "Containers sobem com um único comando",
+      "classified_intent": "deploy",
+      "confidence": 0.90,
+      "reasoning": "Containers starting with single command - deployment automation"
+    },
+    {
+      "request_id": "req-080",
+      "original_text": "Set up a separate test database so that running automated tests does not accidentally delete...real user data",
+      "classified_intent": "deploy",
+      "confidence": 0.80,
+      "reasoning": "Infrastructure setup for test environment"
+    },
+    {
+      "request_id": "req-081",
+      "original_text": "Install required packages and dependencies - Configure the local environment",
+      "classified_intent": "deploy",
+      "confidence": 0.80,
+      "reasoning": "Environment setup for deployment"
+    },
+    {
+      "request_id": "req-082",
+      "original_text": "Create Vercel project & configure environments",
+      "classified_intent": "deploy",
+      "confidence": 0.90,
+      "reasoning": "Vercel project setup for deployment"
+    },
+    {
+      "request_id": "req-083",
+      "original_text": "Setup Docker environment",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Docker environment setup for deployment"
+    },
+    {
+      "request_id": "req-084",
+      "original_text": "Document setup instructions in the README",
+      "classified_intent": "audit",
+      "confidence": 0.75,
+      "reasoning": "Documentation of infrastructure setup - audit/review activity"
+    },
+    {
+      "request_id": "req-085",
+      "original_text": "Increase shuttle/transport capacity for resources",
+      "classified_intent": "scale",
+      "confidence": 0.95,
+      "reasoning": "Increasing capacity - scaling request"
+    },
+    {
+      "request_id": "req-086",
+      "original_text": "Reserve idle resources on a node",
+      "classified_intent": "scale",
+      "confidence": 0.85,
+      "reasoning": "Resource management for scaling"
+    },
+    {
+      "request_id": "req-087",
+      "original_text": "Add quota and capacity pre-flight checks before ARM deployment",
+      "classified_intent": "scale",
+      "confidence": 0.85,
+      "reasoning": "Capacity planning for scaling"
+    },
+    {
+      "request_id": "req-088",
+      "original_text": "When demand for the application increases[decreases] Then I can scale application resources up[down] as needed",
+      "classified_intent": "scale",
+      "confidence": 0.98,
+      "reasoning": "Explicit scaling requirement"
+    },
+    {
+      "request_id": "req-089",
+      "original_text": "Create a background monitoring loop that detects if the Wazuh Agent service has stopped",
+      "classified_intent": "monitor",
+      "confidence": 0.95,
+      "reasoning": "Service monitoring implementation"
+    },
+    {
+      "request_id": "req-090",
+      "original_text": "The application fails to connect to the MySQL database after a server restart",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Connection failure requiring investigation"
+    },
+    {
+      "request_id": "req-091",
+      "original_text": "I ve been having an issue when the computer restarts. It throws an error that can be seen in the event viewer",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Restart error investigation"
+    },
+    {
+      "request_id": "req-092",
+      "original_text": "I want the launcher to swap the current filesystem link and restart the application services",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Deployment mechanism for service updates"
+    },
+    {
+      "request_id": "req-093",
+      "original_text": "Error When Restarting CSF",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Service restart error investigation"
+    },
+    {
+      "request_id": "req-094",
+      "original_text": "Users should be able to back up and restore their data. Requirements: - One-click backup to user-chosen location",
+      "classified_intent": "deploy",
+      "confidence": 0.70,
+      "reasoning": "Backup feature deployment (not in 8 categories, closest is deploy for new feature)"
+    },
+    {
+      "request_id": "req-095",
+      "original_text": "Write a script that uses pg_dump to take a daily snapshot of the PostgreSQL database, encrypts it, and uploads it to an off-site S3 bucket",
+      "classified_intent": "deploy",
+      "confidence": 0.75,
+      "reasoning": "Deploying backup automation infrastructure"
+    },
+    {
+      "request_id": "req-096",
+      "original_text": "ensure automatic backups are enabled 2. Document restore procedure — step-by-step for restoring from",
+      "classified_intent": "audit",
+      "confidence": 0.80,
+      "reasoning": "Verifying backup status and documentation - audit activity"
+    },
+    {
+      "request_id": "req-097",
+      "original_text": "I want database backups so that data is not lost in case of failure",
+      "classified_intent": "deploy",
+      "confidence": 0.75,
+      "reasoning": "Deploy backup solution"
+    },
+    {
+      "request_id": "req-098",
+      "original_text": "There is currently no automated database backup procedure, putting all user and financial data at risk of permanent loss",
+      "classified_intent": "security",
+      "confidence": 0.80,
+      "reasoning": "Data protection issue - security concern about data loss"
+    },
+    {
+      "request_id": "req-099",
+      "original_text": "Manual backup and restore: the user can export the full SQLite database to a location they choose",
+      "classified_intent": "deploy",
+      "confidence": 0.75,
+      "reasoning": "Deploy backup feature"
+    },
+    {
+      "request_id": "req-100",
+      "original_text": "Backups are scheduled at regular intervals - Backup files are stored securely - Data can be restored from backup successfully",
+      "classified_intent": "audit",
+      "confidence": 0.85,
+      "reasoning": "Verification of backup functionality - audit checklist"
+    },
+    {
+      "request_id": "req-101",
+      "original_text": "upgrade java version to 21",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Version upgrade deployment"
+    },
+    {
+      "request_id": "req-102",
+      "original_text": "Storybook is now on version 10.x, but we are still running on 7.x... Update to the most recent version",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Software update deployment"
+    },
+    {
+      "request_id": "req-103",
+      "original_text": "I would like to see github actions updated from v4 to v5... update all github actions templates to v5",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "CI/CD pipeline update deployment"
+    },
+    {
+      "request_id": "req-104",
+      "original_text": "Copilot SDK version upgrade... Many breaking changes - need to carefully update",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "SDK upgrade deployment with careful planning"
+    },
+    {
+      "request_id": "req-105",
+      "original_text": "Error in production parsing resume br - Find ways to reproduce the bug - Document the causes - Fix + mitigate",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Bug investigation and root cause analysis"
+    },
+    {
+      "request_id": "req-106",
+      "original_text": "Identify and fix issues related to incorrect asset paths (CSS, JS, images) in the production build, especially when deployed to GitHub Pages",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Production issue investigation"
+    },
+    {
+      "request_id": "req-107",
+      "original_text": "[RESUBMISSION] Fix required issues - API Issues - Model is NOT loaded inside the endpoint - API returns JSON response (not raw string)",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "API issues requiring investigation and fix"
+    },
+    {
+      "request_id": "req-108",
+      "original_text": "[GlitchTip][PRODUCTION] AssetController::exportLabelsPdf error - Environment: production",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Production error requiring investigation"
+    },
+    {
+      "request_id": "req-109",
+      "original_text": "SRE Alert: Production issue detected in employee-service-srv",
+      "classified_intent": "diagnose",
+      "confidence": 0.98,
+      "reasoning": "Production issue alert requiring investigation"
+    },
+    {
+      "request_id": "req-110",
+      "original_text": "Production deployment failed",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Deployment failure requiring investigation"
+    },
+    {
+      "request_id": "req-111",
+      "original_text": "META-ISSUE: Error handling and robustness issues (18+ issues) - exc_info in Production - Stack traces logged unconditionally",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Error handling issues requiring investigation"
+    },
+    {
+      "request_id": "req-112",
+      "original_text": "Show me timestamps in 'Manage logs and telemetry' on dashboard",
+      "classified_intent": "monitor",
+      "confidence": 0.90,
+      "reasoning": "Dashboard enhancement for monitoring"
+    },
+    {
+      "request_id": "req-113",
+      "original_text": "Show me the last 10 executions",
+      "classified_intent": "monitor",
+      "confidence": 0.90,
+      "reasoning": "Request for execution history - monitoring data"
+    },
+    {
+      "request_id": "req-114",
+      "original_text": "Show me all the services that have tracing enabled",
+      "classified_intent": "monitor",
+      "confidence": 0.90,
+      "reasoning": "Query for monitoring/tracing status"
+    },
+    {
+      "request_id": "req-115",
+      "original_text": "Service checkout-api is alerting. Show me the active alerts, when they started... error logs from the last",
+      "classified_intent": "monitor",
+      "confidence": 0.90,
+      "reasoning": "Request for monitoring data and alerts"
+    },
+    {
+      "request_id": "req-116",
+      "original_text": "Dashboard: on panel refresh, it shows no data and then renders new data",
+      "classified_intent": "diagnose",
+      "confidence": 0.90,
+      "reasoning": "Dashboard rendering issue requiring investigation"
+    },
+    {
+      "request_id": "req-117",
+      "original_text": "Outbound calls dashboard — logs, outcomes & billing metrics",
+      "classified_intent": "monitor",
+      "confidence": 0.90,
+      "reasoning": "Dashboard for monitoring metrics"
+    },
+    {
+      "request_id": "req-118",
+      "original_text": "Enable partial pipeline reload to reduce downtime",
+      "classified_intent": "deploy",
+      "confidence": 0.80,
+      "reasoning": "Deploy feature to improve deployment process"
+    },
+    {
+      "request_id": "req-119",
+      "original_text": "Feature Request: Multi-frps Support with Failover & Load Balancing",
+      "classified_intent": "scale",
+      "confidence": 0.95,
+      "reasoning": "Load balancing and failover for scaling"
+    },
+    {
+      "request_id": "req-120",
+      "original_text": "MCP Server High Availability and Scaling - Multiple replicas ensure...servers remain available even if individual pods fail",
+      "classified_intent": "scale",
+      "confidence": 0.98,
+      "reasoning": "High availability through scaling"
+    },
+    {
+      "request_id": "req-121",
+      "original_text": "Add fallback registry support and alternative image mapping in docker-compose",
+      "classified_intent": "deploy",
+      "confidence": 0.80,
+      "reasoning": "Deployment reliability feature"
+    },
+    {
+      "request_id": "req-122",
+      "original_text": "Standardize Liveness and Readiness Probe Strategy - reduce unnecessary restarts - improve response times and reliability",
+      "classified_intent": "monitor",
+      "confidence": 0.85,
+      "reasoning": "Health check standardization for better monitoring"
+    },
+    {
+      "request_id": "req-123",
+      "original_text": "improved reliability...These enhancements reduce friction...minimize downtime",
+      "classified_intent": "deploy",
+      "confidence": 0.65,
+      "reasoning": "General reliability improvements - deploy new features"
+    },
+    {
+      "request_id": "req-124",
+      "original_text": "API Resilience under stress or failure...Reduce downtime caused by unavailability...Decrease Mean Time to Recovery",
+      "classified_intent": "scale",
+      "confidence": 0.75,
+      "reasoning": "Resilience under stress implies scaling/redundancy needs"
+    },
+    {
+      "request_id": "req-125",
+      "original_text": "Replace current in-memory storage for users, challenges, and messages with a persistent MongoDB database",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Database migration deployment"
+    },
+    {
+      "request_id": "req-126",
+      "original_text": "Database configuration for production Metabase is migrated into Terraform IAC",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Infrastructure as code migration deployment"
+    },
+    {
+      "request_id": "req-127",
+      "original_text": "Migrate Clawrium data storage to SQLite",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Data storage migration deployment"
+    },
+    {
+      "request_id": "req-128",
+      "original_text": "Migrate activities data from in-memory store to persistent database",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Database migration deployment"
+    },
+    {
+      "request_id": "req-129",
+      "original_text": "Move existing language configuration to database",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Configuration migration deployment"
+    },
+    {
+      "request_id": "req-130",
+      "original_text": "Production and self-hosted installs can hit P3005 (database schema is not empty — Prisma Migrate has no baseline)",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Database migration issue requiring investigation"
+    },
+    {
+      "request_id": "req-131",
+      "original_text": "Move Solid Queue and Solid Cable to separate databases",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Database separation deployment"
+    },
+    {
+      "request_id": "req-132",
+      "original_text": "Replace in-memory activity data with a persistent relational data model",
+      "classified_intent": "deploy",
+      "confidence": 0.85,
+      "reasoning": "Data model migration deployment"
+    },
+    {
+      "request_id": "req-133",
+      "original_text": "Evaluate database for Metis (move off JSON files)",
+      "classified_intent": "deploy",
+      "confidence": 0.80,
+      "reasoning": "Database evaluation for migration deployment"
+    },
+    {
+      "request_id": "req-134",
+      "original_text": "Migrate to new path, stacks gone",
+      "classified_intent": "diagnose",
+      "confidence": 0.90,
+      "reasoning": "Migration issue with data loss - investigation needed"
+    },
+    {
+      "request_id": "req-135",
+      "original_text": "Need to migrate from SQLite to PostgreSQL first",
+      "classified_intent": "deploy",
+      "confidence": 0.90,
+      "reasoning": "Database migration deployment"
+    },
+    {
+      "request_id": "req-136",
+      "original_text": "Rollback time 10 minutes",
+      "classified_intent": "rollback",
+      "confidence": 0.85,
+      "reasoning": "Rollback time specification/requirement"
+    },
+    {
+      "request_id": "req-137",
+      "original_text": "design... a conceptual model for scaling credential issuance... make it possible for a scalable fleet",
+      "classified_intent": "scale",
+      "confidence": 0.90,
+      "reasoning": "Scaling architecture design"
+    },
+    {
+      "request_id": "req-138",
+      "original_text": "Effective missing support for multiple service servers in Docker deployment... Scaling up the scaler also has no effective influence",
+      "classified_intent": "scale",
+      "confidence": 0.90,
+      "reasoning": "Scaling issue in Docker deployment"
+    },
+    {
+      "request_id": "req-139",
+      "original_text": "trained performed 10% slower than the original results",
+      "classified_intent": "diagnose",
+      "confidence": 0.95,
+      "reasoning": "Performance regression investigation"
+    },
+    {
+      "request_id": "req-140",
+      "original_text": "maybe tma prefetch waste the bandwidth?",
+      "classified_intent": "diagnose",
+      "confidence": 0.90,
+      "reasoning": "Performance question requiring investigation"
+    },
+    {
+      "request_id": "req-141",
+      "original_text": "Add configurable notification delay for downtime alerts",
+      "classified_intent": "monitor",
+      "confidence": 0.95,
+      "reasoning": "Alert configuration for monitoring"
+    },
+    {
+      "request_id": "req-142",
+      "original_text": "Manage DNS config programatically",
+      "classified_intent": "deploy",
+      "confidence": 0.80,
+      "reasoning": "Infrastructure automation deployment"
+    },
+    {
+      "request_id": "req-143",
+      "original_text": "This needs investigation to validate it won't trigger any downtime",
+      "classified_intent": "diagnose",
+      "confidence": 0.90,
+      "reasoning": "Risk investigation before change"
+    }
+  ],
+  "distribution": {
+    "deploy": 41,
+    "scale": 15,
+    "rollback": 6,
+    "monitor": 23,
+    "audit": 3,
+    "cost": 10,
+    "security": 8,
+    "diagnose": 37
+  },
+  "ambiguous_cases": [
+    {
+      "request_id": "req-011",
+      "original_text": "conduct a final Smoke Test of the end-to-end admin workflow",
+      "possible_intents": ["monitor", "deploy"],
+      "reasoning": "Testing could be part of deployment verification or ongoing monitoring. Classified as monitor since it's verification/validation activity."
+    },
+    {
+      "request_id": "req-027",
+      "original_text": "Deployment of commit 631be2270bc7f90726abc124009f63f4bb4afe6b failed. Rolled back to: `` Please investigate",
+      "possible_intents": ["diagnose", "rollback"],
+      "reasoning": "Rollback already occurred, now needs investigation. Primary need is diagnosis of why deployment failed."
+    },
+    {
+      "request_id": "req-038",
+      "original_text": "Set up security monitoring and real-time alerting",
+      "possible_intents": ["monitor", "security"],
+      "reasoning": "Security monitoring could be security or monitor. Classified as monitor since it's setting up observability infrastructure."
+    },
+    {
+      "request_id": "req-043",
+      "original_text": "AWS Regions — what they are and how to choose one (compliance, latency, cost)",
+      "possible_intents": ["cost", "audit", "deploy"],
+      "reasoning": "Multi-factor decision covering cost, compliance (audit), and deployment planning. Classified as cost since it's listed as key factor."
+    },
+    {
+      "request_id": "req-064",
+      "original_text": "Better handling of incidents, maintenance, downtime",
+      "possible_intents": ["monitor", "diagnose"],
+      "reasoning": "Could be monitoring setup or incident response improvement. Classified as monitor for incident notification infrastructure."
+    },
+    {
+      "request_id":="req-067",
+      "original_text": "Continuing to serve requests during known incidents is unacceptable",
+      "possible_intents": ["diagnose", "monitor"],
+      "reasoning": "Issue about incident handling - could be monitoring (circuit breakers) or diagnosing why it happens. Classified as diagnose since it's an active problem."
+    },
+    {
+      "request_id": "req-075",
+      "original_text": "Set up the test infrastructure so the project is ready to run automated tests",
+      "possible_intents": ["deploy", "monitor"],
+      "reasoning": "Test infrastructure setup could be initial deployment or monitoring setup. Classified as deploy for infrastructure provisioning."
+    },
+    {
+      "request_id": "req-084",
+      "original_text": "Document setup instructions in the README",
+      "possible_intents": ["audit", "deploy"],
+      "reasoning": "Documentation could be audit activity or part of deployment. Classified as audit for documentation/review work."
+    },
+    {
+      "request_id": "req-092",
+      "original_text": "I want the launcher to swap the current filesystem link and restart the application services",
+      "possible_intents": ["deploy", "rollback"],
+      "reasoning": "Could be deployment mechanism or rollback procedure. Context suggests deployment automation, classified as deploy."
+    },
+    {
+      "request_id": "req-094",
+      "original_text": "Users should be able to back up and restore their data",
+      "possible_intents": ["deploy", "security"],
+      "reasoning": "Backup feature - not directly in 8 categories. Could be deploy (new feature) or security (data protection). Classified as deploy."
+    },
+    {
+      "request_id": "req-096",
+      "original_text": "ensure automatic backups are enabled 2. Document restore procedure",
+      "possible_intents": ["audit", "deploy"],
+      "reasoning": "Verification and documentation activities suggest audit/review rather than deployment."
+    },
+    {
+      "request_id": "req-098",
+      "original_text": "There is currently no automated database backup procedure, putting all user and financial data at risk of permanent loss",
+      "possible_intents": ["security", "deploy"],
+      "reasoning": "Data protection risk - could be security concern or need to deploy backup. Classified as security due to risk emphasis."
+    },
+    {
+      "request_id": "req-118",
+      "original_text": "Enable partial pipeline reload to reduce downtime",
+      "possible_intents": ["deploy", "scale"],
+      "reasoning": "Feature to reduce downtime could be deployment feature or scaling strategy. Classified as deploy for new capability."
+    },
+    {
+      "request_id": "req-122",
+      "original_text": "Standardize Liveness and Readiness Probe Strategy",
+      "possible_intents": ["monitor", "deploy"],
+      "reasoning": "Health check standardization is monitoring infrastructure but also deployment practice. Classified as monitor."
+    },
+    {
+      "request_id": "req-124",
+      "original_text": "API Resilience under stress or failure...Reduce downtime caused by unavailability",
+      "possible_intents": ["scale", "deploy"],
+      "reasoning": "Resilience could involve scaling (redundancy) or deploying resilience features. Classified as scale for stress handling."
+    }
+  ],
+  "classification_notes": {
+    "methodology": "Each request classified based on primary intent using linguistic patterns and context. When requests contained multiple intents, the dominant action verb or primary outcome determined classification.",
+    "challenges": [
+      "Backup-related requests (req-094 to req-100) don't map to any of the 8 categories directly. Most classified as 'deploy' for deploying backup infrastructure, 'audit' for verification, or 'security' for data protection.",
+      "Migration requests (req-125 to req-135) classified as 'deploy' since they involve deploying new infrastructure/databases.",
+      "Update/upgrade requests (req-101 to req-104) classified as 'deploy' since they involve deploying new versions.",
+      "Configuration setup requests classified as 'deploy' when they're setting up new infrastructure for deployment.",
+      "Questions asking 'show me' or 'display' classified as 'monitor' since they're requesting monitoring data.",
+      "Restart-related issues classified as 'diagnose' when they indicate problems, 'deploy' when they're about deployment mechanisms."
+    ],
+    "corrections_from_preliminary": [
+      "req-075 to req-084: Preliminary intent was 'configure' (not in 8 categories), reclassified mostly to 'deploy'",
+      "req-094 to req-100: Preliminary intent was 'backup' (not in 8 categories), reclassified to 'deploy', 'audit', or 'security'",
+      "req-101 to req-104: Preliminary intent was 'update' (not in 8 categories), reclassified to 'deploy'",
+      "req-125 to req-135: Preliminary intent was 'migrate' (not in 8 categories), reclassified mostly to 'deploy' or 'diagnose'",
+      "req-027: Changed from 'rollback' to 'diagnose' since rollback already happened and investigation is needed",
+      "req-043: Kept as 'cost' though multi-factor since cost is explicitly mentioned"
+    ],
+    "high_confidence_patterns": [
+      "Questions starting with 'Why is X slow' → always diagnose (100% confidence)",
+      "'Deploy to [platform]' → always deploy (98%+ confidence)",
+      "'Scale up/down' → always scale (95%+ confidence)",
+      "'Set up monitoring/alerting' → always monitor (95%+ confidence)",
+      "'how much are we spending' → always cost (98%+ confidence)",
+      "'security vulnerability/patch' → always security (98%+ confidence)",
+      "'rollback' in text → usually rollback (90%+ confidence)",
+      "'not working', 'broken', 'error', 'failed' → usually diagnose (90%+ confidence)"
+    ]
+  }
+}
