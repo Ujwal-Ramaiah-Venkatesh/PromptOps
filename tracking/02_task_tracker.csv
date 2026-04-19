@@ -1,0 +1,18 @@
+Task ID,Week,Task Name,Owner,Priority,Status,Start Date,End Date,Estimated Hours,Actual Hours,Completion %,Dependencies,Notes
+SETUP-001,Week 1,Repository initialization,Backend Engineer,High,Complete,2026-04-19,2026-04-19,1,1,100%,None,Git repo with proper structure
+RESEARCH-001,Week 1-2,Collect 200+ PM requests,Research Lead,High,Complete,2026-04-19,2026-04-19,3,2.5,100%,None,143 requests collected (71.5% of target)
+RESEARCH-002,Week 1-2,Classify into 8 intent categories,NLP Engineer,High,Complete,2026-04-19,2026-04-19,2,1.5,100%,RESEARCH-001,All 143 classified
+TEST-001,Week 1-2,Write 50 golden test commands,QA Engineer,High,Complete,2026-04-19,2026-04-19,3,2.0,100%,RESEARCH-002,50 tests covering all 8 intents
+CONFIG-001,Week 1-2,Populate Command Library,Backend Engineer,High,Complete,2026-04-19,2026-04-19,2,1.0,100%,RESEARCH-002,50 examples in schema
+FRAMEWORK-001,Week 1-2,Set up LangGraph framework,Backend Engineer,High,Complete,2026-04-19,2026-04-19,2,3.0,100%,None,Production-ready orchestration
+PARSER-001,Week 3-4,Write Claude Sonnet 4 system prompt,NLP Engineer,High,Not Started,,,2,,0%,FRAMEWORK-001,Strict JSON output required
+PARSER-002,Week 3-4,Integrate Claude API into LangGraph,Backend Engineer,High,Not Started,,,3,,0%,PARSER-001 FRAMEWORK-001,Drop API client into llm_parse_node
+PARSER-003,Week 3-4,Build ambiguity detection,NLP Engineer,High,Not Started,,,2,,0%,PARSER-002,Confidence < 85% triggers clarification
+UI-001,Week 3-4,Build Clarification Card UI component,Frontend Engineer,High,Not Started,,,2,,0%,PARSER-003,React component for PM clarification
+SECURITY-001,Week 3-4,Implement input sanitization layer,Security Engineer,High,Not Started,,,2,,0%,None,Pre-LLM security filter
+TEST-002,Week 3-4,Run all 50 golden tests,QA Engineer,High,Not Started,,,3,,0%,PARSER-002,Target >90% accuracy on first run
+DECOMP-001,Week 5-6,Design decomposition prompt,NLP Engineer,Medium,Not Started,,,3,,0%,PARSER-002,Convert intent to sub-tasks
+DECOMP-002,Week 5-6,Build sub-task JSON schema,Backend Engineer,Medium,Not Started,,,2,,0%,DECOMP-001,Include rollback_action for every task
+DECOMP-003,Week 5-6,Implement dependency graph resolver,Backend Engineer,Medium,Not Started,,,3,,0%,DECOMP-002,Parallel execution support
+DECOMP-004,Week 5-6,Test 10 complex multi-step commands,QA Engineer,Medium,Not Started,,,2,,0%,DECOMP-003,Verify decomposition accuracy
+UI-002,Week 5-6,Build Task Preview UI,Frontend Engineer,Medium,Not Started,,,2,,0%,DECOMP-002,Show sub-tasks before execution

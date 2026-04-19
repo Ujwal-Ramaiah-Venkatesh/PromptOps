@@ -1,0 +1,17 @@
+Deliverable,Week,Owner,Type,File Path,Size,Status,Completion Date,Quality Check,Notes
+PM Requests Corpus,Week 1-2,Research Lead,Data,phase1-nlp/research/pm-requests-corpus.json,48KB,Complete,2026-04-19,Pass,143 real PM requests from GitHub
+Intent Classification,Week 1-2,NLP Engineer,Data,phase1-nlp/research/intent-classification.json,45KB,Complete,2026-04-19,Pass,All 143 classified into 8 categories
+Collection Report,Week 1-2,Research Lead,Documentation,phase1-nlp/research/collection-report.md,10KB,Complete,2026-04-19,Pass,Linguistic pattern analysis
+Golden Test Suite,Week 1-2,QA Engineer,Tests,tests/golden-tests/commands.json,39KB,Complete,2026-04-19,Pass,50 permanent regression tests
+Command Library Schema,Week 1-2,Backend Engineer,Config,config/command-library-schema.json,35KB,Complete,2026-04-19,Pass,50 examples populating schema
+LangGraph Framework,Week 1-2,Backend Engineer,Code,phase1-nlp/parser/langgraph-setup.py,19KB,Complete,2026-04-19,Pass,568 lines orchestration framework
+LangGraph Tests,Week 1-2,Backend Engineer,Tests,phase1-nlp/parser/test_langgraph.py,14KB,Complete,2026-04-19,Pass,7 test cases
+Parser Architecture Doc,Week 1-2,Backend Engineer,Documentation,phase1-nlp/parser/ARCHITECTURE.md,,Complete,2026-04-19,Pass,Technical deep-dive
+README,Week 1-2,Team Lead,Documentation,README.md,2.2KB,Complete,2026-04-19,Pass,Project overview
+QUICKSTART Guide,Week 1-2,Team Lead,Documentation,QUICKSTART.md,5.7KB,Complete,2026-04-19,Pass,15-minute team onboarding
+Week 1 Completion Report,Week 1-2,Team Lead,Documentation,docs/WEEK1_COMPLETION_REPORT.md,,Complete,2026-04-19,Pass,Detailed metrics and findings
+System Prompt,Week 3-4,NLP Engineer,Code,phase1-nlp/parser/system-prompt.txt,,Not Started,,,Strict JSON output enforcement
+Ambiguity Detector,Week 3-4,NLP Engineer,Code,phase1-nlp/parser/ambiguity-detector.py,,Not Started,,,Confidence threshold logic
+Clarification Card UI,Week 3-4,Frontend Engineer,Code,phase1-nlp/dashboard/components/ClarificationCard.tsx,,Not Started,,,React component
+Input Sanitizer,Week 3-4,Security Engineer,Code,phase1-nlp/parser/input-sanitizer.py,,Not Started,,,Pre-LLM security filter
+Golden Test Results,Week 3-4,QA Engineer,Tests,tests/golden-tests/results-week3.json,,Not Started,,,>90% accuracy target

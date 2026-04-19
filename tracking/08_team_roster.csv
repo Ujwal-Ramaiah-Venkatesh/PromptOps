@@ -1,0 +1,8 @@
+Team Member,Role,Primary Responsibilities,Current Tasks,Skills,Availability,Contact,Notes
+Research Lead,Research,PM language analysis corpus collection linguistic patterns,Week 1-2 complete. Available for Week 3-4 corpus expansion,"Claude Sonnet 4, data analysis, research methodology",Full-time,,Completed 143 PM request collection
+NLP Engineer,NLP/AI,Intent classification prompt engineering ambiguity detection,Week 1-2 complete. Week 3-4: System prompt and ambiguity detector,"Claude Sonnet 4, LangGraph, prompt engineering, NLP",Full-time,,Expert in LLM prompt design
+Backend Engineer,Backend,LangGraph framework API integration infrastructure code,Week 1-2 complete. Week 3-4: Claude API integration,"Python, LangGraph, Anthropic SDK, AWS SDK",Full-time,,Built entire orchestration framework
+QA Engineer,QA/Testing,Test creation test execution accuracy validation,Week 1-2 complete. Week 3-4: Run 50 golden tests,"Jest, pytest, test automation, k6 load testing",Full-time,,Created 50 golden tests
+Frontend Engineer,Frontend,React UI PM Dashboard components,Not started. Week 3-4: Clarification Card. Week 9-10: Full dashboard,"React, TypeScript, v0.dev, mobile-responsive design",Full-time,,Will use v0.dev for rapid component generation
+Security Engineer,Security,Input sanitization prompt injection defense OPA policies,Not started. Week 3-4: Input sanitization layer,"OPA (Open Policy Agent), Rego, security patterns",Full-time,,Non-LLM deterministic security guardrails
+Team Lead,Leadership,Architecture decisions stakeholder communication documentation,Week 1-2 complete. Ongoing project management,"Full-stack, DevOps, project management",Full-time,,Coordinating all phases

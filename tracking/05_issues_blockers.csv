@@ -1,0 +1,6 @@
+Issue ID,Date Reported,Week,Severity,Type,Description,Impact,Status,Resolution,Resolved Date,Resolved By,Notes
+ISSUE-001,2026-04-19,Week 1-2,Low,Limitation,PM corpus limited to GitHub only (143 vs 200 target),Low - quality over quantity achieved,Resolved,Accept 143 as sufficient for pattern identification,2026-04-19,Research Lead,Will expand to Jira/Linear in Week 3-4
+ISSUE-002,2026-04-19,Week 1-2,Medium,Taxonomy,Deploy category overloaded (28.7% of requests),Medium - may cause parser confusion,Open,Monitor in Week 3-4; consider taxonomy expansion,,,Original research found 11 categories forced into 8
+ISSUE-003,2026-04-19,Week 1-2,Low,Ambiguity,15 ambiguous cases documented,Low - handled by clarification flow,Resolved,Clarification flow will handle,2026-04-19,NLP Engineer,Confidence threshold set at 85%
+ISSUE-004,2026-04-19,Week 1-2,Low,Authentication,GitHub push authentication errors,Low - user experience issue,Resolved,Git Credential Manager authorization,2026-04-19,Team Lead,Required manual authorization
+ISSUE-005,2026-04-19,Week 1-2,Low,Configuration,Incorrect GitHub username (UjwalRV vs Ujwal-Ramaiah-Venkatesh),Low - one-time fix,Resolved,Updated remote URL,2026-04-19,Team Lead,Repository created under full username

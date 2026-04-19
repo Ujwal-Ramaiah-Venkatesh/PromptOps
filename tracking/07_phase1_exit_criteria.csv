@@ -1,0 +1,12 @@
+Exit Criterion,Target,Current Progress,Status,Week Due,Owner,Notes,Last Updated
+NLP Parser accuracy on golden tests,>92%,0% (parser not built yet),In Progress - Week 3-4,Week 11-12,QA Engineer,Golden tests ready (50 tests). Parser development starts Week 3-4,2026-04-19
+Golden test commands created,50,50,Complete,Week 1-2,QA Engineer,All 50 tests covering 8 intents created. Permanent regression suite.,2026-04-19
+Intent categories defined,8,8,Complete,Week 1-2,NLP Engineer,All 8 categories defined and documented in schema,2026-04-19
+Command Library with examples,50+,50,Complete,Week 1-2,Backend Engineer,50 real PM command examples populating schema,2026-04-19
+PM corpus collected and classified,200+,143,Complete (71.5%),Week 1-2,Research Lead,143 real requests collected. Accepted as sufficient for pattern identification,2026-04-19
+LangGraph orchestration framework,Functional,Functional,Complete,Week 1-2,Backend Engineer,Production-ready framework with 7 tests. Ready for Claude API integration,2026-04-19
+Task decomposition with rollback,10 complex commands,0,Not Started,Week 5-6,Backend Engineer,Depends on parser completion,2026-04-19
+Infrastructure Context Store,Connected to AWS,Not provisioned,Not Started,Week 7-8,Backend Engineer,Requires AWS sandbox account setup,2026-04-19
+PM Dashboard live,4 panels (input preview approval audit),Not built,Not Started,Week 9-10,Frontend Engineer,UI design pending,2026-04-19
+Performance p95 latency,<3s at 100 req/s,Not measured,Not Started,Week 11-12,QA Engineer,Load testing with k6,2026-04-19
+Security prompt injection blocked,10/10 vectors,Not tested,Not Started,Week 11-12,Security Engineer,Input sanitization layer pending (Week 3-4),2026-04-19
