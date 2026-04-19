@@ -1,0 +1,22 @@
+# Handle line endings automatically for cross-platform collaboration
+* text=auto
+
+# Explicitly declare text files
+*.md text
+*.json text
+*.js text
+*.ts text
+*.tsx text
+*.py text
+*.txt text
+*.yml text
+*.yaml text
+
+# Denote all files that are truly binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
