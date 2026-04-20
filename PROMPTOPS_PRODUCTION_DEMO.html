@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptOps - Agentic DevOps Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a202c;
+        }
+
+        .app-container {
+            display: none;
+        }
+
+        .app-container.active {
+            display: block;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 440px;
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Main Dashboard */
+        .dashboard {
+            background: #f7fafc;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .navbar-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .navbar-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .main-content {
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .welcome-section h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .welcome-section p {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .command-input-section {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .command-input-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 16px;
+        }
+
+        .command-input-wrapper {
+            position: relative;
+        }
+
+        .command-input {
+            width: 100%;
+            padding: 16px 60px 16px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .command-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .send-button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .send-button:hover {
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .quick-action-btn {
+            padding: 12px 16px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .quick-action-btn:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon.blue {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .stat-icon.green {
+            background: rgba(52, 168, 83, 0.1);
+            color: #34a853;
+        }
+
+        .stat-icon.yellow {
+            background: rgba(249, 171, 0, 0.1);
+            color: #f9ab00;
+        }
+
+        .stat-icon.red {
+            background: rgba(234, 67, 53, 0.1);
+            color: #ea4335;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .recent-activity {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .recent-activity h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 24px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .activity-item:hover {
+            background: #f7fafc;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+
+        .activity-meta {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge.success {
+            background: rgba(52, 168, 83, 0.1);
+            color: #34a853;
+        }
+
+        .badge.warning {
+            background: rgba(249, 171, 0, 0.1);
+            color: #f9ab00;
+        }
+
+        .badge.error {
+            background: rgba(234, 67, 53, 0.1);
+            color: #ea4335;
+        }
+
+        .badge.info {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        /* Task Preview Screen */
+        .task-preview {
+            padding: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .task-header {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .task-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 12px;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 24px;
+            color: #718096;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
+        .task-steps {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .task-steps h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 24px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .step-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Execution Progress */
+        .execution-progress {
+            padding: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .progress-header {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .progress-bar-wrapper {
+            margin: 24px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 1s ease;
+        }
+
+        .progress-text {
+            margin-top: 8px;
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .execution-log {
+            background: #1a202c;
+            padding: 24px;
+            border-radius: 12px;
+            color: #e2e8f0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            max-height: 500px;
+            overflow-y: auto;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .log-line {
+            margin-bottom: 4px;
+        }
+
+        .log-timestamp {
+            color: #718096;
+        }
+
+        .log-success {
+            color: #34a853;
+        }
+
+        .log-info {
+            color: #4285f4;
+        }
+
+        .log-warning {
+            color: #f9ab00;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            padding: 32px;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 100px);
+        }
+
+        .success-card {
+            background: white;
+            padding: 64px 48px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            width: 100%;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(52, 168, 83, 0.1);
+            color: #34a853;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 24px;
+        }
+
+        .success-card h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 12px;
+        }
+
+        .success-card p {
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+
+        .success-details {
+            background: #f7fafc;
+            padding: 24px;
+            border-radius: 8px;
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .detail-value {
+            color: #1a202c;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar {
+                padding: 16px;
+            }
+
+            .login-card {
+                padding: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="app-container active" id="loginScreen">
+        <div class="login-screen">
+            <div class="login-card">
+                <div class="logo">
+                    <div class="logo-icon">P</div>
+                    <h1>PromptOps</h1>
+                    <p>Agentic DevOps Platform</p>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="sarah.chen@company.com" value="sarah.chen@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="••••••••" value="password">
+                    </div>
+                    <button type="submit" class="btn-primary">Sign In to Dashboard</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="app-container" id="dashboardScreen">
+        <div class="dashboard">
+            <nav class="navbar">
+                <div class="navbar-brand">
+                    <div class="navbar-logo">P</div>
+                    <span class="navbar-title">PromptOps</span>
+                </div>
+                <div class="navbar-user">
+                    <span style="color: #718096; font-size: 14px;">Sarah Chen, PM</span>
+                    <div class="user-avatar">SC</div>
+                </div>
+            </nav>
+
+            <div class="main-content">
+                <div class="welcome-section">
+                    <h2>Welcome back, Sarah 👋</h2>
+                    <p>Your infrastructure is healthy. All systems operational.</p>
+                </div>
+
+                <div class="command-input-section">
+                    <h3>What would you like to do?</h3>
+                    <div class="command-input-wrapper">
+                        <input type="text" class="command-input" id="commandInput" placeholder="Deploy the new API to production...">
+                        <button class="send-button" id="sendCommand">Send</button>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="fillCommand('Deploy API v2.1.0 to production')">🚀 Deploy API v2.1.0 to production</button>
+                        <button class="quick-action-btn" onclick="fillCommand('Scale up the backend service to handle 2x traffic')">📈 Scale up backend for 2x traffic</button>
+                        <button class="quick-action-btn" onclick="fillCommand('Show me the cost breakdown for this month')">💰 Show cost breakdown</button>
+                        <button class="quick-action-btn" onclick="fillCommand('Check why the database is slow')">🔍 Diagnose database performance</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">🚀</div>
+                        <div class="stat-label">Deployments Today</div>
+                        <div class="stat-value">12</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">✓</div>
+                        <div class="stat-label">Success Rate</div>
+                        <div class="stat-value">98.2%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon yellow">⏱</div>
+                        <div class="stat-label">Avg Response Time</div>
+                        <div class="stat-value">2.1s</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">💰</div>
+                        <div class="stat-label">Monthly Spend</div>
+                        <div class="stat-value">$4,230</div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-item">
+                        <div class="activity-icon green">✓</div>
+                        <div class="activity-content">
+                            <div class="activity-title">API v2.0.9 deployed to production <span class="badge success">Success</span></div>
+                            <div class="activity-meta">2 minutes ago • 3 services updated • 0 errors</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon blue">📊</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Database scaled up to handle increased load <span class="badge success">Success</span></div>
+                            <div class="activity-meta">15 minutes ago • RDS instance upgraded to db.r5.xlarge</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon yellow">⚠</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Cost alert: Spending 15% above budget <span class="badge warning">Alert</span></div>
+                            <div class="activity-meta">1 hour ago • EC2 and data transfer costs increased</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon blue">🔍</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Performance issue diagnosed in checkout service <span class="badge info">Diagnosed</span></div>
+                            <div class="activity-meta">3 hours ago • Root cause: inefficient SQL query</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon green">✓</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Security patch applied to all containers <span class="badge success">Success</span></div>
+                            <div class="activity-meta">5 hours ago • 24 containers patched across 3 environments</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Preview Screen -->
+    <div class="app-container" id="taskPreviewScreen">
+        <div class="dashboard">
+            <nav class="navbar">
+                <div class="navbar-brand">
+                    <div class="navbar-logo">P</div>
+                    <span class="navbar-title">PromptOps</span>
+                </div>
+                <div class="navbar-user">
+                    <span style="color: #718096; font-size: 14px;">Sarah Chen, PM</span>
+                    <div class="user-avatar">SC</div>
+                </div>
+            </nav>
+
+            <div class="task-preview">
+                <div class="task-header">
+                    <h2>Deploy API v2.1.0 to Production</h2>
+                    <div class="task-meta">
+                        <span>🎯 Intent: <strong>Deploy</strong></span>
+                        <span>⚡ Confidence: <strong>96%</strong></span>
+                        <span>⚠️ Risk Level: <strong>High</strong></span>
+                        <span>⏱ Estimated Time: <strong>~8 minutes</strong></span>
+                    </div>
+                </div>
+
+                <div class="task-steps">
+                    <h3>Execution Plan (8 steps)</h3>
+
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Verify API v2.1.0 exists in artifact registry</h4>
+                            <p>Check if docker.io/company/api:v2.1.0 is available and has passed all security scans.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Run pre-deployment health checks</h4>
+                            <p>Verify production environment is healthy: database connections, external dependencies, and current API status.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Create database backup snapshot</h4>
+                            <p>Backup production database (prod-api-db) before deployment in case rollback is needed.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Deploy to canary environment (10% traffic)</h4>
+                            <p>Deploy new version to 2 canary instances and route 10% of production traffic to validate behavior.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h4>Monitor canary metrics for 3 minutes</h4>
+                            <p>Watch error rates, latency (p50, p95, p99), CPU, and memory. Auto-rollback if thresholds exceeded.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <h4>Gradual rollout to all production instances</h4>
+                            <p>Deploy to remaining 18 production instances in batches of 6, with 1-minute monitoring between batches.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">7</div>
+                        <div class="step-content">
+                            <h4>Run post-deployment smoke tests</h4>
+                            <p>Execute automated test suite: API health check, authentication flow, critical user journeys.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">8</div>
+                        <div class="step-content">
+                            <h4>Update deployment tracking and notify team</h4>
+                            <p>Record deployment in audit log, update Slack #deployments channel, and notify on-call engineer.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="showScreen('dashboardScreen')">Cancel</button>
+                        <button class="btn btn-approve" onclick="executeDeployment()">Approve & Execute</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Execution Progress Screen -->
+    <div class="app-container" id="executionScreen">
+        <div class="dashboard">
+            <nav class="navbar">
+                <div class="navbar-brand">
+                    <div class="navbar-logo">P</div>
+                    <span class="navbar-title">PromptOps</span>
+                </div>
+                <div class="navbar-user">
+                    <span style="color: #718096; font-size: 14px;">Sarah Chen, PM</span>
+                    <div class="user-avatar">SC</div>
+                </div>
+            </nav>
+
+            <div class="execution-progress">
+                <div class="progress-header">
+                    <h2>Deploying API v2.1.0 to Production</h2>
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">Step 1 of 8 - Verifying artifact...</div>
+                    </div>
+                </div>
+
+                <div class="execution-log" id="executionLog">
+                    <div class="log-line"><span class="log-timestamp">[14:23:01]</span> <span class="log-info">Starting deployment pipeline...</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="app-container" id="successScreen">
+        <div class="dashboard">
+            <nav class="navbar">
+                <div class="navbar-brand">
+                    <div class="navbar-logo">P</div>
+                    <span class="navbar-title">PromptOps</span>
+                </div>
+                <div class="navbar-user">
+                    <span style="color: #718096; font-size: 14px;">Sarah Chen, PM</span>
+                    <div class="user-avatar">SC</div>
+                </div>
+            </nav>
+
+            <div class="success-screen">
+                <div class="success-card">
+                    <div class="success-icon">✓</div>
+                    <h2>Deployment Successful!</h2>
+                    <p>API v2.1.0 has been successfully deployed to production.</p>
+
+                    <div class="success-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Service</span>
+                            <span class="detail-value">API v2.1.0</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Environment</span>
+                            <span class="detail-value">Production</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Instances Updated</span>
+                            <span class="detail-value">20 of 20</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Duration</span>
+                            <span class="detail-value">7m 42s</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Health Status</span>
+                            <span class="detail-value">✓ All checks passed</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="showScreen('dashboardScreen')" style="width: 100%;">Back to Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            document.querySelectorAll('.app-container').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function fillCommand(text) {
+            document.getElementById('commandInput').value = text;
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showScreen('dashboardScreen');
+        });
+
+        document.getElementById('sendCommand').addEventListener('click', function() {
+            const command = document.getElementById('commandInput').value;
+            if (command.trim()) {
+                showScreen('taskPreviewScreen');
+            }
+        });
+
+        function executeDeployment() {
+            showScreen('executionScreen');
+
+            const steps = [
+                { progress: 12.5, text: 'Step 1 of 8 - Verifying artifact...', logs: [
+                    '[14:23:02] <span class="log-info">Connecting to artifact registry docker.io/company...</span>',
+                    '[14:23:03] <span class="log-success">✓ Found docker.io/company/api:v2.1.0</span>',
+                    '[14:23:03] <span class="log-success">✓ Security scan passed - no critical vulnerabilities</span>'
+                ]},
+                { progress: 25, text: 'Step 2 of 8 - Running health checks...', logs: [
+                    '[14:23:04] <span class="log-info">Checking production environment health...</span>',
+                    '[14:23:05] <span class="log-success">✓ Database connections: 98/100 active</span>',
+                    '[14:23:05] <span class="log-success">✓ External dependencies: All reachable</span>',
+                    '[14:23:06] <span class="log-success">✓ Current API status: Healthy (error rate 0.02%)</span>'
+                ]},
+                { progress: 37.5, text: 'Step 3 of 8 - Creating backup...', logs: [
+                    '[14:23:07] <span class="log-info">Creating snapshot of prod-api-db...</span>',
+                    '[14:23:15] <span class="log-success">✓ Snapshot prod-api-db-20260419-142315 created (28.4 GB)</span>'
+                ]},
+                { progress: 50, text: 'Step 4 of 8 - Deploying to canary...', logs: [
+                    '[14:23:16] <span class="log-info">Deploying to 2 canary instances...</span>',
+                    '[14:23:24] <span class="log-success">✓ Canary instance 1 updated and healthy</span>',
+                    '[14:23:31] <span class="log-success">✓ Canary instance 2 updated and healthy</span>',
+                    '[14:23:32] <span class="log-info">Routing 10% traffic to canary...</span>',
+                    '[14:23:33] <span class="log-success">✓ Traffic split configured</span>'
+                ]},
+                { progress: 62.5, text: 'Step 5 of 8 - Monitoring canary metrics...', logs: [
+                    '[14:23:34] <span class="log-info">Monitoring canary for 3 minutes...</span>',
+                    '[14:24:04] <span class="log-info">Canary metrics after 30s:</span>',
+                    '[14:24:04] <span class="log-success">  • Error rate: 0.01% (baseline: 0.02%)</span>',
+                    '[14:24:04] <span class="log-success">  • P95 latency: 124ms (baseline: 156ms)</span>',
+                    '[14:24:04] <span class="log-success">  • CPU usage: 42% (baseline: 45%)</span>',
+                    '[14:25:34] <span class="log-success">✓ Canary validation passed - metrics improved</span>'
+                ]},
+                { progress: 75, text: 'Step 6 of 8 - Rolling out to production...', logs: [
+                    '[14:25:35] <span class="log-info">Deploying batch 1 (6 instances)...</span>',
+                    '[14:26:12] <span class="log-success">✓ Batch 1 complete - all healthy</span>',
+                    '[14:26:13] <span class="log-info">Deploying batch 2 (6 instances)...</span>',
+                    '[14:26:48] <span class="log-success">✓ Batch 2 complete - all healthy</span>',
+                    '[14:26:49] <span class="log-info">Deploying batch 3 (6 instances)...</span>',
+                    '[14:27:24] <span class="log-success">✓ Batch 3 complete - all healthy</span>',
+                    '[14:27:25] <span class="log-success">✓ All 20 instances updated successfully</span>'
+                ]},
+                { progress: 87.5, text: 'Step 7 of 8 - Running smoke tests...', logs: [
+                    '[14:27:26] <span class="log-info">Executing automated test suite...</span>',
+                    '[14:27:31] <span class="log-success">✓ API health check: PASS</span>',
+                    '[14:27:35] <span class="log-success">✓ Authentication flow: PASS</span>',
+                    '[14:27:39] <span class="log-success">✓ User registration: PASS</span>',
+                    '[14:27:42] <span class="log-success">✓ Payment processing: PASS</span>',
+                    '[14:27:43] <span class="log-success">✓ All smoke tests passed (4/4)</span>'
+                ]},
+                { progress: 100, text: 'Step 8 of 8 - Finalizing...', logs: [
+                    '[14:27:44] <span class="log-info">Recording deployment in audit log...</span>',
+                    '[14:27:45] <span class="log-success">✓ Audit entry created (ID: deploy-20260419-142745)</span>',
+                    '[14:27:45] <span class="log-info">Notifying team in #deployments...</span>',
+                    '[14:27:46] <span class="log-success">✓ Slack notification sent</span>',
+                    '[14:27:46] <span class="log-info">Notifying on-call engineer...</span>',
+                    '[14:27:47] <span class="log-success">✓ PagerDuty notification sent</span>',
+                    '[14:30:43] <span class="log-success">═══════════════════════════════════════</span>',
+                    '[14:30:43] <span class="log-success">✓ DEPLOYMENT COMPLETED SUCCESSFULLY</span>',
+                    '[14:30:43] <span class="log-success">═══════════════════════════════════════</span>'
+                ]}
+            ];
+
+            let stepIndex = 0;
+
+            function runStep() {
+                if (stepIndex >= steps.length) {
+                    setTimeout(() => {
+                        showScreen('successScreen');
+                    }, 2000);
+                    return;
+                }
+
+                const step = steps[stepIndex];
+                document.getElementById('progressBarFill').style.width = step.progress + '%';
+                document.getElementById('progressText').textContent = step.text;
+
+                const logContainer = document.getElementById('executionLog');
+                step.logs.forEach((log, i) => {
+                    setTimeout(() => {
+                        const logLine = document.createElement('div');
+                        logLine.className = 'log-line';
+                        logLine.innerHTML = log;
+                        logContainer.appendChild(logLine);
+                        logContainer.scrollTop = logContainer.scrollHeight;
+                    }, i * 400);
+                });
+
+                stepIndex++;
+                setTimeout(runStep, step.logs.length * 400 + 1000);
+            }
+
+            setTimeout(runStep, 500);
+        }
+    </script>
+</body>
+</html>
