@@ -1,0 +1,439 @@
+/**
+ * Clarification Card Styles
+ * =========================
+ *
+ * Clean, accessible styling for clarification prompts.
+ * Mobile-first responsive design.
+ */
+
+/* ============================================================================
+   Card Container
+   ============================================================================ */
+
+.clarification-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ============================================================================
+   Header
+   ============================================================================ */
+
+.clarification-card__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.clarification-card__icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fef3c7;
+  border-radius: 8px;
+  color: #f59e0b;
+}
+
+.clarification-card__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ============================================================================
+   Question
+   ============================================================================ */
+
+.clarification-card__question {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #374151;
+  margin: 0 0 20px 0;
+}
+
+/* ============================================================================
+   Options Container
+   ============================================================================ */
+
+.clarification-card__options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.clarification-card__options--radio {
+  gap: 8px;
+}
+
+/* ============================================================================
+   Individual Option
+   ============================================================================ */
+
+.clarification-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+.clarification-option:hover {
+  border-color: #3b82f6;
+  background: #f9fafb;
+}
+
+.clarification-option:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.clarification-option--selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+/* Card Variant */
+.clarification-option--cards {
+  padding: 20px;
+}
+
+.clarification-option--cards:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Radio Variant */
+.clarification-option--radio {
+  padding: 12px 16px;
+}
+
+/* ============================================================================
+   Option Radio/Check
+   ============================================================================ */
+
+.clarification-option__radio {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.clarification-option__radio input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+.clarification-option__check {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.clarification-option--selected .clarification-option__check {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+/* ============================================================================
+   Option Content
+   ============================================================================ */
+
+.clarification-option__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.clarification-option__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.clarification-option__icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.clarification-option__label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.clarification-option__badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #065f46;
+  background: #d1fae5;
+  border-radius: 4px;
+}
+
+.clarification-option__description {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #6b7280;
+}
+
+/* ============================================================================
+   Actions
+   ============================================================================ */
+
+.clarification-card__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.clarification-card__button {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clarification-card__button--primary {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+.clarification-card__button--primary:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.clarification-card__button--primary:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+.clarification-card__button--secondary {
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.clarification-card__button--secondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
+/* ============================================================================
+   Helper Components
+   ============================================================================ */
+
+/* Environment Option */
+.env-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.env-option__icon {
+  font-size: 16px;
+}
+
+.env-option__name {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.env-option__badge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 3px;
+}
+
+.env-option--red .env-option__badge {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.env-option--yellow .env-option__badge {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.env-option--green .env-option__badge {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* Service Option */
+.service-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.service-option__name {
+  font-weight: 500;
+}
+
+.service-option__status {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.service-option__status--healthy {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.service-option__status--unhealthy {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.service-option__status--unknown {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+/* ============================================================================
+   Responsive Design
+   ============================================================================ */
+
+@media (max-width: 640px) {
+  .clarification-card {
+    padding: 20px;
+    border-radius: 8px;
+  }
+
+  .clarification-card__title {
+    font-size: 16px;
+  }
+
+  .clarification-card__question {
+    font-size: 15px;
+  }
+
+  .clarification-option {
+    padding: 14px;
+  }
+
+  .clarification-option--cards {
+    padding: 16px;
+  }
+
+  .clarification-card__actions {
+    flex-direction: column-reverse;
+  }
+
+  .clarification-card__button {
+    width: 100%;
+  }
+}
+
+/* ============================================================================
+   Dark Mode Support
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  .clarification-card {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .clarification-card__title {
+    color: #f9fafb;
+  }
+
+  .clarification-card__question {
+    color: #d1d5db;
+  }
+
+  .clarification-option {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .clarification-option:hover {
+    background: #1f2937;
+    border-color: #3b82f6;
+  }
+
+  .clarification-option--selected {
+    background: #1e3a8a;
+    border-color: #3b82f6;
+  }
+
+  .clarification-option__label {
+    color: #f9fafb;
+  }
+
+  .clarification-option__description {
+    color: #9ca3af;
+  }
+
+  .clarification-card__button--secondary {
+    background: #374151;
+    color: #f9fafb;
+    border-color: #4b5563;
+  }
+
+  .clarification-card__button--secondary:hover {
+    background: #4b5563;
+  }
+}
+
+/* ============================================================================
+   Accessibility
+   ============================================================================ */
+
+.clarification-option:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.clarification-card__button:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .clarification-option,
+  .clarification-option__check,
+  .clarification-card__button {
+    transition: none;
+  }
+
+  .clarification-option--cards:hover {
+    transform: none;
+  }
+}

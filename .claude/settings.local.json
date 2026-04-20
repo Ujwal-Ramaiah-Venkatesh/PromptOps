@@ -38,7 +38,8 @@
       "WebFetch(domain:www.backstage.io)",
       "WebFetch(domain:www.gopaddle.io)",
       "WebFetch(domain:www.argonaut.dev)",
-      "WebFetch(domain:www.qovery.com)"
+      "WebFetch(domain:www.qovery.com)",
+      "Bash(python input_sanitization.py)"
     ]
   }
 }
