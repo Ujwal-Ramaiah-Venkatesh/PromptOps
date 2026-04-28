@@ -1,0 +1,791 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Infrastructure Context Store Schema",
+  "description": "Schema for tracking AWS infrastructure state across environments with drift detection support",
+  "type": "object",
+  "required": ["version", "last_updated", "resources", "metadata"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "example": "1.0.0"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last context update (ISO 8601)"
+    },
+    "resources": {
+      "type": "array",
+      "description": "List of tracked AWS resources",
+      "items": {
+        "$ref": "#/definitions/Resource"
+      }
+    },
+    "snapshots": {
+      "type": "array",
+      "description": "Historical snapshots for drift detection (last 7 days)",
+      "items": {
+        "$ref": "#/definitions/Snapshot"
+      }
+    },
+    "metadata": {
+      "$ref": "#/definitions/ContextMetadata"
+    }
+  },
+  "definitions": {
+    "Resource": {
+      "type": "object",
+      "required": [
+        "resource_id",
+        "resource_type",
+        "service_name",
+        "environment",
+        "region",
+        "current_state"
+      ],
+      "properties": {
+        "resource_id": {
+          "type": "string",
+          "description": "Unique identifier for the resource (ARN or composite key)",
+          "examples": [
+            "ecs-frontend-prod-us-east-1",
+            "arn:aws:rds:us-east-1:123456789012:db:mydb"
+          ]
+        },
+        "resource_type": {
+          "type": "string",
+          "enum": [
+            "ecs_service",
+            "ecs_task_definition",
+            "ec2_instance",
+            "rds_database",
+            "lambda_function",
+            "alb",
+            "elb",
+            "s3_bucket",
+            "dynamodb_table",
+            "sqs_queue",
+            "sns_topic",
+            "cloudfront_distribution",
+            "elasticache_cluster",
+            "elasticsearch_domain",
+            "api_gateway"
+          ],
+          "description": "Type of AWS resource"
+        },
+        "service_name": {
+          "type": "string",
+          "description": "Logical service name (e.g., frontend, api, worker)",
+          "pattern": "^[a-z0-9-]+$"
+        },
+        "environment": {
+          "type": "string",
+          "enum": ["development", "staging", "production"],
+          "description": "Deployment environment"
+        },
+        "region": {
+          "type": "string",
+          "description": "AWS region",
+          "examples": ["us-east-1", "us-west-2", "eu-west-1"]
+        },
+        "current_state": {
+          "type": "object",
+          "description": "Current configuration and status (resource-type specific)",
+          "additionalProperties": true
+        },
+        "tags": {
+          "type": "object",
+          "description": "AWS resource tags",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "properties": {
+            "Managed": {
+              "type": "string",
+              "description": "Management tool (must be 'PromptOps' for tracking)",
+              "const": "PromptOps"
+            },
+            "Team": {
+              "type": "string"
+            },
+            "CostCenter": {
+              "type": "string"
+            },
+            "Owner": {
+              "type": "string"
+            }
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "description": "Resource IDs this resource depends on",
+          "items": {
+            "type": "string"
+          },
+          "examples": [
+            ["alb-frontend-prod", "rds-main-db"]
+          ]
+        },
+        "metadata": {
+          "$ref": "#/definitions/ResourceMetadata"
+        },
+        "drift_status": {
+          "$ref": "#/definitions/DriftStatus"
+        }
+      }
+    },
+    "ECSServiceState": {
+      "type": "object",
+      "description": "Current state for ECS services",
+      "required": [
+        "status",
+        "desired_count",
+        "running_count",
+        "task_definition"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["ACTIVE", "DRAINING", "INACTIVE"]
+        },
+        "desired_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "running_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "pending_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "task_definition": {
+          "type": "string",
+          "description": "Task definition ARN or name:revision"
+        },
+        "deployment_version": {
+          "type": "string",
+          "description": "Application version from tags or environment variables"
+        },
+        "load_balancers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "launch_type": {
+          "type": "string",
+          "enum": ["EC2", "FARGATE"]
+        },
+        "platform_version": {
+          "type": "string"
+        },
+        "cpu": {
+          "type": "string",
+          "description": "CPU units"
+        },
+        "memory": {
+          "type": "string",
+          "description": "Memory in MB"
+        },
+        "last_deployment": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "health_check_grace_period": {
+          "type": "integer"
+        }
+      }
+    },
+    "EC2InstanceState": {
+      "type": "object",
+      "description": "Current state for EC2 instances",
+      "required": ["state", "instance_type"],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "running",
+            "stopping",
+            "stopped",
+            "shutting-down",
+            "terminated"
+          ]
+        },
+        "instance_type": {
+          "type": "string",
+          "examples": ["t3.medium", "m5.large"]
+        },
+        "ami_id": {
+          "type": "string"
+        },
+        "public_ip": {
+          "type": "string"
+        },
+        "private_ip": {
+          "type": "string"
+        },
+        "vpc_id": {
+          "type": "string"
+        },
+        "subnet_id": {
+          "type": "string"
+        },
+        "security_groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "launch_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "monitoring": {
+          "type": "string",
+          "enum": ["enabled", "disabled"]
+        }
+      }
+    },
+    "RDSDatabaseState": {
+      "type": "object",
+      "description": "Current state for RDS databases",
+      "required": ["status", "engine", "instance_class"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "available",
+            "backing-up",
+            "creating",
+            "deleting",
+            "maintenance",
+            "modifying",
+            "rebooting",
+            "starting",
+            "stopped",
+            "stopping"
+          ]
+        },
+        "engine": {
+          "type": "string",
+          "examples": ["postgres", "mysql", "aurora-postgresql"]
+        },
+        "engine_version": {
+          "type": "string"
+        },
+        "instance_class": {
+          "type": "string",
+          "examples": ["db.t3.medium", "db.r6g.xlarge"]
+        },
+        "allocated_storage": {
+          "type": "integer",
+          "description": "Storage in GB"
+        },
+        "multi_az": {
+          "type": "boolean"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        },
+        "backup_retention_period": {
+          "type": "integer"
+        },
+        "latest_snapshot": {
+          "type": "string"
+        },
+        "encryption_enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "LambdaFunctionState": {
+      "type": "object",
+      "description": "Current state for Lambda functions",
+      "required": ["runtime", "memory_size", "timeout"],
+      "properties": {
+        "runtime": {
+          "type": "string",
+          "examples": ["python3.11", "nodejs20.x"]
+        },
+        "handler": {
+          "type": "string"
+        },
+        "memory_size": {
+          "type": "integer",
+          "minimum": 128,
+          "maximum": 10240
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 900
+        },
+        "code_size": {
+          "type": "integer",
+          "description": "Code size in bytes"
+        },
+        "last_modified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "version": {
+          "type": "string"
+        },
+        "environment_variables": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "vpc_config": {
+          "type": "object",
+          "properties": {
+            "subnet_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "security_group_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ALBState": {
+      "type": "object",
+      "description": "Current state for Application Load Balancers",
+      "required": ["state", "dns_name"],
+      "properties": {
+        "state": {
+          "type": "string",
+          "enum": ["provisioning", "active", "failed"]
+        },
+        "dns_name": {
+          "type": "string"
+        },
+        "scheme": {
+          "type": "string",
+          "enum": ["internet-facing", "internal"]
+        },
+        "vpc_id": {
+          "type": "string"
+        },
+        "availability_zones": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "security_groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "target_groups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "target_type": {
+                "type": "string",
+                "enum": ["instance", "ip", "lambda", "alb"]
+              },
+              "health_check": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string"
+                  },
+                  "interval": {
+                    "type": "integer"
+                  },
+                  "timeout": {
+                    "type": "integer"
+                  },
+                  "healthy_threshold": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "ResourceMetadata": {
+      "type": "object",
+      "required": ["created_at", "last_updated", "last_snapshot"],
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When this resource was first tracked"
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last time this resource state changed"
+        },
+        "last_snapshot": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last time this resource was scanned"
+        },
+        "discovered_by": {
+          "type": "string",
+          "enum": ["auto_scan", "manual_import", "cloudformation"],
+          "description": "How this resource was discovered"
+        },
+        "cost_estimate_monthly": {
+          "type": "number",
+          "description": "Estimated monthly cost in USD"
+        }
+      }
+    },
+    "DriftStatus": {
+      "type": "object",
+      "required": ["has_drift"],
+      "properties": {
+        "has_drift": {
+          "type": "boolean",
+          "description": "Whether drift has been detected"
+        },
+        "last_drift_detected": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "When drift was last detected"
+        },
+        "drift_details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DriftEvent"
+          }
+        },
+        "acknowledged": {
+          "type": "boolean",
+          "description": "Whether PM has acknowledged the drift",
+          "default": false
+        },
+        "acknowledged_by": {
+          "type": ["string", "null"],
+          "description": "User who acknowledged drift"
+        },
+        "acknowledged_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+    "DriftEvent": {
+      "type": "object",
+      "required": [
+        "drift_id",
+        "field_changed",
+        "old_value",
+        "new_value",
+        "severity",
+        "detected_at"
+      ],
+      "properties": {
+        "drift_id": {
+          "type": "string",
+          "description": "Unique identifier for this drift event"
+        },
+        "field_changed": {
+          "type": "string",
+          "description": "Which field changed",
+          "examples": ["desired_count", "task_definition", "instance_type"]
+        },
+        "old_value": {
+          "description": "Previous value (any type)"
+        },
+        "new_value": {
+          "description": "New value (any type)"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["critical", "warning", "info"],
+          "description": "Impact severity"
+        },
+        "detected_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "change_source": {
+          "type": "string",
+          "enum": ["manual", "console", "api", "cloudformation", "promptops", "auto_scaling", "unknown"],
+          "description": "How the change was made"
+        },
+        "changed_by": {
+          "type": ["string", "null"],
+          "description": "IAM user/role that made the change (from CloudTrail)"
+        },
+        "reason": {
+          "type": ["string", "null"],
+          "description": "Human-readable explanation"
+        }
+      }
+    },
+    "Snapshot": {
+      "type": "object",
+      "required": ["snapshot_id", "timestamp", "resource_count"],
+      "properties": {
+        "snapshot_id": {
+          "type": "string",
+          "pattern": "^snap-\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}$",
+          "example": "snap-2026-05-19-09-15"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "resource_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "checksum": {
+          "type": "string",
+          "description": "SHA256 hash of resource states"
+        },
+        "drift_events_detected": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of drift events in this snapshot"
+        },
+        "collection_duration_ms": {
+          "type": "integer",
+          "description": "Time taken to collect all resources"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "resource_type": {
+                "type": "string"
+              },
+              "error_message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ContextMetadata": {
+      "type": "object",
+      "required": ["total_resources", "environments", "regions"],
+      "properties": {
+        "total_resources": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "resources_by_type": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "examples": [
+            {
+              "ecs_service": 12,
+              "ec2_instance": 5,
+              "rds_database": 3
+            }
+          ]
+        },
+        "resources_by_environment": {
+          "type": "object",
+          "properties": {
+            "development": {
+              "type": "integer"
+            },
+            "staging": {
+              "type": "integer"
+            },
+            "production": {
+              "type": "integer"
+            }
+          }
+        },
+        "environments": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["development", "staging", "production"]
+          },
+          "uniqueItems": true
+        },
+        "regions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "total_drift_events": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "critical_drift_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_collection_duration_ms": {
+          "type": "integer"
+        },
+        "collector_version": {
+          "type": "string"
+        },
+        "aws_account_id": {
+          "type": "string",
+          "pattern": "^\\d{12}$"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "version": "1.0.0",
+      "last_updated": "2026-05-19T09:15:00Z",
+      "resources": [
+        {
+          "resource_id": "ecs-frontend-prod-us-east-1",
+          "resource_type": "ecs_service",
+          "service_name": "frontend",
+          "environment": "production",
+          "region": "us-east-1",
+          "current_state": {
+            "status": "ACTIVE",
+            "desired_count": 5,
+            "running_count": 5,
+            "pending_count": 0,
+            "task_definition": "frontend:42",
+            "deployment_version": "v2.3.1",
+            "load_balancers": ["alb-frontend-prod"],
+            "launch_type": "FARGATE",
+            "cpu": "512",
+            "memory": "1024",
+            "last_deployment": "2026-05-18T14:23:00Z"
+          },
+          "tags": {
+            "Managed": "PromptOps",
+            "Team": "Platform",
+            "CostCenter": "Engineering"
+          },
+          "dependencies": ["alb-frontend-prod"],
+          "metadata": {
+            "created_at": "2026-01-15T10:00:00Z",
+            "last_updated": "2026-05-18T14:23:00Z",
+            "last_snapshot": "2026-05-19T09:15:00Z",
+            "discovered_by": "auto_scan",
+            "cost_estimate_monthly": 150.00
+          },
+          "drift_status": {
+            "has_drift": false,
+            "last_drift_detected": null,
+            "drift_details": [],
+            "acknowledged": false
+          }
+        },
+        {
+          "resource_id": "arn:aws:rds:us-east-1:123456789012:db:main-db",
+          "resource_type": "rds_database",
+          "service_name": "main-db",
+          "environment": "production",
+          "region": "us-east-1",
+          "current_state": {
+            "status": "available",
+            "engine": "postgres",
+            "engine_version": "15.2",
+            "instance_class": "db.r6g.xlarge",
+            "allocated_storage": 500,
+            "multi_az": true,
+            "endpoint": "main-db.c1a2b3c4d5.us-east-1.rds.amazonaws.com",
+            "port": 5432,
+            "backup_retention_period": 7,
+            "encryption_enabled": true
+          },
+          "tags": {
+            "Managed": "PromptOps",
+            "Team": "Platform",
+            "CostCenter": "Engineering"
+          },
+          "dependencies": [],
+          "metadata": {
+            "created_at": "2026-01-10T08:00:00Z",
+            "last_updated": "2026-05-01T12:00:00Z",
+            "last_snapshot": "2026-05-19T09:15:00Z",
+            "discovered_by": "auto_scan",
+            "cost_estimate_monthly": 720.00
+          },
+          "drift_status": {
+            "has_drift": false,
+            "last_drift_detected": null,
+            "drift_details": [],
+            "acknowledged": false
+          }
+        }
+      ],
+      "snapshots": [
+        {
+          "snapshot_id": "snap-2026-05-19-09-15",
+          "timestamp": "2026-05-19T09:15:00Z",
+          "resource_count": 47,
+          "checksum": "a7f3c9d8e2b1f4a6c8d9e3f1a2b5c7d8",
+          "drift_events_detected": 0,
+          "collection_duration_ms": 12340,
+          "errors": []
+        },
+        {
+          "snapshot_id": "snap-2026-05-19-09-00",
+          "timestamp": "2026-05-19T09:00:00Z",
+          "resource_count": 47,
+          "checksum": "b8e4d0c9f3a2e5b7d9f0a3c1b4d6e8a9",
+          "drift_events_detected": 1,
+          "collection_duration_ms": 11890,
+          "errors": []
+        }
+      ],
+      "metadata": {
+        "total_resources": 47,
+        "resources_by_type": {
+          "ecs_service": 12,
+          "ec2_instance": 8,
+          "rds_database": 3,
+          "lambda_function": 15,
+          "alb": 4,
+          "s3_bucket": 5
+        },
+        "resources_by_environment": {
+          "development": 10,
+          "staging": 12,
+          "production": 25
+        },
+        "environments": ["development", "staging", "production"],
+        "regions": ["us-east-1", "us-west-2"],
+        "total_drift_events": 1,
+        "critical_drift_count": 0,
+        "last_collection_duration_ms": 12340,
+        "collector_version": "1.0.0",
+        "aws_account_id": "123456789012"
+      }
+    }
+  ]
+}
