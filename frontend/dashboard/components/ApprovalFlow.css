@@ -1,0 +1,761 @@
+/**
+ * Approval Flow Component Styles
+ * ===============================
+ *
+ * Styles for typed confirmation approval flow.
+ */
+
+/* ============================================================================
+   Container
+   ============================================================================ */
+
+.approval-flow {
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.approval-flow--low {
+  border-color: #d1fae5;
+}
+
+.approval-flow--medium {
+  border-color: #fef3c7;
+}
+
+.approval-flow--high {
+  border-color: #fed7aa;
+}
+
+.approval-flow--critical {
+  border-color: #fecaca;
+}
+
+/* ============================================================================
+   Header
+   ============================================================================ */
+
+.approval-flow-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #fef3c7;
+  border-bottom: 2px solid #fbbf24;
+}
+
+.approval-flow--critical .approval-flow-header {
+  background: #fee2e2;
+  border-bottom-color: #fecaca;
+}
+
+.approval-flow-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.approval-icon {
+  font-size: 24px;
+}
+
+.approval-flow-title h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.approval-timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.approval-timer--normal {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.approval-timer--warning {
+  background: #fef3c7;
+  color: #92400e;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.approval-timer--critical {
+  background: #fee2e2;
+  color: #991b1b;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.timer-icon {
+  font-size: 16px;
+}
+
+/* ============================================================================
+   Sections
+   ============================================================================ */
+
+.approval-section {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.approval-section:last-of-type {
+  border-bottom: none;
+}
+
+.approval-section-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: #f9fafb;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.approval-section-toggle:hover {
+  background: #f3f4f6;
+}
+
+.toggle-icon {
+  transition: transform 0.3s;
+}
+
+.toggle-icon--open {
+  transform: rotate(180deg);
+}
+
+/* ============================================================================
+   Risk Assessment
+   ============================================================================ */
+
+.risk-assessment {
+  padding: 20px;
+}
+
+.risk-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.risk-icon {
+  font-size: 24px;
+}
+
+.risk-header h4 {
+  flex: 1;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.risk-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.risk-badge--low {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.risk-badge--medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.risk-badge--high {
+  background: #fed7aa;
+  color: #9a3412;
+}
+
+.risk-badge--critical {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+.risk-factors {
+  padding: 16px;
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.risk-factors-title {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.risk-factors-list {
+  margin: 0;
+  padding-left: 24px;
+  list-style: disc;
+}
+
+.risk-factors-list li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #78350f;
+  line-height: 1.5;
+}
+
+.risk-factors-list li:last-child {
+  margin-bottom: 0;
+}
+
+.risk-metrics {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.risk-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ============================================================================
+   Impact Summary
+   ============================================================================ */
+
+.impact-summary {
+  padding: 20px;
+}
+
+.impact-summary h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.impact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.impact-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.impact-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 120px;
+}
+
+.impact-value {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+}
+
+.impact-value--env {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: capitalize;
+}
+
+.impact-value--env-production {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.impact-value--env-staging {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.impact-value--env-development {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* ============================================================================
+   State Comparison
+   ============================================================================ */
+
+.state-comparison {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 16px;
+  margin-top: 16px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.state-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.state-header {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.state-display {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.state-field {
+  display: flex;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.state-key {
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.state-value {
+  color: #111827;
+  font-weight: 600;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+.state-arrow {
+  font-size: 24px;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+}
+
+/* ============================================================================
+   Rollback Preview
+   ============================================================================ */
+
+.rollback-preview {
+  padding: 20px;
+}
+
+.rollback-info {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.rollback-metric {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rollback-metric-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.rollback-metric-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.rollback-warning {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.warning-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.warning-content {
+  flex: 1;
+  font-size: 13px;
+  color: #991b1b;
+}
+
+.warning-content strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.warning-content ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.warning-content li {
+  margin-bottom: 4px;
+}
+
+.rollback-status {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.rollback-status--available {
+  color: #059669;
+}
+
+.rollback-status--partial {
+  color: #d97706;
+}
+
+/* ============================================================================
+   Confirmation Input
+   ============================================================================ */
+
+.approval-confirmation {
+  padding: 20px;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+.confirmation-label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.confirmation-code {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #374151;
+  color: #f9fafb;
+  border-radius: 4px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.confirmation-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.confirmation-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.confirmation-input--valid {
+  border-color: #10b981;
+  background: #d1fae5;
+}
+
+.confirmation-valid {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #059669;
+}
+
+/* ============================================================================
+   Actions
+   ============================================================================ */
+
+.approval-actions {
+  display: flex;
+  gap: 12px;
+  padding: 20px;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+
+.approval-button {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.approval-button--cancel {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.approval-button--cancel:hover {
+  background: #e5e7eb;
+}
+
+.approval-button--approve {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.approval-button--approve:hover:not(:disabled) {
+  background: #b91c1c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(220, 38, 38, 0.3);
+}
+
+.approval-button--approve:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ============================================================================
+   Responsive - Mobile
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .approval-flow-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .approval-timer {
+    justify-content: center;
+  }
+
+  .risk-metrics {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .state-comparison {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .state-arrow {
+    transform: rotate(90deg);
+    justify-content: center;
+  }
+
+  .approval-actions {
+    flex-direction: column-reverse;
+  }
+
+  .approval-button {
+    width: 100%;
+  }
+}
+
+/* ============================================================================
+   Dark Mode
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  .approval-flow {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .approval-flow-header {
+    background: #78350f;
+    border-bottom-color: #92400e;
+  }
+
+  .approval-flow--critical .approval-flow-header {
+    background: #7f1d1d;
+    border-bottom-color: #991b1b;
+  }
+
+  .approval-flow-title h3 {
+    color: #f9fafb;
+  }
+
+  .approval-timer--normal {
+    background: #374151;
+    color: #d1d5db;
+  }
+
+  .approval-section-toggle {
+    background: #374151;
+    color: #f9fafb;
+  }
+
+  .approval-section-toggle:hover {
+    background: #4b5563;
+  }
+
+  .risk-assessment {
+    background: #1f2937;
+  }
+
+  .risk-header h4 {
+    color: #f9fafb;
+  }
+
+  .risk-factors {
+    background: #78350f;
+    border-color: #92400e;
+  }
+
+  .risk-factors-title {
+    color: #fef3c7;
+  }
+
+  .risk-factors-list li {
+    color: #fde68a;
+  }
+
+  .metric-value {
+    color: #f9fafb;
+  }
+
+  .impact-summary h4 {
+    color: #f9fafb;
+  }
+
+  .impact-value {
+    color: #f9fafb;
+  }
+
+  .state-comparison {
+    background: #374151;
+  }
+
+  .state-value {
+    color: #f9fafb;
+  }
+
+  .rollback-metric-value {
+    color: #f9fafb;
+  }
+
+  .rollback-warning {
+    background: #7f1d1d;
+    border-color: #991b1b;
+  }
+
+  .warning-content {
+    color: #fecaca;
+  }
+
+  .approval-confirmation {
+    background: #374151;
+    border-top-color: #4b5563;
+  }
+
+  .confirmation-input {
+    background: #1f2937;
+    border-color: #4b5563;
+    color: #f9fafb;
+  }
+
+  .confirmation-input--valid {
+    border-color: #10b981;
+    background: #064e3b;
+    color: #d1fae5;
+  }
+
+  .approval-actions {
+    background: #1f2937;
+    border-top-color: #4b5563;
+  }
+
+  .approval-button--cancel {
+    background: #374151;
+    color: #d1d5db;
+    border-color: #4b5563;
+  }
+
+  .approval-button--cancel:hover {
+    background: #4b5563;
+  }
+}
+
+/* ============================================================================
+   Accessibility
+   ============================================================================ */
+
+.approval-button:focus-visible,
+.confirmation-input:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .approval-timer--warning,
+  .approval-timer--critical {
+    animation: none;
+  }
+
+  .approval-button--approve:hover:not(:disabled) {
+    transform: none;
+  }
+
+  .toggle-icon {
+    transition: none;
+  }
+}
