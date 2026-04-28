@@ -1,0 +1,540 @@
+/**
+ * Command Input Component Styles
+ * ===============================
+ *
+ * Styles for command input with real-time preview.
+ */
+
+/* ============================================================================
+   Container
+   ============================================================================ */
+
+.command-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.command-input-wrapper {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.command-input-wrapper:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ============================================================================
+   Textarea
+   ============================================================================ */
+
+.command-input-textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #111827;
+  background: transparent;
+  resize: none;
+  min-height: 24px;
+  max-height: 200px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', sans-serif;
+}
+
+.command-input-textarea::placeholder {
+  color: #9ca3af;
+}
+
+.command-input-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================================
+   Submit Button
+   ============================================================================ */
+
+.command-input-submit {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.command-input-submit:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+}
+
+.command-input-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.command-input-submit:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================================
+   Suggestions Dropdown
+   ============================================================================ */
+
+.command-suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  max-height: 300px;
+  overflow-y: auto;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.suggestion-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item--selected {
+  background: #f9fafb;
+}
+
+.suggestion-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 4px;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+.suggestion-description {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.suggestion-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.suggestion-badge--recent {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.suggestion-badge--template {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.suggestion-badge--context {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* ============================================================================
+   Intent Preview
+   ============================================================================ */
+
+.intent-preview {
+  margin-top: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.intent-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.intent-preview-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.intent-preview-confidence {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confidence-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.confidence-indicator {
+  width: 32px;
+  height: 32px;
+}
+
+/* ============================================================================
+   Intent Fields
+   ============================================================================ */
+
+.intent-preview-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.intent-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.intent-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.intent-value {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+}
+
+.intent-value--type {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #eff6ff;
+  color: #1e40af;
+  border-radius: 4px;
+  text-transform: capitalize;
+}
+
+.intent-value--env {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: capitalize;
+}
+
+.intent-value--env-production {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.intent-value--env-staging {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.intent-value--env-development {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.intent-params {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.intent-param {
+  display: inline-block;
+  padding: 4px 8px;
+  background: #f3f4f6;
+  color: #374151;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+/* ============================================================================
+   Warnings & Status
+   ============================================================================ */
+
+.intent-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #fef3c7;
+  border-top: 1px solid #fbbf24;
+  color: #92400e;
+}
+
+.warning-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.warning-text {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.intent-approval-required {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #fee2e2;
+  border-top: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.approval-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.approval-text {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.intent-preview-footer {
+  padding: 12px 16px;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+
+.validation-status {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.validation-status--success {
+  color: #059669;
+}
+
+.validation-status--warning {
+  color: #d97706;
+}
+
+/* ============================================================================
+   Responsive - Mobile
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  .command-input-wrapper {
+    padding: 12px;
+  }
+
+  .command-input-textarea {
+    font-size: 16px; /* Prevent iOS zoom */
+  }
+
+  .command-input-submit {
+    width: 44px; /* Larger touch target */
+    height: 44px;
+  }
+
+  .intent-field {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .intent-label {
+    min-width: auto;
+  }
+
+  .intent-params {
+    flex-direction: column;
+  }
+}
+
+/* ============================================================================
+   Dark Mode
+   ============================================================================ */
+
+@media (prefers-color-scheme: dark) {
+  .command-input-wrapper {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .command-input-wrapper:focus-within {
+    border-color: #3b82f6;
+  }
+
+  .command-input-textarea {
+    color: #f9fafb;
+  }
+
+  .command-input-textarea::placeholder {
+    color: #6b7280;
+  }
+
+  .command-suggestions {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .suggestion-item {
+    border-bottom-color: #374151;
+  }
+
+  .suggestion-item:hover,
+  .suggestion-item--selected {
+    background: #374151;
+  }
+
+  .suggestion-text {
+    color: #f9fafb;
+  }
+
+  .suggestion-description {
+    color: #9ca3af;
+  }
+
+  .intent-preview {
+    background: #374151;
+    border-color: #4b5563;
+  }
+
+  .intent-preview-header {
+    background: #1f2937;
+    border-bottom-color: #4b5563;
+  }
+
+  .intent-preview-title {
+    color: #d1d5db;
+  }
+
+  .confidence-text {
+    color: #f9fafb;
+  }
+
+  .intent-label {
+    color: #9ca3af;
+  }
+
+  .intent-value {
+    color: #f9fafb;
+  }
+
+  .intent-param {
+    background: #4b5563;
+    color: #d1d5db;
+  }
+
+  .intent-warning {
+    background: #78350f;
+    border-top-color: #92400e;
+    color: #fef3c7;
+  }
+
+  .intent-approval-required {
+    background: #7f1d1d;
+    border-top-color: #991b1b;
+    color: #fecaca;
+  }
+
+  .intent-preview-footer {
+    background: #1f2937;
+    border-top-color: #4b5563;
+  }
+}
+
+/* ============================================================================
+   Accessibility
+   ============================================================================ */
+
+.command-input-submit:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .command-suggestions,
+  .intent-preview,
+  .button-spinner {
+    animation: none;
+  }
+
+  .command-input-submit:hover:not(:disabled) {
+    transform: none;
+  }
+}
