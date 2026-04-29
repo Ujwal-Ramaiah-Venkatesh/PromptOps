@@ -1,0 +1,9 @@
+# Performance Testing Requirements
+# Week 11-12: Load Testing Infrastructure
+
+# Locust - Load testing framework
+locust==2.18.0
+
+# Optional: For advanced metrics and monitoring
+# psutil==5.9.6  # System resource monitoring
+# prometheus-client==0.19.0  # Metrics export
