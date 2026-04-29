@@ -18,6 +18,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import apiClient, { handleAPIError } from '../utils/api';
 
 // ============================================================================
 // Type Definitions
@@ -152,7 +153,7 @@ export function useDashboardState(
 ): [DashboardState, DashboardActions] {
   const {
     user,
-    apiBaseUrl = '/api',
+    apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api/v1',
     pollingInterval = 60000, // 60s for drift
     enableAutoRefresh = true
   } = options;
@@ -203,17 +204,7 @@ export function useDashboardState(
 
       intentParseTimerRef.current = setTimeout(async () => {
         try {
-          const response = await fetch(`${apiBaseUrl}/parse-intent`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ command, user })
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to parse intent');
-          }
-
-          const data = await response.json();
+          const data = await apiClient.parseIntent(command, user);
           setState(prev => ({
             ...prev,
             parsedIntent: data.intent,
@@ -224,7 +215,8 @@ export function useDashboardState(
           setState(prev => ({
             ...prev,
             isParsingIntent: false,
-            parsedIntent: null
+            parsedIntent: null,
+            error: handleAPIError(error)
           }));
         }
       }, 500);
@@ -255,32 +247,12 @@ export function useDashboardState(
       // Step 1: Parse intent (if not already parsed)
       let intent = state.parsedIntent;
       if (!intent) {
-        const parseResponse = await fetch(`${apiBaseUrl}/parse-intent`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ command: state.currentCommand, user })
-        });
-
-        if (!parseResponse.ok) {
-          throw new Error('Failed to parse command');
-        }
-
-        const parseData = await parseResponse.json();
+        const parseData = await apiClient.parseIntent(state.currentCommand, user);
         intent = parseData.intent;
       }
 
       // Step 2: Decompose into tasks
-      const decomposeResponse = await fetch(`${apiBaseUrl}/decompose`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ intent, user })
-      });
-
-      if (!decomposeResponse.ok) {
-        throw new Error('Failed to decompose command');
-      }
-
-      const decomposeData = await decomposeResponse.json();
+      const decomposeData = await apiClient.decompose(intent, user);
 
       setState(prev => ({
         ...prev,
@@ -290,20 +262,15 @@ export function useDashboardState(
         lastSuccessfulCommand: prev.currentCommand
       }));
 
-      // Add to audit trail (pending)
-      await addAuditEntry({
-        command: state.currentCommand,
-        intent,
-        decomposition: decomposeData.decomposition,
-        status: 'pending'
-      });
+      // Refresh audit trail to show new entry
+      await refreshAudit();
 
     } catch (error: any) {
       console.error('Command submission error:', error);
       setState(prev => ({
         ...prev,
         isDecomposing: false,
-        error: error.message || 'Failed to process command'
+        error: handleAPIError(error)
       }));
     }
   }, [state.currentCommand, state.parsedIntent, apiBaseUrl, user]);
@@ -332,28 +299,13 @@ export function useDashboardState(
     setState(prev => ({ ...prev, isExecuting: true, error: null }));
 
     try {
-      const response = await fetch(`${apiBaseUrl}/execute`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          decomposition_id: state.decomposition.decomposition_id,
-          user,
-          approved: true
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to execute task');
-      }
-
-      const data = await response.json();
-
-      // Update audit entry to approved/executing
-      await updateAuditEntry(state.decomposition.decomposition_id, {
-        status: 'executing',
-        approved_by: user,
-        approved_at: new Date().toISOString()
-      });
+      const approvalPhrase = `APPROVE ${state.decomposition.operation_id}`;
+      const data = await apiClient.execute(
+        state.decomposition.decomposition_id,
+        user,
+        true,
+        approvalPhrase
+      );
 
       setState(prev => ({
         ...prev,
@@ -371,7 +323,7 @@ export function useDashboardState(
       setState(prev => ({
         ...prev,
         isExecuting: false,
-        error: error.message || 'Failed to execute task'
+        error: handleAPIError(error)
       }));
     }
   }, [state.decomposition, apiBaseUrl, user]);
@@ -411,13 +363,7 @@ export function useDashboardState(
     setState(prev => ({ ...prev, isLoadingDrift: true }));
 
     try {
-      const response = await fetch(`${apiBaseUrl}/drift/recent`);
-
-      if (!response.ok) {
-        throw new Error('Failed to load drift events');
-      }
-
-      const data = await response.json();
+      const data = await apiClient.getDrift();
 
       setState(prev => ({
         ...prev,
@@ -427,17 +373,17 @@ export function useDashboardState(
       }));
     } catch (error) {
       console.error('Drift loading error:', error);
-      setState(prev => ({ ...prev, isLoadingDrift: false }));
+      setState(prev => ({
+        ...prev,
+        isLoadingDrift: false,
+        error: handleAPIError(error)
+      }));
     }
-  }, [apiBaseUrl]);
+  }, []);
 
   const acknowledgeDrift = useCallback(async (driftId: string) => {
     try {
-      await fetch(`${apiBaseUrl}/drift/${driftId}/acknowledge`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user })
-      });
+      await apiClient.acknowledgeDrift(driftId, user);
 
       setState(prev => ({
         ...prev,
@@ -446,16 +392,16 @@ export function useDashboardState(
       }));
     } catch (error) {
       console.error('Drift acknowledgement error:', error);
+      setState(prev => ({
+        ...prev,
+        error: handleAPIError(error)
+      }));
     }
-  }, [apiBaseUrl, user]);
+  }, [user]);
 
   const revertDrift = useCallback(async (driftId: string) => {
     try {
-      await fetch(`${apiBaseUrl}/drift/${driftId}/revert`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user })
-      });
+      await apiClient.revertDrift(driftId, user);
 
       setState(prev => ({
         ...prev,
@@ -468,10 +414,10 @@ export function useDashboardState(
       console.error('Drift revert error:', error);
       setState(prev => ({
         ...prev,
-        error: 'Failed to revert drift'
+        error: handleAPIError(error)
       }));
     }
-  }, [apiBaseUrl, user]);
+  }, [user]);
 
   // ============================================================================
   // Audit Actions
@@ -481,13 +427,7 @@ export function useDashboardState(
     setState(prev => ({ ...prev, isLoadingAudit: true }));
 
     try {
-      const response = await fetch(`${apiBaseUrl}/audit?limit=50`);
-
-      if (!response.ok) {
-        throw new Error('Failed to load audit trail');
-      }
-
-      const data = await response.json();
+      const data = await apiClient.getAudit({ limit: 50 });
 
       setState(prev => ({
         ...prev,
@@ -496,65 +436,43 @@ export function useDashboardState(
       }));
     } catch (error) {
       console.error('Audit loading error:', error);
-      setState(prev => ({ ...prev, isLoadingAudit: false }));
+      setState(prev => ({
+        ...prev,
+        isLoadingAudit: false,
+        error: handleAPIError(error)
+      }));
     }
-  }, [apiBaseUrl]);
-
-  const addAuditEntry = async (entry: any) => {
-    try {
-      await fetch(`${apiBaseUrl}/audit`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...entry,
-          user,
-          timestamp: new Date().toISOString()
-        })
-      });
-
-      await refreshAudit();
-    } catch (error) {
-      console.error('Failed to add audit entry:', error);
-    }
-  };
-
-  const updateAuditEntry = async (id: string, updates: any) => {
-    try {
-      await fetch(`${apiBaseUrl}/audit/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updates)
-      });
-
-      await refreshAudit();
-    } catch (error) {
-      console.error('Failed to update audit entry:', error);
-    }
-  };
+  }, []);
 
   const exportAudit = useCallback(async (format: 'csv' | 'json') => {
     try {
-      const response = await fetch(`${apiBaseUrl}/audit/export?format=${format}`);
+      const data = await apiClient.exportAudit(format);
 
-      if (!response.ok) {
-        throw new Error('Failed to export audit trail');
+      if (format === 'csv') {
+        const blob = new Blob([data], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `audit-trail-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } else {
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `audit-trail-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
       }
-
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `audit-trail-${new Date().toISOString().split('T')[0]}.${format}`;
-      a.click();
-      URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Audit export error:', error);
       setState(prev => ({
         ...prev,
-        error: 'Failed to export audit trail'
+        error: handleAPIError(error)
       }));
     }
-  }, [apiBaseUrl]);
+  }, []);
 
   // ============================================================================
   // Error Handling
