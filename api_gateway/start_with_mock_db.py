@@ -374,6 +374,10 @@ async def get_import_history_mock(request: Request, current_user: User = Depends
 
 app.include_router(mock_ingestion_router)
 
+# Parser routes (no database needed)
+import parser_routes
+app.include_router(parser_routes.router)
+
 # NOTE: Full database-backed routes commented out for mock mode
 # import autonomy_routes
 # app.include_router(autonomy_routes.router)
