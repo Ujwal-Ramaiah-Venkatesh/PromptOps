@@ -25,7 +25,10 @@ from auth.models import User
 from utils.security_logger import get_client_ip, log_permission_denied
 
 # Import Terraform generator
-from phase1_nlp.context.terraform_generator import TerraformGenerator
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'phase1-nlp'))
+from context.terraform_generator import TerraformGenerator
 
 # Import database models
 from database.ingestion_models import ImportedChange, ImportRollback, TerraformStateHistory
