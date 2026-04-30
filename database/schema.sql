@@ -196,14 +196,17 @@ COMMENT ON TABLE drift_events IS 'Infrastructure drift events with acknowledgeme
 -- ============================================================================
 
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id VARCHAR(36) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
+    hashed_password VARCHAR(255) NOT NULL,
     full_name VARCHAR(255),
     role VARCHAR(50) NOT NULL DEFAULT 'pm',
     is_active BOOLEAN DEFAULT TRUE,
     last_login TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT valid_role CHECK (role IN ('viewer', 'pm', 'engineer', 'lead', 'admin'))
 );
 
 -- Indexes
@@ -388,10 +391,11 @@ $$ LANGUAGE plpgsql;
 -- Initial Data
 -- ============================================================================
 
--- Insert default admin user
-INSERT INTO users (email, full_name, role) VALUES
-    ('admin@promptops.com', 'Admin User', 'admin'),
-    ('pm@promptops.com', 'Product Manager', 'pm')
+-- Insert default admin user (password: admin123 - CHANGE THIS!)
+-- Password hashes generated with bcrypt
+INSERT INTO users (id, email, hashed_password, full_name, role, is_active) VALUES
+    ('admin-default-001', 'admin@promptops.com', '$2b$12$FWb9Kpi4TQoC.78ba2XDY.n50JU2QOxcHJmLqh4.tLfEvycx5K1rO', 'System Administrator', 'admin', TRUE),
+    ('pm-test-001', 'pm@promptops.com', '$2b$12$WHS87d2rbQe/krsZaFGj4ucGPF2E7egbwXh53SmvM4SFtT6rMtpjq', 'Product Manager', 'pm', TRUE)
 ON CONFLICT (email) DO NOTHING;
 
 -- ============================================================================

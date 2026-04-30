@@ -29,10 +29,12 @@ import logging
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from phase1_nlp.parser.claude_parser import ClaudeParser
-from phase1_nlp.decomposition.decomposition_engine import DecompositionEngine
-from phase1_nlp.context.context_aware_parser import ContextAwareParser
-from phase1_nlp.context.drift_detector import DriftDetector
+# Import from phase1-nlp directory
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'phase1-nlp'))
+from parser.claude_integration import ClaudeParser
+from decomposition.decomposition_engine import DecompositionEngine
+from context.context_aware_parser import ContextAwareParser
+from context.drift_detector import DriftDetector
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

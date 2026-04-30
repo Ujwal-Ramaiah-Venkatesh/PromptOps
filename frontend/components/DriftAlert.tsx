@@ -42,6 +42,7 @@ export interface DriftAlertProps {
   driftEvents: DriftEvent[];
   onAcceptDrift: (resourceId: string, driftId: string) => void;
   onRevertDrift: (resourceId: string, driftId: string) => void;
+  onImportChange?: (resourceId: string, driftId: string) => void;
   onDismiss: () => void;
   autoRefresh?: boolean;
   refreshInterval?: number; // milliseconds
@@ -51,12 +52,14 @@ export interface DriftTimelineProps {
   events: DriftEvent[];
   onAcceptDrift: (resourceId: string, driftId: string) => void;
   onRevertDrift: (resourceId: string, driftId: string) => void;
+  onImportChange?: (resourceId: string, driftId: string) => void;
 }
 
 export interface DriftDetailProps {
   event: DriftEvent;
   onAccept: () => void;
   onRevert: () => void;
+  onImport?: () => void;
 }
 
 export interface DriftBannerProps {
@@ -75,6 +78,7 @@ export function DriftAlert({
   driftEvents,
   onAcceptDrift,
   onRevertDrift,
+  onImportChange,
   onDismiss,
   autoRefresh = true,
   refreshInterval = 60000
@@ -141,6 +145,7 @@ export function DriftAlert({
               events={driftEvents}
               onAcceptDrift={onAcceptDrift}
               onRevertDrift={onRevertDrift}
+              onImportChange={onImportChange}
             />
           </div>
         </div>
@@ -216,7 +221,8 @@ export function DriftBanner({
 export function DriftTimeline({
   events,
   onAcceptDrift,
-  onRevertDrift
+  onRevertDrift,
+  onImportChange
 }: DriftTimelineProps): JSX.Element {
   const [filter, setFilter] = useState<'all' | 'critical' | 'warning' | 'info'>('all');
 
@@ -300,6 +306,7 @@ export function DriftTimeline({
               event={event}
               onAccept={() => onAcceptDrift(event.resource_id, event.drift_id)}
               onRevert={() => onRevertDrift(event.resource_id, event.drift_id)}
+              onImport={onImportChange ? () => onImportChange(event.resource_id, event.drift_id) : undefined}
             />
           ))
         )}
@@ -315,7 +322,8 @@ export function DriftTimeline({
 export function DriftDetail({
   event,
   onAccept,
-  onRevert
+  onRevert,
+  onImport
 }: DriftDetailProps): JSX.Element {
   const [expanded, setExpanded] = useState(false);
 
@@ -418,6 +426,11 @@ export function DriftDetail({
           )}
 
           <div className="drift-detail-actions">
+            {onImport && (
+              <button className="drift-detail-button drift-detail-button--import" onClick={onImport}>
+                📥 Import Change
+              </button>
+            )}
             <button className="drift-detail-button drift-detail-button--accept" onClick={onAccept}>
               ✓ Accept Drift
             </button>

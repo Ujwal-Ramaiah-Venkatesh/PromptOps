@@ -38,7 +38,7 @@
 10. [Go-to-Market Strategy](#gtm-strategy)
 11. [Implementation Roadmap](#roadmap)
 12. [Success Metrics](#success-metrics)
-13. [Risk Mitigation](#risks)
+13. [Risk Mitigation & Critical Enhancements](#risks)
 
 ---
 
@@ -1722,23 +1722,33 @@ Technical Users           │         Non-Technical Users
 **Q2 (Months 4-6):**
 - Basic Execution Agents (Deploy, Scale, Rollback)
 - Approval Workflows (2-tier)
+- **Autonomy Tier System (NEW):** Pre-authorize low-risk actions, require approval for high-risk
 - AWS Integration (EC2, ECS, RDS, S3)
 - Monitoring Integration (CloudWatch, Datadog)
 - Audit Trail (immutable logs)
+- **Secrets Management Integration:** AWS Secrets Manager with auto-rotation
 - Beta Launch: 20 customers
 
 **Q3 (Months 7-9):**
 - Advanced Agents (Monitor, Cost, Security, Diagnose)
 - Multi-environment support (prod, staging, dev)
+- **Infrastructure Ingestion Engine (NEW):** Import out-of-band manual changes into Terraform state
+- **Drift Auto-Reconciliation:** Offer to import vs. revert detected drift
 - Slack/Teams notifications
 - GitLab/GitHub integration
 - Public Launch: Product Hunt, HN
 - Goal: 100 free tier users
 
 **Q4 (Months 10-12):**
+- **Phase 1.5: Discovery & Onboarding Sprint (NEW):**
+  - Read-only infrastructure discovery for existing AWS accounts
+  - Auto-tagging of legacy resources
+  - Dependency mapping to prevent conflicts
+  - Import existing infrastructure into PromptOps management
 - GCP integration
 - Kubernetes support
 - Advanced approval workflows (3-tier)
+- **Prompt-to-Billing Correlation (NEW):** Track cost per PM command/feature
 - SOC2 Type 1 certification
 - Seed round close: $5M
 - Goal: 100 paying customers, $5M ARR
@@ -1772,8 +1782,10 @@ Technical Users           │         Non-Technical Users
 - Advanced Cost Optimization (RI purchasing, spot instances)
 - Security AI (threat detection, auto-response)
 - Compliance AI (SOC2/HIPAA automation)
+- **SOC2/ISO Compliance Templates (NEW):** Pre-built OPA rules for automatic compliance
 - Terraform/Pulumi auto-generation
 - Database auto-tuning (query optimization)
+- **Automated Secret Lifecycle (EXPANDED):** Full integration with Secrets Manager/Vault, auto-rotation
 - Goal: 300 paying customers, $18M ARR
 
 **Q3 (Months 19-21):**
@@ -1927,6 +1939,401 @@ Technical Users           │         Non-Technical Users
 8. **Golden Test Suite:** Maintain 50+ regression tests, must pass >95% before any release
 
 **Current Status:** Implemented 1, 3, 4, 5, 8. Implementing 2, 6, 7 in Phase 2.
+
+---
+
+### **Critical Engineering Enhancements (2026-2027 Market Realities)**
+
+Based on engineering constraints and market feedback, the following five critical features address the "trust gap" and operational challenges that typically kill AI-driven DevOps projects:
+
+---
+
+**Enhancement 1: Autonomy Tier System (Solving "Human-in-the-Loop" Fatigue)**
+
+**The Problem:**
+- In Phase 3 (SRE), if the agent generates too many "Approval Cards" for minor incidents, PMs experience "alert fatigue"
+- PMs start clicking "Approve" without reading, defeating the safety mechanism
+- Trade-off: Too many approvals = slow, too few approvals = unsafe
+
+**The Solution: Configurable Autonomy Tiers**
+
+```
+Risk Level        | Default Behavior      | PM Can Configure
+------------------|----------------------|------------------
+LOW               | Auto-execute         | Require approval
+MEDIUM            | Require approval     | Auto-execute
+HIGH              | Require approval     | Always require
+CRITICAL (Prod)   | Multi-tier approval  | Non-configurable
+```
+
+**Low-Risk Actions (Auto-Execute by Default):**
+- Pod restarts
+- Disk cleanup (<10GB)
+- Log rotation
+- Cache clearing
+- Read-only queries
+- Staging deployments
+- Monitoring adjustments
+
+**High-Risk Actions (Always Require Approval):**
+- Production deployments
+- Database schema changes
+- IAM policy modifications
+- Cross-region changes
+- Data deletion
+- Security rule changes
+
+**PM Experience:**
+```
+Settings → Autonomy Preferences
+[X] Auto-execute pod restarts
+[X] Auto-execute disk cleanup under 10GB
+[ ] Auto-execute staging deployments (require my approval)
+[X] Auto-execute cost optimizations under $100/month savings
+```
+
+**Impact:**
+- 95% of incidents auto-resolved without PM approval (3 AM database disk full → auto-cleaned)
+- 5% of high-risk actions still require human judgment
+- PM stays in control without drowning in notifications
+
+**Timeline:** Q2 Month 4-6 (Phase 1)
+
+---
+
+**Enhancement 2: Infrastructure Ingestion (Solving "State Drift" Problem)**
+
+**The Problem:**
+- Engineer bypasses PromptOps and makes emergency change via AWS Console at 3 AM
+- 15-minute drift detection detects mismatch
+- Current behavior: "Revert to known state?" (loses emergency fix)
+- This breaks PromptOps as "Single Source of Truth"
+
+**The Solution: Smart Drift Reconciliation**
+
+**When Drift Detected:**
+```
+┌─────────────────────────────────────────────────────┐
+│ 🔍 Drift Detected: EC2 instance type changed        │
+│                                                     │
+│ Expected: t3.medium (PromptOps state)             │
+│ Actual: t3.large (AWS actual)                     │
+│                                                     │
+│ Changed by: john.kim@company.com                   │
+│ Changed at: 2026-04-30 03:14 AM                   │
+│ Reason: (if available from CloudTrail)            │
+│                                                     │
+│ What would you like to do?                        │
+│                                                     │
+│ [Import Change] ← NEW OPTION                       │
+│ Import this change into PromptOps state           │
+│ (Architect Agent will update Terraform)           │
+│                                                     │
+│ [Revert Change]                                    │
+│ Undo the manual change, restore t3.medium         │
+│                                                     │
+│ [Ignore Once]                                      │
+│ Suppress this alert for 24 hours                  │
+└─────────────────────────────────────────────────────┘
+```
+
+**Import Process:**
+1. Architect Agent analyzes the manual change
+2. Generates Terraform code to match current AWS state
+3. Shows PM the diff
+4. PM approves → Terraform state updated
+5. Next drift check: No drift (PromptOps is back in sync)
+
+**Benefits:**
+- PromptOps remains Single Source of Truth
+- Emergency fixes don't get lost
+- Gradual onboarding (import existing infrastructure)
+
+**Timeline:** Q3 Month 7-9 (Phase 1)
+
+---
+
+**Enhancement 3: Discovery & Onboarding Sprint (Solving "Cold Start" Problem)**
+
+**The Problem:**
+- Most customers have existing messy AWS accounts (500+ resources, no tags, spaghetti dependencies)
+- PromptOps designed for "greenfield" new infrastructure
+- Risk: AI creates conflicting resources, security holes, or breaks existing services
+
+**The Solution: Phase 1.5 Onboarding**
+
+**Read-Only Discovery Phase (Before Any Deployments):**
+
+```
+Week 1: Infrastructure Discovery
+├─ PromptOps scans existing AWS account (read-only)
+├─ Discovers:
+│   • 347 EC2 instances (212 untagged)
+│   • 56 RDS databases (mixed versions)
+│   • 2,891 S3 buckets (orphaned?)
+│   • 124 security groups (overlapping rules)
+│   • 89 IAM roles (unclear purposes)
+└─ Generates: Infrastructure Map
+
+Week 2: Auto-Tagging & Dependency Mapping
+├─ AI analyzes resource relationships
+├─ Auto-tags resources:
+│   • Environment: prod/staging/dev (inferred from names)
+│   • Project: (inferred from tags/naming patterns)
+│   • Owner: (CloudTrail creation logs)
+├─ Builds dependency graph:
+│   • Which EC2s depend on which RDS databases
+│   • Which Lambda functions call which APIs
+│   • Which services share security groups
+└─ Presents: Dependency Map to PM
+
+Week 3: Import & Validation
+├─ PM reviews discovered infrastructure
+├─ Selects which resources to import into PromptOps
+├─ Architect Agent generates Terraform for selected resources
+├─ Validates: terraform plan (no changes = correct import)
+└─ Result: PromptOps now manages existing infrastructure
+
+Week 4: Greenlight for New Deployments
+├─ PromptOps has complete map of existing resources
+├─ AI knows dependencies, avoids conflicts
+├─ Safe to start deploying new services
+└─ "Ready for production use" ✓
+```
+
+**PM Dashboard:**
+```
+┌─────────────────────────────────────────────────┐
+│ 📊 Infrastructure Discovery Report              │
+│                                                 │
+│ Found: 347 EC2 instances                       │
+│  ├─ 135 clearly production (tagged)            │
+│  ├─ 89 likely staging (naming patterns)        │
+│  └─ 123 unknown (needs manual review)          │
+│                                                 │
+│ Recommendations:                                │
+│  • Retire 67 instances (idle >90 days)         │
+│  • Consolidate 23 databases (same schemas)     │
+│  • Delete 412 orphaned S3 buckets              │
+│  • Merge 45 redundant security groups          │
+│                                                 │
+│ Estimated savings: $4,200/month                │
+│                                                 │
+│ [Import All] [Review First] [Skip]            │
+└─────────────────────────────────────────────────┘
+```
+
+**Benefits:**
+- Onboarding from messy existing infrastructure (not just greenfield)
+- Prevents AI from creating conflicts
+- Immediate value (cost savings from cleanup recommendations)
+
+**Timeline:** Q4 Month 10-12 (Phase 1)
+
+---
+
+**Enhancement 4: Prompt-to-Billing Correlation (Feature-Based Cost Attribution)**
+
+**The Problem:**
+- CFO asks: "Why did AWS spend jump $5K last month?"
+- Current answer: "EC2 costs increased"
+- CFO needs: "Which feature/project drove the increase?"
+- PMs can't attribute costs to specific prompts
+
+**The Solution: Command-Level Cost Tracking**
+
+**Every PromptOps Command Gets:**
+- Unique Operation ID
+- Timestamp
+- User (PM who issued command)
+- Resources created/modified
+- Estimated monthly cost impact
+- Actual cost (tracked via AWS Cost Explorer tags)
+
+**Example:**
+
+```
+Prompt #1 (April 15, 2026):
+├─ Command: "Deploy new Search API to production"
+├─ PM: sarah.chen@company.com
+├─ Resources Created:
+│   • 5x t3.large EC2 instances
+│   • 1x RDS PostgreSQL db.t3.medium
+│   • 1x Application Load Balancer
+│   • 1x S3 bucket (API logs)
+├─ Estimated Cost: $780/month
+├─ Actual Cost (Month 1): $823/month
+│   (higher due to unexpected traffic)
+└─ Tag: promptops:operation=op-20260415-search-api
+```
+
+**PM Dashboard (Cost Attribution View):**
+
+```
+┌──────────────────────────────────────────────────────────┐
+│ 💰 April 2026 Spend: $14,230 (vs. $12,000 budget)      │
+│                                                          │
+│ Top Cost Drivers (by Feature):                          │
+│                                                          │
+│ 1. Search API Launch...................$823 (April 15)  │
+│    PM: sarah.chen                                        │
+│    Resources: 5 EC2 + 1 RDS + 1 ALB                     │
+│    [View Details] [Optimize]                            │
+│                                                          │
+│ 2. Database Scaling....................$420 (April 8)   │
+│    PM: mike.johnson                                      │
+│    Reason: 2x traffic spike                             │
+│    [View Details] [Right-size]                          │
+│                                                          │
+│ 3. New Staging Environment.............$310 (April 3)   │
+│    PM: sarah.chen                                        │
+│    Resources: 3 EC2 + 1 RDS (staging)                   │
+│    [View Details] [Tear Down]                           │
+│                                                          │
+│ Baseline Infrastructure (unchanged): $12,677            │
+└──────────────────────────────────────────────────────────┘
+```
+
+**CFO Report (Feature-Based Billing):**
+
+| Feature | PM Owner | Launch Date | Monthly Cost | Cumulative Cost | ROI |
+|---------|----------|-------------|--------------|-----------------|-----|
+| Search API | Sarah Chen | April 15 | $823 | $823 | TBD |
+| Payment v2 | Mike Johnson | March 1 | $1,240 | $2,480 | 3.2x |
+| Analytics Dashboard | John Kim | Feb 10 | $620 | $1,860 | 5.1x |
+
+**Benefits:**
+- CFO understands exactly what's driving costs
+- PMs see cost impact of their decisions
+- Easy to optimize (shut down low-ROI features)
+- Links infrastructure spend to business value
+
+**Timeline:** Q4 Month 10-12 (Phase 1)
+
+---
+
+**Enhancement 5: Automated Secret Lifecycle (Security Best Practice)**
+
+**The Problem:**
+- Blueprint mentions IAM roles and networking, but light on secrets management
+- Risk: Plaintext passwords in environment variables, no rotation
+- Compliance: SOC2/HIPAA require regular secret rotation
+
+**The Solution: Zero-Touch Secret Management**
+
+**Architecture:**
+
+```
+┌──────────────────────────────────────────────────┐
+│ PromptOps Architect Agent                        │
+│ (Generates infrastructure)                       │
+└───────────────────┬──────────────────────────────┘
+                    │
+                    ↓ "API needs database password"
+            ┌───────────────────┐
+            │ Secrets Manager   │
+            │ (Integrated)      │
+            └───────────────────┘
+                    │
+                    ↓ 1. Generate random password
+                    ↓ 2. Store in AWS Secrets Manager
+                    ↓ 3. Inject reference (not plaintext)
+            ┌───────────────────┐
+            │ Terraform Code    │
+            │ resource "aws...  │
+            │ password = data...│
+            └───────────────────┘
+                    │
+                    ↓ 4. Lambda rotation (30 days)
+            ┌───────────────────┐
+            │ Auto-Rotation     │
+            │ (Zero downtime)   │
+            └───────────────────┘
+```
+
+**PM Experience (Completely Transparent):**
+
+```
+[PM Command]: "Deploy new PostgreSQL database for user service"
+
+[PromptOps Executes]:
+├─ Creates RDS PostgreSQL instance
+├─ Generates secure random password (32 chars, symbols)
+├─ Stores password in AWS Secrets Manager:
+│   • Secret name: promptops/user-service/db-password
+│   • Encrypted with KMS
+│   • Auto-rotation: Every 30 days
+│   • Access: Only user-service ECS tasks
+├─ Configures ECS task to read from Secrets Manager
+├─ Never shows PM the plaintext password
+└─ ✓ Database deployed (PM never saw password)
+```
+
+**Auto-Rotation (30-Day Cycle):**
+
+```
+Day 0: Database deployed, password: V8x$kL9p...
+Day 30: Rotation triggered
+├─ Lambda function creates new password
+├─ Updates database: SET PASSWORD (new)
+├─ Updates Secrets Manager: store new password
+├─ ECS tasks refresh secrets (rolling restart)
+├─ Old password deprecated
+└─ Zero downtime (dual-password overlap)
+```
+
+**Compliance Dashboard:**
+
+```
+┌────────────────────────────────────────────────────┐
+│ 🔒 Secrets Compliance Status                       │
+│                                                    │
+│ Total Secrets: 47                                  │
+│ ├─ Database passwords: 12                          │
+│ ├─ API keys: 23                                   │
+│ ├─ SSL certificates: 8                            │
+│ └─ Service tokens: 4                              │
+│                                                    │
+│ Rotation Status:                                   │
+│ ✓ 45 secrets rotated within 30 days (96%)        │
+│ ⚠ 2 secrets due for rotation:                     │
+│   • stripe-api-key (34 days old)                  │
+│   • github-webhook-token (31 days old)            │
+│                                                    │
+│ [Rotate All Now] [Configure Policy]               │
+└────────────────────────────────────────────────────┘
+```
+
+**Integrations:**
+- AWS Secrets Manager (default, Phase 1)
+- HashiCorp Vault (Enterprise tier, Phase 2)
+- Azure Key Vault (Phase 2)
+- GCP Secret Manager (Phase 2)
+
+**SOC2 Compliance Impact:**
+- ✅ Secrets never in plaintext environment variables
+- ✅ Automatic rotation (30-day policy)
+- ✅ Audit trail of all secret access
+- ✅ Encryption at rest (KMS)
+- ✅ Least-privilege access (IAM roles)
+
+**Timeline:** Q2 Month 4-6 (Phase 1 - Basic), Q2 Month 16-18 (Phase 2 - Full Lifecycle)
+
+---
+
+### **Summary of Critical Enhancements**
+
+| Enhancement | Solves | Timeline | Impact |
+|-------------|--------|----------|--------|
+| **1. Autonomy Tiers** | Alert fatigue | Q2 M4-6 | 95% auto-resolution without PM |
+| **2. Infrastructure Ingestion** | State drift | Q3 M7-9 | Single source of truth maintained |
+| **3. Discovery & Onboarding** | Cold start with messy accounts | Q4 M10-12 | Onboard existing infrastructure |
+| **4. Prompt-to-Billing** | Cost attribution mystery | Q4 M10-12 | Link costs to features/PMs |
+| **5. Secret Lifecycle** | Security/compliance gaps | Q2 M4-6 (basic), Q2 M16-18 (full) | SOC2/HIPAA ready |
+
+**These five enhancements transform PromptOps from "works in ideal conditions" to "works with real-world engineering chaos and compliance requirements."**
+
+**Competitive Advantage:** Most AI DevOps tools fail on these exact issues. By addressing them in Phase 1-2, PromptOps establishes trust faster and reduces enterprise sales friction by 6-9 months.
 
 ---
 
