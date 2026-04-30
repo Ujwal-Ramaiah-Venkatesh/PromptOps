@@ -184,6 +184,10 @@ app.include_router(auth_routes.router)
 import autonomy_routes
 app.include_router(autonomy_routes.router)
 
+# Include discovery routes (ENHANCEMENT-003)
+import discovery_routes
+app.include_router(discovery_routes.router)
+
 @app.get("/")
 @limiter.limit("100/minute")
 async def root(request: Request):
