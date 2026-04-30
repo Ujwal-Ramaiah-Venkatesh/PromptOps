@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: promptops-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENVIRONMENT=production
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your-secret-key-change-in-production}
+      - CORS_ORIGINS=http://localhost:3003,http://localhost:3000
+    volumes:
+      - ./api_gateway:/app/api_gateway
+      - ./phase1-nlp:/app/phase1-nlp
+    networks:
+      - promptops-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: promptops-frontend
+    ports:
+      - "3003:3003"
+    depends_on:
+      - backend
+    networks:
+      - promptops-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3003/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  promptops-network:
+    driver: bridge
+
+volumes:
+  backend-data:
