@@ -1,282 +1,248 @@
 # PromptOps - Quick Start Guide
 
-**Last Updated:** April 20, 2026  
-**Current Phase:** Week 3-4 - NLP Parser v1 Development
+Get PromptOps up and running in 5 minutes with all 3 enhancement UIs.
 
 ---
 
-## 🚀 **START HERE**
+## Prerequisites
 
-### **Step 1: Get Claude API Key (5 minutes)**
+- **Python** 3.10+ ([Download](https://www.python.org/downloads/))
+- **Node.js** 18+ ([Download](https://nodejs.org/))
+- **Git** ([Download](https://git-scm.com/downloads))
 
-1. Go to: **https://console.anthropic.com/**
-2. Sign in or create account
-3. Navigate to **"API Keys"**
-4. Click **"Create Key"**
-5. Name it: **"PromptOps Development"**
-6. Copy the key (starts with `sk-ant-...`)
+---
 
-### **Step 2: Set Environment Variable**
-
-**Windows PowerShell:**
-```powershell
-$env:ANTHROPIC_API_KEY="sk-ant-your-key-here"
-```
-
-**Permanent (Recommended):**
-Create file `.env` in project root:
-```
-ANTHROPIC_API_KEY=sk-ant-your-key-here
-```
-
-### **Step 3: Install Dependencies**
+## 1. Clone Repository
 
 ```bash
-cd c:\Users\pqm847\Documents\PromptOps
-pip install anthropic>=0.34.0 langgraph>=0.0.20 python-dotenv>=1.0.0 pytest>=7.4.0
+git clone https://github.com/Ujwal-Ramaiah-Venkatesh/PromptOps.git
+cd PromptOps
 ```
 
-### **Step 4: Test Connection**
+---
+
+## 2. Start Backend (Terminal 1)
 
 ```bash
-cd phase1-nlp\parser
-python claude_integration.py
+# Install Python dependencies
+pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic slowapi boto3 python-jose[cryptography] passlib[bcrypt]
+
+# Start API server with mock database
+cd api_gateway
+python start_with_mock_db.py
 ```
 
-**Expected:** ✓ Connection successful
+**Expected Output:**
+```
+============================================================
+  PromptOps API Gateway with Authentication
+  Database: In-Memory Mock
+============================================================
 
-### **Step 5: Run Tests**
+  Test Users:
+    Admin: admin@promptops.com / admin123
+    PM:    pm@promptops.com / pm123
+
+  Starting server...
+  API: http://localhost:8000
+  Docs: http://localhost:8000/docs
+```
+
+**Verify:** Open http://localhost:8000/health in browser - should show `{"status": "healthy"}`
+
+---
+
+## 3. Start Frontend (Terminal 2)
 
 ```bash
-python test_corner_cases.py
+# Navigate to frontend directory
+cd frontend/dashboard
+
+# Install Node dependencies (first time only)
+npm install
+
+# Start development server
+npm run dev
 ```
 
-**Target:** >90% pass rate (>47/52 tests)
+**Expected Output:**
+```
+  VITE v5.0.8  ready in 423 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+```
+
+**Verify:** Open http://localhost:5173 in browser - should see login page
 
 ---
 
-## 📁 **Project Structure**
+## 4. Login & Explore
 
+### Login Credentials
+
+**Admin Account (Full Access):**
 ```
-PromptOps/
-├── phase1-nlp/
-│   ├── research/                      # Week 1-2 ✅
-│   │   ├── pm-requests-corpus.json    # 143 real PM requests
-│   │   └── intent-classification.json # 8 intent categories
-│   └── parser/                        # Week 3-4 🔴 IN PROGRESS
-│       ├── claude_system_prompt.txt   # ✅ System prompt (5,400 words)
-│       ├── claude_integration.py      # ✅ API client
-│       ├── test_corner_cases.py       # ✅ 52 tests
-│       ├── CORNER_CASES_ANALYSIS.md   # ✅ 15 categories
-│       └── WEEK3-4_README.md          # ✅ Complete guide
-├── tests/
-│   └── golden-tests/
-│       └── commands.json              # 50 official tests
-├── config/
-│   └── command-library-schema.json    # Command schema
-├── docs/
-│   ├── UI_DESIGN_SPEC.md              # Complete UI spec
-│   └── PHASE1_BLUEPRINT.md            # 12-week plan
-├── PromptOps_Complete_Blueprint_100percent_Automation.md  # 125 pages
-├── PromptOps_Market_Research_Report.md                    # Market analysis
-├── WEEK3-4_STATUS.md                  # ✅ Current status
-└── QUICK_START.md                     # ← YOU ARE HERE
+Email: admin@promptops.com
+Password: admin123
+Role: admin
 ```
+
+**PM Account (Limited Production Access):**
+```
+Email: pm@promptops.com
+Password: pm123
+Role: pm
+```
+
+### Available Pages
+
+1. **🏠 Home Dashboard**
+   - Overview stats and metrics
+   - Quick action buttons
+   - Enhancement cards (click to navigate)
+   - System status
+
+2. **⚙️ Autonomy Settings**
+   - Configure risk tier auto-execution
+   - View action types (23 pre-populated)
+   - Browse statistics
+   - Toggle LOW/MEDIUM auto-execution
+
+3. **🔍 Discovery Dashboard**
+   - Start AWS resource scans
+   - Select regions and resource types
+   - View scan progress (real-time)
+   - Import discovered resources
+
+4. **📥 Ingestion Workflow**
+   - View drift events
+   - Preview Terraform code generation
+   - Import manual AWS changes
+   - View import history
 
 ---
 
-## 🎯 **What We've Built**
+## 5. Test Key Features
 
-### **Week 1-2 ✅ COMPLETE**
-- PM request corpus (143 commands)
-- Intent classification (8 categories)
-- Golden test suite (50 tests)
-- Command library schema
-- LangGraph orchestration framework
-- Complete documentation
+### Test Autonomy Settings
 
-### **Week 3-4 🟡 IN PROGRESS (57% done)**
-- ✅ System prompt (handles 15 corner case categories)
-- ✅ Claude API integration (with retry, validation, cost tracking)
-- ✅ Corner case tests (52 tests ready to run)
-- 🔴 Input sanitization (TODO)
-- 🔴 Golden test validation (TODO - CRITICAL)
-- 🔴 Clarification UI (TODO)
+1. Navigate to **Autonomy** page
+2. Toggle **LOW** risk tier to **enabled**
+3. Notice stats update showing auto-execution rate
+4. Click **Actions** tab to see 23 action types
+5. Click **Reset to Defaults** (confirm dialog)
+
+### Test Discovery Scan
+
+1. Navigate to **Discovery** page
+2. Select **us-east-1** region
+3. Select **EC2 Instances** and **S3 Buckets**
+4. Click **🔍 Start Discovery Scan**
+5. Watch progress bar update (real-time polling)
+6. View results in **Results** tab
+7. Select resources and click **Import**
+
+### Test Ingestion Workflow
+
+1. Navigate to **Ingestion** page
+2. View drift event in list (demo data)
+3. Click drift event to preview
+4. See side-by-side diff (Terraform vs AWS)
+5. Review generated Terraform code
+6. Click **✓ Import Change** (confirm)
+7. Switch to **History** tab to see import
 
 ---
 
-## ⚡ **Command Cheat Sheet**
+## 6. API Documentation
 
-### **Test Connection:**
+### Swagger UI (Interactive)
+http://localhost:8000/docs
+
+**Features:**
+- Try all API endpoints
+- See request/response schemas
+- Test authentication
+- View all available routes
+
+### ReDoc (Clean Documentation)
+http://localhost:8000/redoc
+
+---
+
+## Troubleshooting
+
+### Backend Won't Start
+
+**Problem:** `ModuleNotFoundError: No module named 'fastapi'`
+
+**Solution:**
 ```bash
-python claude_integration.py
+pip install fastapi uvicorn sqlalchemy psycopg2-binary pydantic slowapi boto3 python-jose[cryptography] passlib[bcrypt]
 ```
 
-### **Run Corner Case Tests:**
+### Frontend Won't Start
+
+**Problem:** `command not found: npm`
+
+**Solution:** Install Node.js from https://nodejs.org/
+
+**Problem:** `Port 5173 is already in use`
+
+**Solution:**
 ```bash
-python test_corner_cases.py
+# Kill process on port 5173
+netstat -ano | findstr :5173
+taskkill /PID <process_id> /F
+
+# Or use different port
+npm run dev -- --port 3000
 ```
 
-### **Check API Usage:**
-```python
-from claude_integration import ClaudeParser
-parser = ClaudeParser()
-stats = parser.get_usage_stats()
-print(stats)
-```
+### Login Fails
 
-### **Estimate Monthly Costs:**
-```python
-from claude_integration import estimate_monthly_cost
-print(estimate_monthly_cost(10000))  # For 10K commands/month
-```
+**Problem:** "Connection refused" or CORS error
 
-### **Parse Single Command:**
-```python
-from claude_integration import ClaudeParser
-parser = ClaudeParser()
-success, output, error = parser.parse_command("Deploy API v2.0 to production")
-if success:
-    print(f"Intent: {output['intent_type']}")
-    print(f"Confidence: {output['confidence_score']}")
-```
+**Solution:**
+1. Ensure backend is running on port 8000
+2. Check http://localhost:8000/health returns healthy
+3. Clear browser cache and localStorage
+4. Try incognito/private browsing mode
 
 ---
 
-## 📊 **Current Status**
+## What's Included
 
-### **Completed (4/7 tasks):**
-- ✅ System prompt written
-- ✅ Claude API integrated
-- ✅ Corner cases documented (75 scenarios)
-- ✅ Test suite created (52 tests)
+### ✅ Complete Features
+- **Authentication:** JWT-based with role hierarchy
+- **Autonomy Tiers:** Risk-based auto-execution (LOW/MEDIUM/HIGH/CRITICAL)
+- **AWS Discovery:** Multi-region scanning with context inference
+- **Infrastructure Ingestion:** Import manual changes into Terraform
+- **Rate Limiting:** Prevents API abuse
+- **Security Logging:** Complete audit trail
+- **Secrets Management:** AWS Secrets Manager integration
 
-### **Remaining (3/7 tasks):**
-- 🔴 Input sanitization layer
-- 🔴 Run golden tests (>90% accuracy required)
-- 🔴 Clarification Card UI
-
-### **Exit Criteria:**
-| Metric | Target | Current |
-|--------|--------|---------|
-| Golden test accuracy | >90% | 0% (not tested) |
-| Response time (P95) | <3s | TBD |
-| API cost (Week 3-4) | <$50 | $0 |
+### 🚧 Coming Soon
+- Real AWS testing (requires boto3 + credentials)
+- WebSocket for real-time updates (replacing polling)
+- Cost tracking dashboard (ENHANCEMENT-004)
+- Secret rotation UI (ENHANCEMENT-005)
+- Multi-account AWS Organizations support
 
 ---
 
-## 🐛 **Troubleshooting**
+## Documentation
 
-### **"ANTHROPIC_API_KEY not found"**
-```bash
-# Check if set:
-echo $env:ANTHROPIC_API_KEY
-
-# Set it:
-$env:ANTHROPIC_API_KEY="sk-ant-your-key"
-```
-
-### **"ModuleNotFoundError"**
-```bash
-pip install anthropic langgraph python-dotenv pytest
-```
-
-### **"Rate limit exceeded"**
-- Wait 60 seconds
-- Free tier: 50 requests/minute
-
-### **Tests failing?**
-1. Check API key is valid
-2. Review test output for specific errors
-3. Check system prompt at `claude_system_prompt.txt`
-4. Increase logging: `logging.level = DEBUG`
+- **README.md** - Project overview
+- **FRONTEND_SETUP.md** - Frontend setup guide
+- **ENHANCEMENT-001_COMPLETE.md** - Autonomy implementation
+- **ENHANCEMENT-002_COMPLETE.md** - Ingestion implementation
+- **ENHANCEMENT-003_COMPLETE.md** - Discovery implementation
 
 ---
 
-## 💰 **Cost Reference**
+**Built with ❤️ by the PromptOps Team**
 
-### **API Pricing:**
-- Input: $3/million tokens
-- Output: $15/million tokens
-
-### **Estimated Costs:**
-- 1 command: ~$0.05
-- 100 commands: ~$5
-- 1,000 commands: ~$50
-- 10,000 commands: ~$500/month
-
-### **Week 3-4 Budget:**
-- Corner case tests (52): ~$2.60
-- Golden tests (50): ~$2.50
-- Debugging (100): ~$5.00
-- **Total:** ~$10 for Week 3-4
-
----
-
-## 📚 **Key Documents**
-
-| Document | Purpose |
-|----------|---------|
-| [WEEK3-4_README.md](phase1-nlp/parser/WEEK3-4_README.md) | Complete guide with FAQ |
-| [WEEK3-4_STATUS.md](WEEK3-4_STATUS.md) | Current progress report |
-| [CORNER_CASES_ANALYSIS.md](phase1-nlp/parser/CORNER_CASES_ANALYSIS.md) | 75 edge cases |
-| [PromptOps_Complete_Blueprint_100percent_Automation.md](PromptOps_Complete_Blueprint_100percent_Automation.md) | Full vision (125 pages) |
-| [PromptOps_Market_Research_Report.md](PromptOps_Market_Research_Report.md) | Market analysis |
-
----
-
-## 🎯 **Next Actions (Priority Order)**
-
-1. **TODAY:** Get Claude API key ⚡
-2. **TODAY:** Run connection test ⚡
-3. **TODAY:** Run corner case tests ⚡
-4. **Day 2-3:** Build input sanitization
-5. **Day 4-5:** Run golden tests (>90% required)
-6. **Day 6-7:** Build Clarification UI (optional)
-
----
-
-## 📞 **Need Help?**
-
-### **API Issues:**
-- Status: https://status.anthropic.com/
-- Docs: https://docs.anthropic.com/
-
-### **Code Issues:**
-- Check logs in terminal
-- Review error messages
-- Test individual functions
-
-### **Questions:**
-- Review: `WEEK3-4_README.md` (comprehensive FAQ)
-- Check: `CORNER_CASES_ANALYSIS.md` (75 scenarios)
-- Read: System prompt (`claude_system_prompt.txt`)
-
----
-
-## ✅ **Success Checklist**
-
-**Before proceeding to Week 5-6, you MUST:**
-- [ ] Claude API key obtained and working
-- [ ] Connection test passes (6 commands parse successfully)
-- [ ] Corner case tests: >80% pass rate
-- [ ] Input sanitization: 10 prompt injection patterns blocked
-- [ ] Golden tests: >90% accuracy (>45/50 passing)
-- [ ] Response time: P95 <3 seconds
-- [ ] API costs: <$50 for Week 3-4
-- [ ] No unhandled exceptions
-
----
-
-## 🚀 **You're Ready!**
-
-**Everything is built and ready to test. Just need the API key!**
-
-```bash
-# Get API key from: https://console.anthropic.com/
-# Set environment variable
-# Run: python claude_integration.py
-# Watch the magic happen! 🤖
-```
-
-**Good luck building the world's first 100% autonomous infrastructure parser!** 🎉
+*Transform infrastructure management from complex DevOps workflows into simple conversational commands.*
