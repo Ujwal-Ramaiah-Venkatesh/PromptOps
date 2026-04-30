@@ -9,6 +9,13 @@ Date: 2026-04-30
 
 import pytest
 from unittest.mock import Mock, MagicMock
+import sys
+import os
+
+# Add parent directory to path
+parent_dir = os.path.join(os.path.dirname(__file__), '..')
+sys.path.insert(0, parent_dir)
+
 from api_gateway.autonomy.tier_classifier import TierClassifier, RiskLevel, RiskAssessment
 from api_gateway.autonomy.auto_executor import AutoExecutor
 
@@ -409,13 +416,13 @@ if __name__ == "__main__":
     for test_func in test_functions:
         try:
             test_func()
-            print(f"✓ {test_func.__name__}")
+            print(f"[PASS] {test_func.__name__}")
             passed += 1
         except AssertionError as e:
-            print(f"✗ {test_func.__name__}: {e}")
+            print(f"[FAIL] {test_func.__name__}: {e}")
             failed += 1
         except Exception as e:
-            print(f"✗ {test_func.__name__}: ERROR - {e}")
+            print(f"[ERROR] {test_func.__name__}: {e}")
             failed += 1
 
     print("="*60)

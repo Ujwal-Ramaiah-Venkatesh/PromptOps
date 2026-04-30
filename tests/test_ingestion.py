@@ -15,9 +15,11 @@ import sys
 import os
 
 # Add parent directory to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+parent_dir = os.path.join(os.path.dirname(__file__), '..')
+sys.path.insert(0, parent_dir)
+sys.path.insert(0, os.path.join(parent_dir, 'phase1-nlp'))
 
-from phase1_nlp.context.terraform_generator import (
+from context.terraform_generator import (
     TerraformGenerator,
     EC2InstanceGenerator,
     RDSInstanceGenerator,
@@ -393,13 +395,13 @@ if __name__ == "__main__":
     for test_func in test_functions:
         try:
             test_func()
-            print(f"✓ {test_func.__name__}")
+            print(f"[PASS] {test_func.__name__}")
             passed += 1
         except AssertionError as e:
-            print(f"✗ {test_func.__name__}: {e}")
+            print(f"[FAIL] {test_func.__name__}: {e}")
             failed += 1
         except Exception as e:
-            print(f"✗ {test_func.__name__}: ERROR - {e}")
+            print(f"[ERROR] {test_func.__name__}: {e}")
             failed += 1
 
     print("="*60)

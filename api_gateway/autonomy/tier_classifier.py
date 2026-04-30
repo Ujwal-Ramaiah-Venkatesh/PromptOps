@@ -29,6 +29,21 @@ class RiskLevel(Enum):
         order = {"low": 0, "medium": 1, "high": 2, "critical": 3}
         return order[self.value] < order[other.value]
 
+    def __le__(self, other):
+        """Less than or equal comparison."""
+        order = {"low": 0, "medium": 1, "high": 2, "critical": 3}
+        return order[self.value] <= order[other.value]
+
+    def __gt__(self, other):
+        """Greater than comparison."""
+        order = {"low": 0, "medium": 1, "high": 2, "critical": 3}
+        return order[self.value] > order[other.value]
+
+    def __ge__(self, other):
+        """Greater than or equal comparison."""
+        order = {"low": 0, "medium": 1, "high": 2, "critical": 3}
+        return order[self.value] >= order[other.value]
+
 
 @dataclass
 class RiskAssessment:
