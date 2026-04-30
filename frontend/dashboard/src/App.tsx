@@ -6,12 +6,57 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { AutonomySettings } from './pages/AutonomySettings';
 import { DiscoveryDashboard } from './pages/DiscoveryDashboard';
 import { IngestionWorkflow } from './pages/IngestionWorkflow';
+import { apiClient } from './api/client';
 
 type Page = 'home' | 'autonomy' | 'discovery' | 'ingestion';
 
 const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const [currentPage, setCurrentPage] = useState<Page>('home');
+  const [commandInput, setCommandInput] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [commandResult, setCommandResult] = useState<any>(null);
+
+  const handleCommandSubmit = async () => {
+    if (!commandInput.trim() || isProcessing) return;
+
+    setIsProcessing(true);
+    setCommandResult(null);
+
+    try {
+      // Parse the command
+      const parseResponse = await apiClient.post('/api/v1/parser/parse', {
+        command: commandInput
+      });
+
+      setCommandResult({
+        success: true,
+        parsed: parseResponse,
+        message: `Command parsed successfully! Intent: ${parseResponse.intent_type}`
+      });
+
+      // Show success message
+      setTimeout(() => {
+        setCommandResult(null);
+        setCommandInput('');
+      }, 5000);
+
+    } catch (error: any) {
+      setCommandResult({
+        success: false,
+        message: error.message || 'Failed to process command'
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleCommandSubmit();
+    }
+  };
 
   return (
     <div style={{
@@ -190,32 +235,78 @@ const Dashboard: React.FC = () => {
               <div style={{ position: 'relative' }}>
                 <input
                   type="text"
-                  placeholder="Deploy frontend v2.0 to staging..."
+                  value={commandInput}
+                  onChange={(e) => setCommandInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Deploy Flipkar application on AWS..."
+                  disabled={isProcessing}
                   style={{
                     width: '100%',
                     padding: '16px 60px 16px 16px',
                     border: '2px solid #e2e8f0',
                     borderRadius: '8px',
                     fontSize: '16px',
-                    outline: 'none'
+                    outline: 'none',
+                    opacity: isProcessing ? 0.6 : 1
                   }}
                   onFocus={(e) => e.target.style.borderColor = '#667eea'}
                   onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
                 />
-                <button style={{
-                  position: 'absolute',
-                  right: '8px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  border: 'none',
-                  padding: '10px 20px',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontWeight: '600'
-                }}>Send</button>
+                <button
+                  onClick={handleCommandSubmit}
+                  disabled={!commandInput.trim() || isProcessing}
+                  style={{
+                    position: 'absolute',
+                    right: '8px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: isProcessing || !commandInput.trim() ? '#cbd5e0' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '6px',
+                    cursor: isProcessing || !commandInput.trim() ? 'not-allowed' : 'pointer',
+                    fontWeight: '600'
+                  }}
+                >
+                  {isProcessing ? 'Processing...' : 'Send'}
+                </button>
               </div>
+
+              {/* Command Result */}
+              {commandResult && (
+                <div style={{
+                  marginTop: '16px',
+                  padding: '16px',
+                  borderRadius: '8px',
+                  background: commandResult.success ? '#f0fdf4' : '#fef2f2',
+                  border: `2px solid ${commandResult.success ? '#86efac' : '#fca5a5'}`
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    marginBottom: '8px'
+                  }}>
+                    <span style={{ fontSize: '20px' }}>{commandResult.success ? '✅' : '❌'}</span>
+                    <strong style={{ color: commandResult.success ? '#166534' : '#991b1b' }}>
+                      {commandResult.success ? 'Success!' : 'Error'}
+                    </strong>
+                  </div>
+                  <p style={{ color: commandResult.success ? '#166534' : '#991b1b', margin: 0 }}>
+                    {commandResult.message}
+                  </p>
+                  {commandResult.parsed && (
+                    <div style={{ marginTop: '12px', fontSize: '14px', color: '#166534' }}>
+                      <div><strong>Service:</strong> {commandResult.parsed.target_service || 'N/A'}</div>
+                      <div><strong>Environment:</strong> {commandResult.parsed.target_env || 'N/A'}</div>
+                      {commandResult.parsed.parameters && Object.keys(commandResult.parsed.parameters).length > 0 && (
+                        <div><strong>Parameters:</strong> {JSON.stringify(commandResult.parsed.parameters)}</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Quick Actions */}
               <div style={{
