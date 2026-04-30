@@ -115,8 +115,10 @@ class ContextInferenceEngine:
         owner, owner_confidence = self._infer_owner(resource)
         resource.inferred_owner = owner
 
-        # Overall confidence score (average)
-        resource.confidence_score = (env_confidence + project_confidence + owner_confidence) / 3
+        # Overall confidence score (weighted average of inferred fields only)
+        # Only average non-zero confidences to avoid penalizing resources that don't need all fields
+        confidences = [c for c in [env_confidence, project_confidence, owner_confidence] if c > 0]
+        resource.confidence_score = sum(confidences) / len(confidences) if confidences else 0.0
 
     def _infer_environment(self, resource: Resource) -> Tuple[Optional[str], float]:
         """
@@ -147,6 +149,7 @@ class ContextInferenceEngine:
                         break
 
         # Signal 3: VPC/Subnet association
+        # For EC2 instances, check VPC and subnet
         if resource.resource_type == 'ec2' and resource.aws_state.get('vpc_id'):
             vpc_id = resource.aws_state['vpc_id']
             if vpc_id in self.vpc_environments:
@@ -156,6 +159,23 @@ class ContextInferenceEngine:
             subnet_id = resource.aws_state['subnet_id']
             if subnet_id in self.subnet_environments:
                 signals.append((self.subnet_environments[subnet_id], 0.6))
+
+        # For subnets, check their VPC
+        if resource.resource_type == 'subnet' and resource.aws_state.get('vpc_id'):
+            vpc_id = resource.aws_state['vpc_id']
+            if vpc_id in self.vpc_environments:
+                signals.append((self.vpc_environments[vpc_id], 0.6))
+
+        # For RDS, check VPC or subnet
+        if resource.resource_type == 'rds':
+            if resource.aws_state.get('vpc_id'):
+                vpc_id = resource.aws_state['vpc_id']
+                if vpc_id in self.vpc_environments:
+                    signals.append((self.vpc_environments[vpc_id], 0.6))
+            if resource.aws_state.get('subnet_id'):
+                subnet_id = resource.aws_state['subnet_id']
+                if subnet_id in self.subnet_environments:
+                    signals.append((self.subnet_environments[subnet_id], 0.6))
 
         # Signal 4: Instance type suggests environment (EC2 only)
         if resource.resource_type == 'ec2':
@@ -203,14 +223,14 @@ class ContextInferenceEngine:
 
         # Signal 2: Extract from name pattern
         if resource.name:
-            # Pattern: app-env-number (e.g., web-prod-1 → project: web)
-            match = re.match(r'^([a-zA-Z0-9-]+?)[-_](prod|stage|dev)', resource.name, re.IGNORECASE)
+            # Pattern: app-env-number (e.g., web-prod-1, api-staging-2 → project: web, api)
+            match = re.match(r'^([a-zA-Z0-9-]+?)[-_](prod|production|stage|staging|dev|development)', resource.name, re.IGNORECASE)
             if match:
                 app_name = match.group(1)
                 signals.append((app_name, 0.6))
 
             # Pattern: env-app-number (e.g., prod-web-1 → project: web)
-            match = re.match(r'^(prod|stage|dev)[-_]([a-zA-Z0-9-]+)', resource.name, re.IGNORECASE)
+            match = re.match(r'^(prod|production|stage|staging|dev|development)[-_]([a-zA-Z0-9-]+)', resource.name, re.IGNORECASE)
             if match:
                 app_name = match.group(2).split('-')[0]  # Take first part
                 signals.append((app_name, 0.5))
@@ -268,7 +288,7 @@ class ContextInferenceEngine:
 
         for tag_key, count in tag_key_counts.items():
             frequency = count / total_resources
-            is_consistent = frequency > 0.8
+            is_consistent = frequency >= 0.8
 
             # Get most common values
             value_counter = Counter(tag_values[tag_key])
@@ -292,9 +312,9 @@ class ContextInferenceEngine:
 
         # Common patterns to look for
         patterns = [
-            (r'^([a-zA-Z0-9-]+)-(prod|stage|dev)-(\d+)$', ['app', 'env', 'number']),
-            (r'^(prod|stage|dev)-([a-zA-Z0-9-]+)-(\d+)$', ['env', 'app', 'number']),
-            (r'^([a-zA-Z0-9-]+)-(prod|stage|dev)$', ['app', 'env']),
+            (r'^([a-zA-Z0-9-]+)-(prod|production|stage|staging|dev|development)-(\d+)$', ['app', 'env', 'number']),
+            (r'^(prod|production|stage|staging|dev|development)-([a-zA-Z0-9-]+)-(\d+)$', ['env', 'app', 'number']),
+            (r'^([a-zA-Z0-9-]+)-(prod|production|stage|staging|dev|development)$', ['app', 'env']),
             (r'^([a-zA-Z0-9-]+)-(\d+)$', ['app', 'number']),
         ]
 
