@@ -100,9 +100,13 @@ async def get_autonomy_settings(
     ```
     """
     # Query user's settings
-    settings = db.query(AutonomyTier).filter(
-        AutonomyTier.user_id == current_user.id
-    ).all()
+    try:
+        settings = db.query(AutonomyTier).filter(
+            AutonomyTier.user_id == current_user.id
+        ).all()
+    except:
+        # Mock database mode - return defaults
+        settings = []
 
     if not settings:
         # Return defaults (all require approval - safe mode)

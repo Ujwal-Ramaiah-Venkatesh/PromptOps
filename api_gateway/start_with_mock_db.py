@@ -5,6 +5,7 @@ This bypasses the need for PostgreSQL during initial testing
 
 import sys
 import os
+import time
 
 # Add parent directory to Python path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -185,17 +186,201 @@ class ScaleRequest(BaseModel):
 # Include auth routes
 app.include_router(auth_routes.router)
 
-# Include autonomy routes (ENHANCEMENT-001)
-import autonomy_routes
-app.include_router(autonomy_routes.router)
+# Mock autonomy endpoints for demo (database not required)
+from fastapi import APIRouter
+mock_autonomy_router = APIRouter(prefix="/api/v1/autonomy", tags=["autonomy-mock"])
 
-# Include ingestion routes (ENHANCEMENT-002)
-import ingestion_routes
-app.include_router(ingestion_routes.router)
+@mock_autonomy_router.get("/settings")
+@limiter.limit("100/minute")
+async def get_autonomy_settings_mock(request: Request, current_user: User = Depends(get_current_active_user_mock)):
+    return {
+        "user_email": current_user.email,
+        "tiers": [
+            {"risk_level": "LOW", "auto_execute": True, "requires_2fa": False, "can_modify": True},
+            {"risk_level": "MEDIUM", "auto_execute": False, "requires_2fa": False, "can_modify": True},
+            {"risk_level": "HIGH", "auto_execute": False, "requires_2fa": False, "can_modify": False},
+            {"risk_level": "CRITICAL", "auto_execute": False, "requires_2fa": True, "can_modify": False}
+        ],
+        "last_modified": "2026-04-30T10:00:00Z"
+    }
 
-# Include discovery routes (ENHANCEMENT-003)
-import discovery_routes
-app.include_router(discovery_routes.router)
+@mock_autonomy_router.get("/action-types")
+@limiter.limit("100/minute")
+async def get_action_types_mock(request: Request, current_user: User = Depends(get_current_active_user_mock)):
+    return {"action_types": [
+        {"action_type": "pod_restart", "base_risk": "LOW", "description": "Restart a pod", "example": "Restart crashed pod", "total_executed": 45},
+        {"action_type": "scale_service", "base_risk": "MEDIUM", "description": "Scale service instances", "example": "Scale to 10 instances", "total_executed": 23},
+        {"action_type": "production_deploy", "base_risk": "HIGH", "description": "Deploy to production", "example": "Deploy v2.0 to prod", "total_executed": 12},
+        {"action_type": "database_migration", "base_risk": "CRITICAL", "description": "Run database migration", "example": "Apply schema changes", "total_executed": 3}
+    ]}
+
+@mock_autonomy_router.get("/stats")
+@limiter.limit("100/minute")
+async def get_autonomy_stats_mock(request: Request, current_user: User = Depends(get_current_active_user_mock)):
+    return {
+        "total_actions": 100,
+        "auto_executed": 68,
+        "manual_approved": 30,
+        "blocked": 2,
+        "auto_execution_rate": 68.0,
+        "top_auto_executed_actions": [
+            {"action_type": "pod_restart", "count": 45},
+            {"action_type": "cache_clear", "count": 23}
+        ]
+    }
+
+app.include_router(mock_autonomy_router)
+
+# Mock discovery endpoints for demo
+mock_discovery_router = APIRouter(prefix="/api/v1/discovery", tags=["discovery-mock"])
+
+MOCK_SCANS = {}
+
+@mock_discovery_router.post("/scan")
+@limiter.limit("100/minute")
+async def start_discovery_scan_mock(request: Request, scan_request: dict, current_user: User = Depends(get_current_active_user_mock)):
+    import time
+    scan_id = f"scan-{int(time.time())}"
+    MOCK_SCANS[scan_id] = {
+        "scan_id": scan_id,
+        "status": "running",
+        "total_resources": 0,
+        "progress_percent": 0,
+        "started_at": "2026-04-30T10:00:00Z"
+    }
+    return MOCK_SCANS[scan_id]
+
+@mock_discovery_router.get("/scan/{scan_id}")
+@limiter.limit("100/minute")
+async def get_scan_status_mock(request: Request, scan_id: str, current_user: User = Depends(get_current_active_user_mock)):
+    if scan_id not in MOCK_SCANS:
+        MOCK_SCANS[scan_id] = {"scan_id": scan_id, "status": "completed", "total_resources": 15, "progress_percent": 100}
+
+    # Simulate progress
+    scan = MOCK_SCANS[scan_id]
+    if scan["status"] == "running" and scan["progress_percent"] < 100:
+        scan["progress_percent"] = min(scan["progress_percent"] + 20, 100)
+        if scan["progress_percent"] >= 100:
+            scan["status"] = "completed"
+            scan["total_resources"] = 15
+
+    return scan
+
+@mock_discovery_router.get("/report/{scan_id}")
+@limiter.limit("100/minute")
+async def get_scan_report_mock(request: Request, scan_id: str, current_user: User = Depends(get_current_active_user_mock)):
+    return {
+        "scan_id": scan_id,
+        "total_resources": 15,
+        "by_type": {"ec2_instance": 8, "s3_bucket": 5, "rds_instance": 2},
+        "by_region": {"us-east-1": 10, "us-west-2": 5},
+        "by_environment": {"production": 10, "staging": 5},
+        "resources": [
+            {
+                "resource_id": "i-abc123",
+                "resource_type": "ec2_instance",
+                "name": "web-server-prod-1",
+                "region": "us-east-1",
+                "inferred_environment": "production",
+                "inferred_project": "web-app",
+                "inferred_owner": "platform-team",
+                "confidence_score": 0.95,
+                "tags": {"Environment": "production", "Project": "web-app"}
+            },
+            {
+                "resource_id": "bucket-xyz789",
+                "resource_type": "s3_bucket",
+                "name": "data-staging",
+                "region": "us-east-1",
+                "inferred_environment": "staging",
+                "inferred_project": "data-pipeline",
+                "confidence_score": 0.85,
+                "tags": {"Environment": "staging"}
+            }
+        ],
+        "coverage": {
+            "tagged_count": 12,
+            "untagged_count": 3,
+            "inferred_count": 15,
+            "high_confidence_count": 13
+        },
+        "patterns": {
+            "tag_consistency": 0.87,
+            "naming_conventions": ["app-env-number"]
+        }
+    }
+
+@mock_discovery_router.post("/import")
+@limiter.limit("100/minute")
+async def import_resources_mock(request: Request, import_request: dict, current_user: User = Depends(get_current_active_user_mock)):
+    return {
+        "message": f"Successfully imported resources",
+        "imported_count": len(import_request.get("resource_ids", [])),
+        "status": "success"
+    }
+
+app.include_router(mock_discovery_router)
+
+# Mock ingestion endpoints for demo
+mock_ingestion_router = APIRouter(prefix="/api/v1/ingestion", tags=["ingestion-mock"])
+
+@mock_ingestion_router.post("/preview")
+@limiter.limit("100/minute")
+async def preview_import_mock(request: Request, preview_request: dict, current_user: User = Depends(get_current_active_user_mock)):
+    return {
+        "terraform_code": '''resource "aws_instance" "web_server" {
+  instance_type = "t3.large"
+  ami           = "ami-0c55b159cbfafe1f0"
+
+  tags = {
+    Name        = "web-server-prod-1"
+    Environment = "production"
+    Owner       = "alice@company.com"
+  }
+}''',
+        "validation_status": "valid",
+        "validation_errors": [],
+        "warnings": ["Resource will be imported without state history"],
+        "dependencies": ["aws_subnet.main", "aws_security_group.web"],
+        "estimated_resources": 1
+    }
+
+@mock_ingestion_router.post("/import")
+@limiter.limit("100/minute")
+async def import_change_mock(request: Request, import_request: dict, current_user: User = Depends(get_current_active_user_mock)):
+    return {
+        "message": "Successfully imported change",
+        "import_id": f"import-{int(time.time())}",
+        "status": "success"
+    }
+
+@mock_ingestion_router.get("/history")
+@limiter.limit("100/minute")
+async def get_import_history_mock(request: Request, current_user: User = Depends(get_current_active_user_mock)):
+    import time
+    return {
+        "imports": [
+            {
+                "import_id": f"import-{int(time.time())-3600}",
+                "resource_id": "i-abc123",
+                "resource_type": "ec2_instance",
+                "terraform_code": "resource \"aws_instance\" \"web_server\" {...}",
+                "imported_at": "2026-04-30T09:00:00Z",
+                "imported_by": current_user.email,
+                "status": "applied"
+            }
+        ]
+    }
+
+app.include_router(mock_ingestion_router)
+
+# NOTE: Full database-backed routes commented out for mock mode
+# import autonomy_routes
+# app.include_router(autonomy_routes.router)
+# import ingestion_routes
+# app.include_router(ingestion_routes.router)
+# import discovery_routes
+# app.include_router(discovery_routes.router)
 
 @app.get("/")
 @limiter.limit("100/minute")
