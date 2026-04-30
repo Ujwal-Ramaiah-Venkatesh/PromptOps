@@ -184,6 +184,10 @@ app.include_router(auth_routes.router)
 import autonomy_routes
 app.include_router(autonomy_routes.router)
 
+# Include ingestion routes (ENHANCEMENT-002)
+import ingestion_routes
+app.include_router(ingestion_routes.router)
+
 # Include discovery routes (ENHANCEMENT-003)
 import discovery_routes
 app.include_router(discovery_routes.router)
