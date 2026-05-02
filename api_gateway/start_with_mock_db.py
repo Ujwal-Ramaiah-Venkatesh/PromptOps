@@ -319,7 +319,18 @@ async def import_resources_mock(request: Request, import_request: dict, current_
         "status": "success"
     }
 
-app.include_router(mock_discovery_router)
+# Mock discovery (Phase 1)
+# app.include_router(mock_discovery_router)
+
+# Real AWS discovery (Phase 2)
+try:
+    import discovery_routes_aws
+    app.include_router(discovery_routes_aws.router)
+    logger.info("✅ Phase 2: Real AWS discovery routes loaded")
+except ImportError as e:
+    logger.warning(f"⚠️  AWS discovery not available: {e}")
+    app.include_router(mock_discovery_router)
+    logger.info("Using mock discovery routes")
 
 # Mock ingestion endpoints for demo
 mock_ingestion_router = APIRouter(prefix="/api/v1/ingestion", tags=["ingestion-mock"])

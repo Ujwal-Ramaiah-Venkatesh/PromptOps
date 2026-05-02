@@ -23,6 +23,7 @@ import logging
 
 # Add Week 3-4 parser to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'parser'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
 from claude_integration import ClaudeParser
 from context_injector import ContextInjector

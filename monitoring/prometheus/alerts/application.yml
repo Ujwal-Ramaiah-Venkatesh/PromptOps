@@ -1,0 +1,168 @@
+# Application Alert Rules
+# =======================
+#
+# Prometheus alert rules for PromptOps application monitoring
+# Phase 5A - Production Deployment
+#
+# Author: PromptOps Team
+
+groups:
+  - name: application_alerts
+    interval: 30s
+    rules:
+      # Backend API Alerts
+      - alert: BackendDown
+        expr: up{job="backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: backend
+        annotations:
+          summary: "Backend API is down"
+          description: "Backend service {{ $labels.instance }} has been down for more than 1 minute."
+
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job="backend"}[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "High API response time"
+          description: "95th percentile response time is {{ $value }}s (threshold: 1s) for {{ $labels.instance }}"
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{job="backend",status=~"5.."}[5m]) / rate(http_requests_total{job="backend"}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.instance }}"
+
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes{job="backend"} / 1024 / 1024 / 1024 > 1.5
+        for: 10m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "High memory usage"
+          description: "Backend is using {{ $value }}GB of memory (threshold: 1.5GB)"
+
+      # Database Alerts
+      - alert: PostgresDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "PostgreSQL database is down"
+          description: "PostgreSQL instance {{ $labels.instance }} has been down for more than 1 minute."
+
+      - alert: HighDatabaseConnections
+        expr: pg_stat_database_numbackends > 80
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "High number of database connections"
+          description: "PostgreSQL has {{ $value }} active connections (threshold: 80)"
+
+      - alert: SlowQueries
+        expr: rate(pg_stat_database_tup_fetched[5m]) / rate(pg_stat_database_tup_returned[5m]) < 0.1
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Slow database queries detected"
+          description: "Query efficiency is low: {{ $value | humanizePercentage }}"
+
+      # Frontend Alerts
+      - alert: FrontendDown
+        expr: up{job="frontend"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          component: frontend
+        annotations:
+          summary: "Frontend is down"
+          description: "Frontend service {{ $labels.instance }} has been down for more than 2 minutes."
+
+      # ML Feature Alerts
+      - alert: AnomalyDetectionFailed
+        expr: increase(ml_anomaly_detection_errors_total[5m]) > 5
+        for: 5m
+        labels:
+          severity: warning
+          component: ml
+        annotations:
+          summary: "ML anomaly detection failures"
+          description: "Anomaly detection has failed {{ $value }} times in the last 5 minutes"
+
+      - alert: ForecastingFailed
+        expr: increase(ml_forecasting_errors_total[5m]) > 5
+        for: 5m
+        labels:
+          severity: warning
+          component: ml
+        annotations:
+          summary: "ML forecasting failures"
+          description: "Cost forecasting has failed {{ $value }} times in the last 5 minutes"
+
+      # Cost Alert Thresholds
+      - alert: CostAnomalyDetected
+        expr: cost_anomaly_severity == 1
+        for: 0m
+        labels:
+          severity: critical
+          component: cost
+        annotations:
+          summary: "Critical cost anomaly detected"
+          description: "A critical cost anomaly has been detected in {{ $labels.cloud_provider }}"
+
+      - alert: BudgetExceeded
+        expr: (cost_current / cost_budget) > 0.9
+        for: 0m
+        labels:
+          severity: warning
+          component: cost
+        annotations:
+          summary: "Budget threshold exceeded"
+          description: "Current cost is {{ $value | humanizePercentage }} of budget"
+
+      # System Resource Alerts
+      - alert: HighCPUUsage
+        expr: rate(process_cpu_seconds_total{job="backend"}[5m]) * 100 > 80
+        for: 10m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "High CPU usage"
+          description: "CPU usage is {{ $value }}% for {{ $labels.instance }}"
+
+      - alert: DiskSpaceLow
+        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} < 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: system
+        annotations:
+          summary: "Low disk space"
+          description: "Only {{ $value | humanizePercentage }} disk space available"
+
+      # Health Check Alerts
+      - alert: HealthCheckFailing
+        expr: up{job=~"backend|frontend|postgres"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          component: health
+        annotations:
+          summary: "Health check failing"
+          description: "Health check for {{ $labels.job }} on {{ $labels.instance }} has been failing for 2 minutes"

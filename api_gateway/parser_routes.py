@@ -17,12 +17,68 @@ import os
 # Add phase1-nlp to path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'phase1-nlp'))
 
-from context.context_aware_parser import ContextAwareParser
-
 router = APIRouter(prefix="/api/v1/parser", tags=["parser"])
 
+
+# Simple mock parser for demo
+class SimpleMockParser:
+    """Mock parser for demo mode."""
+
+    def parse(self, command: str) -> Dict[str, Any]:
+        """Parse command and return intent."""
+        command_lower = command.lower()
+
+        # Detect intent type
+        intent_type = "unknown"
+        if any(word in command_lower for word in ["deploy", "deployment"]):
+            intent_type = "deployment"
+        elif any(word in command_lower for word in ["scale", "scaling"]):
+            intent_type = "scaling"
+        elif any(word in command_lower for word in ["rollback", "revert"]):
+            intent_type = "rollback"
+        elif any(word in command_lower for word in ["show", "list", "get"]):
+            intent_type = "query"
+
+        # Extract service name (look for common app names or "application")
+        service = None
+        words = command.split()
+        for i, word in enumerate(words):
+            if word.lower() in ["application", "app", "service", "api", "frontend", "backend"]:
+                if i > 0:
+                    service = words[i-1].lower()
+                break
+
+        # Detect environment
+        env = "production"
+        if any(word in command_lower for word in ["staging", "stage"]):
+            env = "staging"
+        elif any(word in command_lower for word in ["dev", "development"]):
+            env = "development"
+
+        # Extract parameters
+        params = {}
+        if "aws" in command_lower:
+            params["cloud_provider"] = "aws"
+        if "instances" in command_lower:
+            for word in words:
+                if word.isdigit():
+                    params["instance_count"] = int(word)
+
+        return {
+            "intent_type": intent_type,
+            "target_service": service,
+            "target_env": env,
+            "parameters": params,
+            "confidence": 0.85,
+            "ambiguity_score": 0.15,
+            "missing_params": [],
+            "requires_approval": env == "production",
+            "warnings": []
+        }
+
+
 # Initialize parser
-parser = ContextAwareParser()
+parser = SimpleMockParser()
 
 
 # ============================================================================

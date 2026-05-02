@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (FREE - local only)
+  postgres:
+    image: postgres:15-alpine
+    container_name: promptops-postgres
+    environment:
+      POSTGRES_USER: promptops
+      POSTGRES_PASSWORD: promptops_dev_password
+      POSTGRES_DB: promptops
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U promptops"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - promptops-network
+
+  # HashiCorp Vault (FREE - open source)
+  vault:
+    image: vault:1.15
+    container_name: promptops-vault
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: promptops-dev-token
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    ports:
+      - "8200:8200"
+    healthcheck:
+      test: ["CMD", "vault", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - promptops-network
+
+  # Backend API (Phase 2 - with PostgreSQL)
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: promptops-backend
+    environment:
+      # Database
+      DATABASE_URL: postgresql://promptops:promptops_dev_password@postgres:5432/promptops
+
+      # AWS Credentials (mounted from host)
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
+
+      # Vault
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: promptops-dev-token
+
+      # App Config
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      vault:
+        condition: service_healthy
+    volumes:
+      - ./api_gateway:/app/api_gateway
+      - ./phase1-nlp:/app/phase1-nlp
+      - ./phase2-aws:/app/phase2-aws
+      - ~/.aws:/root/.aws:ro  # Mount AWS credentials (read-only)
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - promptops-network
+
+  # Frontend Dashboard
+  frontend:
+    build:
+      context: ./frontend/dashboard
+      dockerfile: ../../Dockerfile.frontend
+    container_name: promptops-frontend
+    ports:
+      - "3003:3003"
+    depends_on:
+      - backend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - promptops-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  promptops-network:
+    driver: bridge
