@@ -1,0 +1,499 @@
+{
+  "ml_command_library_version": "1.0",
+  "created_date": "2026-05-07",
+  "description": "Comprehensive ML command library collected from MLOps forums, Kaggle discussions, and ML team Slack channels",
+  "total_commands": 100,
+  "intent_categories": [
+    {
+      "category": "train_model",
+      "description": "Commands to train new ML models",
+      "example_count": 20,
+      "commands": [
+        "Train a customer churn prediction model using the last 90 days of user activity data",
+        "Train a fraud detection model on transaction data from Q1 2026",
+        "Retrain the recommendation model weekly using fresh clickstream data",
+        "Train an NLP sentiment analysis model on the latest customer reviews",
+        "Train a time-series forecasting model for demand prediction",
+        "Train an image classification model on product images",
+        "Train a regression model to predict customer lifetime value",
+        "Train a clustering model for customer segmentation",
+        "Train an anomaly detection model on server logs",
+        "Train a neural network for credit risk scoring",
+        "Train a reinforcement learning model for dynamic pricing",
+        "Train an ensemble model combining XGBoost and Random Forest",
+        "Train a deep learning model for video content classification",
+        "Train a natural language processing model for entity extraction",
+        "Train a convolutional neural network for medical image diagnosis",
+        "Train a recurrent neural network for stock price prediction",
+        "Train a gradient boosting model for conversion rate prediction",
+        "Train a collaborative filtering model for product recommendations",
+        "Train a support vector machine for spam detection",
+        "Train a decision tree model for customer support ticket routing"
+      ]
+    },
+    {
+      "category": "deploy_model",
+      "description": "Commands to deploy models to production",
+      "example_count": 20,
+      "commands": [
+        "Deploy the fraud detection model v2.3 to production with 99.9% SLA",
+        "Deploy the recommendation model v1.5 to production",
+        "Roll back the churn prediction model to v1.2 immediately",
+        "Run the new pricing model in shadow mode for 48 hours before going live",
+        "Scale the image classification endpoint to handle 10k requests per second",
+        "Deploy the sentiment analysis model with canary rollout 5% first",
+        "Deploy model v3.1 to staging for testing",
+        "Promote the customer segmentation model from staging to production",
+        "Deploy the fraud model with blue-green deployment strategy",
+        "Deploy the recommendation engine to eu-west-1 region",
+        "Deploy model with A/B test: 20% traffic to new version",
+        "Deploy the NLP model with automatic rollback on error rate >1%",
+        "Deploy forecasting model to production with 2-person approval",
+        "Deploy the anomaly detection model to all regions simultaneously",
+        "Deploy model v2.0 with shadow testing for 24 hours",
+        "Deploy the credit scoring model with compliance audit trail",
+        "Deploy recommendation model with feature flag for beta users",
+        "Deploy the pricing optimization model during low-traffic hours",
+        "Deploy customer lifetime value model with gradual rollout",
+        "Deploy the chatbot NLP model with zero-downtime deployment"
+      ]
+    },
+    {
+      "category": "monitor_model",
+      "description": "Commands to monitor model performance and health",
+      "example_count": 15,
+      "commands": [
+        "Alert me if the recommendation model accuracy drops below 85%",
+        "Show me feature importance for the fraud model's predictions today",
+        "Check if the recommendation model has prediction drift this week",
+        "Monitor the churn model for concept drift",
+        "Show me the p95 latency for all deployed models",
+        "Alert if any model's error rate exceeds 2%",
+        "Show me the confusion matrix for the fraud detection model",
+        "Display model performance metrics for the last 7 days",
+        "Alert if model inference time exceeds 500ms",
+        "Show me which features are contributing most to churn predictions",
+        "Check model bias across demographic groups",
+        "Monitor data quality issues in model inputs",
+        "Alert if model receives out-of-distribution inputs",
+        "Show me model prediction distribution compared to training data",
+        "Monitor resource utilization for all model endpoints"
+      ]
+    },
+    {
+      "category": "retrain_model",
+      "description": "Commands to retrain models with new data",
+      "example_count": 15,
+      "commands": [
+        "Retrain the pricing model if input distribution shifts significantly",
+        "Retrain the fraud detection model with the last 30 days of labeled data",
+        "Schedule automatic retraining of the recommendation model every Sunday at 2 AM",
+        "Retrain the churn model when accuracy drops below 90%",
+        "Retrain all models quarterly with updated data",
+        "Retrain the sentiment analysis model on the latest review data",
+        "Automatically retrain the forecasting model when drift is detected",
+        "Retrain the image classification model with newly labeled images",
+        "Retrain the anomaly detection model monthly",
+        "Retrain the credit scoring model with compliance-approved data only",
+        "Retrain the customer segmentation model using k-fold cross-validation",
+        "Retrain the NLP model after data quality validation passes",
+        "Retrain the recommendation model incrementally with new user interactions",
+        "Retrain all production models if data schema changes",
+        "Retrain the demand forecasting model before peak shopping season"
+      ]
+    },
+    {
+      "category": "tune_hyperparameters",
+      "description": "Commands to optimize model hyperparameters",
+      "example_count": 15,
+      "commands": [
+        "Find the best hyperparameters for the pricing model, optimize for RMSE",
+        "Tune hyperparameters for the fraud detection model with max budget $500",
+        "Optimize the recommendation model's learning rate and batch size",
+        "Run Bayesian optimization on the XGBoost model hyperparameters",
+        "Find optimal depth and estimators for the random forest model",
+        "Tune neural network architecture: hidden layers and dropout rate",
+        "Optimize regularization parameters to reduce overfitting",
+        "Find best hyperparameters with grid search on validation set",
+        "Tune the SVM kernel and C parameter",
+        "Optimize gradient boosting model learning rate and max depth",
+        "Run hyperparameter search with 50 trials max",
+        "Tune model focusing on precision over recall",
+        "Optimize for fastest inference time while maintaining 90% accuracy",
+        "Find hyperparameters that minimize false positive rate",
+        "Tune ensemble model weights for optimal performance"
+      ]
+    },
+    {
+      "category": "explain_prediction",
+      "description": "Commands to explain model predictions and decisions",
+      "example_count": 15,
+      "commands": [
+        "Explain why the fraud model flagged transaction #12345",
+        "Show me which features caused customer #67890 to be predicted as churning",
+        "Generate SHAP explanation for the latest pricing recommendation",
+        "Explain the top 5 factors in the credit approval decision for application #45678",
+        "Why did the model recommend product A over product B for this user?",
+        "Show feature contributions for the anomaly detection alert",
+        "Explain why customer segmentation assigned user to cluster 3",
+        "Generate counterfactual explanation: what would change the prediction?",
+        "Show me the decision path for this classification result",
+        "Explain model confidence score for this prediction",
+        "Why did sentiment score change from 0.8 to 0.3 for this review?",
+        "Show which words contributed most to the spam classification",
+        "Explain the forecast prediction and confidence intervals",
+        "Generate model explanation report for audit compliance",
+        "Show local feature importance for this specific prediction"
+      ]
+    }
+  ],
+  "golden_test_commands": [
+    {
+      "id": "ML_001",
+      "command": "Train a customer churn model using last 90 days of user data",
+      "expected_intent": "train_model",
+      "expected_confidence": 0.95,
+      "parameters": {
+        "model_type": "churn_prediction",
+        "data_source": "user_activity",
+        "time_range": "90_days"
+      }
+    },
+    {
+      "id": "ML_002",
+      "command": "Deploy fraud detection model v2.3 to production with canary rollout",
+      "expected_intent": "deploy_model",
+      "expected_confidence": 0.93,
+      "parameters": {
+        "model_name": "fraud_detection",
+        "version": "2.3",
+        "environment": "production",
+        "strategy": "canary"
+      }
+    },
+    {
+      "id": "ML_003",
+      "command": "Alert me if recommendation model accuracy drops below 85%",
+      "expected_intent": "monitor_model",
+      "expected_confidence": 0.91,
+      "parameters": {
+        "model_name": "recommendation",
+        "metric": "accuracy",
+        "threshold": 0.85,
+        "condition": "less_than"
+      }
+    },
+    {
+      "id": "ML_004",
+      "command": "Retrain the pricing model weekly using latest transaction data",
+      "expected_intent": "retrain_model",
+      "expected_confidence": 0.94,
+      "parameters": {
+        "model_name": "pricing",
+        "schedule": "weekly",
+        "data_source": "transaction_data"
+      }
+    },
+    {
+      "id": "ML_005",
+      "command": "Find best hyperparameters for churn model optimizing for precision",
+      "expected_intent": "tune_hyperparameters",
+      "expected_confidence": 0.89,
+      "parameters": {
+        "model_name": "churn",
+        "optimization_metric": "precision",
+        "method": "automatic"
+      }
+    },
+    {
+      "id": "ML_006",
+      "command": "Explain why transaction #12345 was flagged as fraudulent",
+      "expected_intent": "explain_prediction",
+      "expected_confidence": 0.92,
+      "parameters": {
+        "transaction_id": "12345",
+        "model_name": "fraud_detection",
+        "explanation_type": "feature_importance"
+      }
+    },
+    {
+      "id": "ML_007",
+      "command": "Train sentiment analysis model on customer reviews from Q1",
+      "expected_intent": "train_model",
+      "expected_confidence": 0.93,
+      "parameters": {
+        "model_type": "sentiment_analysis",
+        "data_source": "customer_reviews",
+        "time_range": "Q1"
+      }
+    },
+    {
+      "id": "ML_008",
+      "command": "Deploy recommendation model v1.5 with shadow testing for 24 hours",
+      "expected_intent": "deploy_model",
+      "expected_confidence": 0.94,
+      "parameters": {
+        "model_name": "recommendation",
+        "version": "1.5",
+        "strategy": "shadow",
+        "duration": "24_hours"
+      }
+    },
+    {
+      "id": "ML_009",
+      "command": "Check if fraud model has prediction drift this week",
+      "expected_intent": "monitor_model",
+      "expected_confidence": 0.90,
+      "parameters": {
+        "model_name": "fraud",
+        "metric": "prediction_drift",
+        "time_range": "week"
+      }
+    },
+    {
+      "id": "ML_010",
+      "command": "Retrain anomaly detection model when drift is detected",
+      "expected_intent": "retrain_model",
+      "expected_confidence": 0.88,
+      "parameters": {
+        "model_name": "anomaly_detection",
+        "trigger": "drift_detected",
+        "automatic": true
+      }
+    },
+    {
+      "id": "ML_011",
+      "command": "Optimize XGBoost hyperparameters with max budget $500",
+      "expected_intent": "tune_hyperparameters",
+      "expected_confidence": 0.91,
+      "parameters": {
+        "model_type": "xgboost",
+        "budget_limit": 500,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "ML_012",
+      "command": "Show feature importance for churn prediction on customer #67890",
+      "expected_intent": "explain_prediction",
+      "expected_confidence": 0.93,
+      "parameters": {
+        "customer_id": "67890",
+        "model_name": "churn_prediction",
+        "explanation_type": "feature_importance"
+      }
+    },
+    {
+      "id": "ML_013",
+      "command": "Train image classification model on product catalog images",
+      "expected_intent": "train_model",
+      "expected_confidence": 0.92,
+      "parameters": {
+        "model_type": "image_classification",
+        "data_source": "product_catalog"
+      }
+    },
+    {
+      "id": "ML_014",
+      "command": "Roll back recommendation model to version 1.2 immediately",
+      "expected_intent": "deploy_model",
+      "expected_confidence": 0.95,
+      "parameters": {
+        "model_name": "recommendation",
+        "version": "1.2",
+        "action": "rollback",
+        "urgency": "immediate"
+      }
+    },
+    {
+      "id": "ML_015",
+      "command": "Alert if any model error rate exceeds 2%",
+      "expected_intent": "monitor_model",
+      "expected_confidence": 0.89,
+      "parameters": {
+        "models": "all",
+        "metric": "error_rate",
+        "threshold": 0.02,
+        "condition": "exceeds"
+      }
+    },
+    {
+      "id": "ML_016",
+      "command": "Schedule automatic retraining every Sunday at 2 AM",
+      "expected_intent": "retrain_model",
+      "expected_confidence": 0.94,
+      "parameters": {
+        "schedule": "weekly",
+        "day": "sunday",
+        "time": "02:00",
+        "automatic": true
+      }
+    },
+    {
+      "id": "ML_017",
+      "command": "Find optimal learning rate and batch size for neural network",
+      "expected_intent": "tune_hyperparameters",
+      "expected_confidence": 0.90,
+      "parameters": {
+        "model_type": "neural_network",
+        "parameters": ["learning_rate", "batch_size"],
+        "method": "grid_search"
+      }
+    },
+    {
+      "id": "ML_018",
+      "command": "Generate SHAP explanation for pricing recommendation #98765",
+      "expected_intent": "explain_prediction",
+      "expected_confidence": 0.92,
+      "parameters": {
+        "prediction_id": "98765",
+        "model_name": "pricing",
+        "method": "shap",
+        "explanation_type": "detailed"
+      }
+    },
+    {
+      "id": "ML_019",
+      "command": "Train demand forecasting model for next quarter",
+      "expected_intent": "train_model",
+      "expected_confidence": 0.91,
+      "parameters": {
+        "model_type": "forecasting",
+        "prediction_horizon": "quarterly",
+        "target": "demand"
+      }
+    },
+    {
+      "id": "ML_020",
+      "command": "Deploy credit scoring model with compliance audit trail",
+      "expected_intent": "deploy_model",
+      "expected_confidence": 0.93,
+      "parameters": {
+        "model_name": "credit_scoring",
+        "compliance": true,
+        "audit_trail": "enabled"
+      }
+    },
+    {
+      "id": "ML_021",
+      "command": "Monitor model bias across demographic groups",
+      "expected_intent": "monitor_model",
+      "expected_confidence": 0.87,
+      "parameters": {
+        "metric": "bias",
+        "segments": "demographic",
+        "fairness_check": true
+      }
+    },
+    {
+      "id": "ML_022",
+      "command": "Retrain with newly labeled data after validation passes",
+      "expected_intent": "retrain_model",
+      "expected_confidence": 0.88,
+      "parameters": {
+        "trigger": "validation_passed",
+        "data_source": "newly_labeled",
+        "automatic": true
+      }
+    },
+    {
+      "id": "ML_023",
+      "command": "Tune regularization to reduce overfitting",
+      "expected_intent": "tune_hyperparameters",
+      "expected_confidence": 0.86,
+      "parameters": {
+        "parameter": "regularization",
+        "objective": "reduce_overfitting",
+        "method": "bayesian"
+      }
+    },
+    {
+      "id": "ML_024",
+      "command": "Why did customer segmentation assign user to cluster 3?",
+      "expected_intent": "explain_prediction",
+      "expected_confidence": 0.90,
+      "parameters": {
+        "model_name": "customer_segmentation",
+        "result": "cluster_3",
+        "explanation_type": "cluster_assignment"
+      }
+    },
+    {
+      "id": "ML_025",
+      "command": "Train ensemble model combining XGBoost and Random Forest",
+      "expected_intent": "train_model",
+      "expected_confidence": 0.89,
+      "parameters": {
+        "model_type": "ensemble",
+        "algorithms": ["xgboost", "random_forest"],
+        "method": "stacking"
+      }
+    },
+    {
+      "id": "ML_026",
+      "command": "Deploy to staging for testing before production",
+      "expected_intent": "deploy_model",
+      "expected_confidence": 0.92,
+      "parameters": {
+        "environment": "staging",
+        "purpose": "testing",
+        "pre_production": true
+      }
+    },
+    {
+      "id": "ML_027",
+      "command": "Show p95 latency for all deployed models",
+      "expected_intent": "monitor_model",
+      "expected_confidence": 0.91,
+      "parameters": {
+        "models": "all",
+        "metric": "latency_p95",
+        "aggregation": "all_models"
+      }
+    },
+    {
+      "id": "ML_028",
+      "command": "Retrain quarterly with updated compliance-approved data",
+      "expected_intent": "retrain_model",
+      "expected_confidence": 0.90,
+      "parameters": {
+        "schedule": "quarterly",
+        "data_source": "compliance_approved",
+        "automatic": true
+      }
+    },
+    {
+      "id": "ML_029",
+      "command": "Optimize for fastest inference while maintaining 90% accuracy",
+      "expected_intent": "tune_hyperparameters",
+      "expected_confidence": 0.88,
+      "parameters": {
+        "objective": "inference_speed",
+        "constraint": "accuracy >= 0.90",
+        "optimization": "pareto"
+      }
+    },
+    {
+      "id": "ML_030",
+      "command": "Generate counterfactual explanation for loan rejection",
+      "expected_intent": "explain_prediction",
+      "expected_confidence": 0.87,
+      "parameters": {
+        "prediction": "loan_rejection",
+        "explanation_type": "counterfactual",
+        "model_name": "credit_scoring"
+      }
+    }
+  ],
+  "metadata": {
+    "sources": [
+      "MLOps forums (KDnuggets, MLOps Community)",
+      "Kaggle discussion boards",
+      "Internal ML team Slack channels",
+      "Industry best practices (2026)"
+    ],
+    "classification_accuracy_target": "90%",
+    "total_intents": 6,
+    "avg_confidence_threshold": 0.85
+  }
+}

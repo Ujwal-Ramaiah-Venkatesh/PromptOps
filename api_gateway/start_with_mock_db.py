@@ -133,12 +133,15 @@ app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
 # SECURITY-005: Load from secrets manager
 ALLOWED_ORIGINS = secrets_manager.get_cors_origins()
 
+# For local testing, allow file:// and localhost origins
+ALLOWED_ORIGINS.extend(["null", "file://", "http://localhost:3003", "http://localhost:3000"])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,  # Specific domains only (no wildcard)
+    allow_origins=["*"],  # Allow all origins for local testing
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Specific methods
-    allow_headers=["Authorization", "Content-Type", "Accept"],  # Specific headers
+    allow_headers=["*"],  # Allow all headers
     max_age=600  # Cache preflight requests for 10 minutes
 )
 
@@ -388,6 +391,38 @@ app.include_router(mock_ingestion_router)
 # Parser routes (no database needed)
 import parser_routes
 app.include_router(parser_routes.router)
+
+# MLOps routes (no database needed)
+try:
+    import mlops_routes
+    app.include_router(mlops_routes.router)
+    logger.info("MLOps routes loaded")
+except ImportError:
+    logger.warning("MLOps routes not available")
+
+# Training routes (no database needed)
+try:
+    import training_routes
+    app.include_router(training_routes.router)
+    logger.info("Training routes loaded")
+except ImportError:
+    logger.warning("Training routes not available")
+
+# Deployment routes (no database needed)
+try:
+    import deployment_routes
+    app.include_router(deployment_routes.router)
+    logger.info("Deployment routes loaded")
+except ImportError:
+    logger.warning("Deployment routes not available")
+
+# Monitoring routes (no database needed)
+try:
+    import monitoring_routes
+    app.include_router(monitoring_routes.router)
+    logger.info("Monitoring routes loaded")
+except ImportError:
+    logger.warning("Monitoring routes not available")
 
 # NOTE: Full database-backed routes commented out for mock mode
 # import autonomy_routes
