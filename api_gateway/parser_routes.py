@@ -27,21 +27,55 @@ class SimpleMockParser:
     def parse(self, command: str) -> Dict[str, Any]:
         """Parse command and return intent."""
         command_lower = command.lower()
+        words = command.split()
 
         # Detect intent type
         intent_type = "unknown"
-        if any(word in command_lower for word in ["deploy", "deployment"]):
-            intent_type = "deployment"
-        elif any(word in command_lower for word in ["scale", "scaling"]):
-            intent_type = "scaling"
-        elif any(word in command_lower for word in ["rollback", "revert"]):
-            intent_type = "rollback"
-        elif any(word in command_lower for word in ["show", "list", "get"]):
+        confidence = 0.85
+
+        # Discovery/Query intents
+        if any(word in command_lower for word in ["find", "search", "discover", "scan"]):
+            intent_type = "discovery"
+            confidence = 0.90
+        elif any(word in command_lower for word in ["show", "list", "get", "view", "display"]):
             intent_type = "query"
+            confidence = 0.88
+        # Cost/Budget intents
+        elif any(word in command_lower for word in ["cost", "spending", "budget", "price"]):
+            intent_type = "cost_analysis"
+            confidence = 0.92
+        # Deployment intents
+        elif any(word in command_lower for word in ["deploy", "deployment", "release"]):
+            intent_type = "deployment"
+            confidence = 0.90
+        # Scaling intents
+        elif any(word in command_lower for word in ["scale", "scaling", "resize"]):
+            intent_type = "scaling"
+            confidence = 0.88
+        # Rollback intents
+        elif any(word in command_lower for word in ["rollback", "revert", "undo"]):
+            intent_type = "rollback"
+            confidence = 0.90
+        # Optimization intents
+        elif any(word in command_lower for word in ["optimize", "recommendation", "savings"]):
+            intent_type = "optimization"
+            confidence = 0.87
+
+        # Extract resource type
+        resource_type = None
+        if any(word in command_lower for word in ["ec2", "instance", "instances", "vm", "virtual machine"]):
+            resource_type = "ec2_instance"
+        elif any(word in command_lower for word in ["s3", "bucket", "storage"]):
+            resource_type = "s3_bucket"
+        elif any(word in command_lower for word in ["rds", "database", "db"]):
+            resource_type = "rds_database"
+        elif any(word in command_lower for word in ["lambda", "function"]):
+            resource_type = "lambda_function"
+        elif "eks" in command_lower or "kubernetes" in command_lower:
+            resource_type = "eks_cluster"
 
         # Extract service name (look for common app names or "application")
         service = None
-        words = command.split()
         for i, word in enumerate(words):
             if word.lower() in ["application", "app", "service", "api", "frontend", "backend"]:
                 if i > 0:
@@ -54,26 +88,62 @@ class SimpleMockParser:
             env = "staging"
         elif any(word in command_lower for word in ["dev", "development"]):
             env = "development"
+        elif any(word in command_lower for word in ["test", "testing"]):
+            env = "testing"
 
         # Extract parameters
         params = {}
+
+        # Cloud provider
         if "aws" in command_lower:
             params["cloud_provider"] = "aws"
+        elif "gcp" in command_lower or "google" in command_lower:
+            params["cloud_provider"] = "gcp"
+        elif "azure" in command_lower:
+            params["cloud_provider"] = "azure"
+
+        # Region
+        regions = ["us-east-1", "us-west-2", "eu-west-1", "ap-south-1", "us-central1"]
+        for region in regions:
+            if region in command_lower:
+                params["region"] = region
+                break
+
+        # Resource type
+        if resource_type:
+            params["resource_type"] = resource_type
+
+        # Instance count
         if "instances" in command_lower:
             for word in words:
                 if word.isdigit():
                     params["instance_count"] = int(word)
+
+        # Status filter
+        if "running" in command_lower:
+            params["status"] = "running"
+        elif "stopped" in command_lower:
+            params["status"] = "stopped"
+        elif "idle" in command_lower:
+            params["status"] = "idle"
+
+        # Determine missing parameters
+        missing_params = []
+        if intent_type == "discovery" and "region" not in params:
+            missing_params.append("region")
+        if intent_type == "deployment" and not service:
+            missing_params.append("service_name")
 
         return {
             "intent_type": intent_type,
             "target_service": service,
             "target_env": env,
             "parameters": params,
-            "confidence": 0.85,
-            "ambiguity_score": 0.15,
-            "missing_params": [],
-            "requires_approval": env == "production",
-            "warnings": []
+            "confidence": confidence,
+            "ambiguity_score": round(1.0 - confidence, 2),
+            "missing_params": missing_params,
+            "requires_approval": env == "production" and intent_type in ["deployment", "scaling", "rollback"],
+            "warnings": ["This is a mock parser. Full NLP requires Claude API integration."] if intent_type == "unknown" else []
         }
 
 
@@ -167,4 +237,42 @@ async def health_check():
         "status": "healthy",
         "service": "parser",
         "version": "1.0.0"
+    }
+
+
+# ============================================================================
+# FastAPI App (for standalone use)
+# ============================================================================
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI(
+    title="PromptOps Parser API",
+    version="1.0.0",
+    description="Natural language command parsing service"
+)
+
+# Enable CORS for local testing
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for local testing
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include the router
+app.include_router(router)
+
+# Root health check
+@app.get("/health")
+async def root_health():
+    """Root health check endpoint."""
+    return {
+        "status": "healthy",
+        "version": "1.0.0",
+        "services": {
+            "parser": "ok"
+        }
     }

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python \"C:\\\\Users\\\\pqm847\\\\Documents\\\\PromptOps\\\\phase5-mlops\\\\monitoring\\\\drift_detector.py\")",
+      "Bash(python \"C:\\\\Users\\\\pqm847\\\\Documents\\\\PromptOps\\\\phase5-mlops\\\\tuning\\\\hyperparameter_tuner.py\")"
+    ]
+  }
+}

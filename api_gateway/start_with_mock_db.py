@@ -424,6 +424,14 @@ try:
 except ImportError:
     logger.warning("Monitoring routes not available")
 
+# Tuning routes (no database needed)
+try:
+    import tuning_routes
+    app.include_router(tuning_routes.router)
+    logger.info("Tuning routes loaded")
+except ImportError:
+    logger.warning("Tuning routes not available")
+
 # NOTE: Full database-backed routes commented out for mock mode
 # import autonomy_routes
 # app.include_router(autonomy_routes.router)

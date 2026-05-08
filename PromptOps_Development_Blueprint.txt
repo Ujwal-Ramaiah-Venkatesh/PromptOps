@@ -1,0 +1,358 @@
+PromptOps
+Phase-Wise Development Blueprint
+Agentic DevOps Platform for Project Managers
+April 2026 — January 2027  |  9-Month End-to-End Roadmap
+Version 1.0  |  For Internal Team Use Only
+
+Executive Summary
+PromptOps is an Agentic DevOps Utility that allows Project Managers and startup founders to deploy, manage, and heal cloud infrastructure using plain English commands. It replaces the routine work of DevOps Engineers, Cloud Engineers, and Site Reliability Engineers using a Triple-Agent Architecture — the Architect Agent, SRE Agent, and Security Agent — running on AWS, Azure, and GCP.
+
+This document is the single source of truth for the entire engineering team. Every phase is broken into weeks and days, with explicit task lists, assigned owners, AI tools to use, deliverables, and risk mitigations. Nothing in this document is aspirational — every item is actionable and must be completed before the next phase begins.
+
+
+How to Read This Document
+Each phase section contains: (1) Objectives — what success looks like. (2) Week-by-week task breakdown with day-level detail for critical work. (3) AI Tool Assignments — which specific AI tool handles which task. (4) Deliverables — the exact outputs that mark completion. (5) Risk and corner cases with mitigations. (6) Entry and exit criteria so no phase starts before the previous is complete.
+
+1. System Architecture Overview
+Before building anything, every team member must understand how the three agents relate to each other and to the outside world. This is the architectural contract that all code must conform to.
+
+1.1 Triple-Agent Architecture
+
+Architect Agent: Architect Agent
+Receives structured JSON task lists from the NLP Parser.
+Generates Terraform or Pulumi Infrastructure-as-Code (IaC).
+Executes all code through a Shadow Validation sandbox before applying to live cloud.
+Responsible for: deployments, scaling configs, network topology, IAM policies, cost optimisation.
+
+SRE Agent: SRE Agent
+Reads Prometheus and CloudWatch metrics every 60 seconds.
+Uses Causal AI to find root cause, not just symptoms.
+Generates 3-sentence plain-English RCA for the PM dashboard.
+Auto-remediates low-risk events (disk full, pod crash, log rotation) without waking anyone.
+Escalates with full context when human judgment is required.
+
+Security Agent: Security Agent (OPA Guardrail)
+Non-LLM layer — this is pure deterministic code, not AI.
+Intercepts every proposed action from the Architect and SRE agents.
+Checks action against Open Policy Agent (OPA) rules before execution.
+Blocks and escalates: delete of production-tagged resource, IAM policy with *:* permissions, port 0.0.0.0/0 open.
+
+1.2 Data Flow (End-to-End)
+
+PM types a plain-English command into the PromptOps UI.
+NLP Parser (Claude Sonnet 4 + LangGraph) converts it to structured JSON intent.
+JSON routed to the relevant agent (Architect for infra, SRE for monitoring).
+Agent generates a proposed action (IaC code, remediation script, scaling event).
+Security Agent (OPA) intercepts and checks the proposed action against policy rules.
+If blocked: PM receives an approval card with full context. No action taken until PM approves.
+If approved: Shadow Validation runs the action in a sandbox environment first.
+If sandbox passes: Action applied to live cloud with atomic rollback armed.
+If sandbox fails: Agent revises and retries. PM notified if 3 retries fail.
+Result displayed on PM Dashboard with plain-English summary.
+All actions logged immutably to audit trail (S3 + DynamoDB).
+
+1.3 Non-Negotiable Engineering Constraints
+
+Every destructive action (DELETE, TERMINATE, DETACH) requires explicit PM approval with resource name typed back.
+No action is ever applied to prod without passing the shadow validation sandbox first.
+Terraform state files are version-snapshotted before every apply. Corruption triggers auto-restore, never re-apply.
+Auto-remediation circuit breaker: if same service is restarted more than 3 times in 10 minutes, all automation halts.
+All external text (logs, ticket descriptions) is sanitised before being fed to any LLM — prompt injection defence.
+Ambiguity scoring: if LLM confidence is below 85%, action is blocked and PM is asked to clarify.
+Every action carries an immutable timestamp, PM approval record, and agent decision log.
+
+Phase 1: Foundation & NLP Intent Engine
+April 7 — June 27, 2026  |  12 Weeks  |  Sprint 1–6
+
+Phase 1 Objective
+Build the brain of PromptOps — the Natural Language Parser (NLP) that converts a PM's plain-English command into a structured, machine-executable JSON task list without hallucinations. This is the foundation that all three agents depend on. Nothing in Phase 2 can start until Phase 1 is complete and passing accuracy tests.
+
+Phase 1 Entry Criteria
+AWS sandbox account provisioned (free tier is acceptable at this stage).
+Development environment set up: Node.js 22, Python 3.11, Docker, Terraform CLI, Pulumi CLI.
+GitHub repo created with branch protection on main. No direct pushes to main.
+Linear project created: "PromptOps Launch" with Phase 1 cycle active.
+All team members have Claude Sonnet 4 API access via Anthropic Platform.
+
+Phase 1 Week-by-Week Plan
+
+Week 1–2 (Apr 7–18): User Intent Research & Command Library
+
+Goal: Understand the vocabulary of Project Managers. Before writing a single line of parser code, we must collect real PM language from real sources.
+
+
+Week 3–4 (Apr 21–May 2): NLP Parser v1 — Intent-to-JSON
+
+Goal: Build the first version of the parser that converts PM text to structured JSON.
+
+
+Week 5–6 (May 5–16): Task Decomposition Engine
+
+Goal: For each parsed intent, decompose it into 5–15 DevOps sub-tasks that can be executed by the Architect Agent.
+
+
+Week 7–8 (May 19–May 30): Context & Memory Layer
+
+Goal: PromptOps must remember the state of the customer's infrastructure between conversations so it doesn't ask the same questions twice.
+
+
+Week 9–10 (Jun 2–13): PM Dashboard Shell
+
+Goal: Build the front-end interface that PMs will use. This is the only surface the PM ever touches.
+
+
+Week 11–12 (Jun 16–27): Phase 1 Integration & Testing
+
+Goal: Wire all Phase 1 components together and prove the end-to-end NLP pipeline works reliably.
+
+
+Phase 1 AI Tool Summary
+
+Phase 1 Deliverables (Exit Criteria)
+NLP Parser achieving >92% accuracy on 50 golden test commands.
+Command Library JSON schema with 8 intent categories and 50+ examples.
+Task decomposition working for 10 complex multi-step PM commands.
+Infrastructure Context Store connected to AWS account with 15-minute drift detection.
+PM Dashboard shell: command input, task preview, approval flow, audit trail.
+Performance: NLP returns JSON in under 3 seconds at 100 concurrent requests.
+Security: all 10 prompt injection test vectors blocked by input sanitisation.
+
+Phase 1 Risks & Mitigations
+
+Phase 2: Architect Agent — Infrastructure-as-Code Engine
+June 30 — September 26, 2026  |  13 Weeks  |  Sprint 7–13
+
+Phase 2 Objective
+Build the Architect Agent that converts the structured JSON from the NLP Parser into real, working cloud infrastructure on AWS. Every line of infrastructure code is generated by AI, validated in a sandbox before touching live systems, and applied atomically so any failure triggers a complete rollback. By the end of Phase 2, a PM must be able to type "Deploy a 3-tier web app with auto-scaling and RDS" and have it running on AWS within 10 minutes.
+
+Phase 2 Week-by-Week Plan
+
+Week 13–14 (Jun 30–Jul 11): IaC Code Generator v1
+
+
+Week 15–16 (Jul 14–25): Shadow Validation Sandbox
+
+The shadow validation sandbox is the most critical safety layer in Phase 2. No generated code ever touches the live cloud without passing here first.
+
+
+Week 17–18 (Jul 28–Aug 8): Atomic Deployment & Rollback
+
+Every deployment is a transaction. Either all resources are created successfully, or none are. There is no partial state.
+
+
+Week 19–20 (Aug 11–22): IAM, Networking & Security Configs
+
+
+Week 21–22 (Aug 25–Sep 5): Cost Optimisation Engine
+
+
+Week 23–25 (Sep 8–26): Phase 2 Integration & End-to-End Testing
+
+
+Phase 2 AI Tool Summary
+
+Phase 2 Deliverables (Exit Criteria)
+Architect Agent generates valid Terraform for 10+ AWS resource types without errors.
+Shadow Validation passes before every live deployment — zero exceptions.
+Atomic rollback tested successfully for 5 different failure types.
+OPA guardrails block 100% of tested bad IAM and networking configurations.
+Cost estimation shown to PM before every deployment with >90% accuracy vs actual bill.
+5 canonical PM commands deploy successfully end-to-end in under 10 minutes each.
+
+Phase 2 Risks & Mitigations
+
+Phase 3: SRE Agent — Predictive Monitoring & Self-Healing
+September 29 — November 21, 2026  |  8 Weeks  |  Sprint 14–17
+
+Phase 3 Objective
+Build the SRE Agent that eliminates on-call burnout. It monitors infrastructure 24/7 without fatigue, predicts failures 24 hours before they happen, auto-resolves 80% of incidents without waking anyone, and delivers plain-English Root Cause Analysis with a one-tap fix for anything it escalates. By the end of Phase 3, the PM should be able to sleep through the night.
+
+Phase 3 Week-by-Week Plan
+
+Week 26–27 (Sep 29–Oct 10): Monitoring Integration & Baseline Learning
+
+
+Week 28–29 (Oct 13–24): Causal AI Root Cause Analysis
+
+This is the core of the SRE Agent. Standard monitoring shows THAT something is wrong. Causal AI shows WHY it started. These are fundamentally different.
+
+
+Week 30–31 (Oct 27–Nov 7): Auto-Remediation Engine
+
+
+Week 32–33 (Nov 10–21): SLO Tracking, Predictive Alerts & Post-Mortems
+
+
+Phase 3 AI Tool Summary
+
+Phase 3 Deliverables (Exit Criteria)
+SRE Agent monitors Prometheus and CloudWatch with 60-second polling — no gaps.
+Causal RCA correctly identifies root cause for 9 out of 10 simulated failure scenarios.
+Auto-remediation resolves at least 8 out of 10 common incident types without human intervention.
+Circuit breaker halts automation correctly in cascading failure simulation — 100% of tests.
+Predictive alerts fire at least 20 hours before 80% of simulated traffic spikes in replay testing.
+Auto-post-mortem generated within 60 seconds of incident closure for every tested scenario.
+PM sleeps through 80% of simulated on-call events in a 1-week load test scenario.
+
+Phase 3 Risks & Mitigations
+
+Phase 4: Chaos Engineering & Scale Testing
+November 24 — December 26, 2026  |  5 Weeks  |  Sprint 18–19
+
+Phase 4 Objective
+Prove that PromptOps can handle Amazon/Flipkart-sale level traffic — 10x normal load — and self-heal when components fail. Every feature must pass the chaos test suite before it is considered production-ready. The deliverable from Phase 4 is a certified "1 Million User" load test report and a Chaos Engineering scorecard, both of which become core sales assets.
+
+Phase 4 Week-by-Week Plan
+
+Week 34–35 (Nov 24–Dec 5): Load & Stress Testing
+
+
+Week 36–37 (Dec 8–19): Chaos Engineering
+
+
+Week 38–39 (Dec 22–26): Final Hardening & Launch Preparation
+
+
+Phase 4 AI Tool Summary
+
+Phase 4 Deliverables (Exit Criteria)
+"1 Million User" certified load test report with p95 latency and error rate documented.
+Chaos Engineering scorecard: 99.9% uptime maintained across all chaos scenarios.
+Pod restart time under 60 seconds verified across 50 trials — 100% success rate.
+Regression gate active in CI/CD: no PR merges without passing chaos suite.
+Cloud Readiness Audit feature producing accurate health scores for 5 test customer environments.
+Shadow Mode working: read-only trial available for first customer demos.
+Legal: Terms of Service reviewed and signed off. Professional AI liability insurance confirmed.
+Security: external pentest complete with all critical and high findings resolved.
+
+Master AI Tool Index
+This is the definitive list of every AI tool used in PromptOps development, what it does, and which phase it is needed in. Every team member should be set up with access to the tools for their phase before that phase begins.
+
+
+Complete Risk & Corner Case Register
+Every risk identified across all phases with its severity and mitigation strategy. This register must be reviewed at the start of every sprint.
+
+Technical & Engineering Risks
+
+
+Sales & Business Risks
+
+
+Legal & Operational Risks
+
+
+Master Timeline at a Glance
+
+
+Week 1 Immediate Action Items
+The following must be completed in the first 5 working days before any development starts:
+
+Provision AWS sandbox account (free tier). Share credentials with all engineers via 1Password or AWS IAM Identity Center.
+Set up GitHub organisation: create "promptops" repo, enable branch protection on main, set up PR review requirements (minimum 1 reviewer).
+Create Linear project "PromptOps Launch" with 4 cycles (one per phase). Input Phase 1 Week 1 tasks and assign owners today.
+All engineers obtain Anthropic API keys for Claude Sonnet 4. Set up rate limit monitoring from day one.
+Install development tools on all machines: Node.js 22, Python 3.11, Docker Desktop, Terraform CLI 1.9, Pulumi CLI 3.x, k6.
+Conduct a 2-hour team kickoff: walk through this document section by section. Every engineer must understand all four phases, not just their own.
+Set up Slack channels: #promptops-build (daily updates), #promptops-incidents (any prod issue), #promptops-decisions (architectural choices).
+
+PromptOps — Phase-Wise Development Blueprint — Version 1.0 — April 2026
+This document is the single source of truth. Update it at the end of every phase.
+
+Phase 5: MLOps Agent — ML Lifecycle Automation
+January 27 — April 18, 2027 | 12 Weeks | Sprint 20–25
+Phase 5 Objective
+Build the MLOps Agent that allows PMs to manage the complete ML lifecycle through plain English commands. Train models, deploy with shadow testing, monitor for drift, and trigger automated retraining.
+Phase 5 Entry Criteria
+• Phase 1–4 complete with all exit criteria met
+• AWS SageMaker or equivalent ML platform access provisioned
+• ML Engineer hired or assigned to the project
+• Sample ML datasets prepared (classification, regression, NLP, time-series)
+• Model registry infrastructure (MLflow or SageMaker Model Registry) set up
+Phase 5 Week-by-Week Plan
+Week 40–41: ML Intent Parser & Command Library
+Goal: Extend the NLP Parser to understand ML-specific commands.
+• Collect 100+ ML engineer requests (Research Lead, Claude Sonnet 4, 3 days)
+• Classify ML commands into 6 categories (ML Engineer, Claude Sonnet 4, 2 days)
+• Build ML Command Library JSON schema (Backend Engineer, Cursor, 2 days)
+• Write 30 golden test ML commands (QA Engineer, Claude Sonnet 4, 2 days)
+• Extend LangGraph with ML nodes (Backend Engineer, LangGraph, 3 days)
+Week 42–43: Model Training Pipeline Generator
+Goal: Build training pipeline that converts PM commands to executable training jobs.
+• Build SageMaker training job generator (ML Engineer, Claude Sonnet 4 + AWS SDK, 4 days)
+• Implement training data validator (ML Engineer, Great Expectations, 3 days)
+• Build MLflow experiment tracking (ML Engineer, MLflow SDK, 2 days)
+• Implement training job cost estimator (Backend Engineer, AWS Pricing API, 3 days)
+• Test: generate training jobs for 5 model types (QA Engineer, 3 days)
+Week 44–45: Model Deployment & Shadow Testing
+Goal: Deploy models with shadow testing and gradual rollout.
+• Build model deployment pipeline with SageMaker endpoint + auto-scaling (ML Engineer, AWS SDK + Terraform, 4 days)
+• Implement shadow deployment - 24hr parallel testing (ML Engineer, Python + SageMaker, 3 days)
+• Build prediction quality comparator (ML Engineer, Python + Claude Sonnet 4, 3 days)
+• Implement canary deployment 5%→25%→50%→100% (ML Engineer, AWS SDK, 3 days)
+• Test: deploy 5 models through shadow→canary→production (QA Engineer, AWS Fault Injection, 3 days)
+Week 46–47: Model Monitoring & Drift Detection
+Goal: Monitor deployed models 24/7 and detect when they need retraining.
+• Build model performance dashboard (Frontend Engineer, Cursor + Grafana, 3 days)
+• Implement prediction drift detector using KL-divergence (ML Engineer, Evidently AI, 4 days)
+• Implement concept drift detector (ML Engineer, Evidently AI, 3 days)
+• Build auto-retrain trigger (ML Engineer, LangGraph + AWS SDK, 3 days)
+• Test: replay historical data with known distribution shifts (QA Engineer, 3 days)
+Week 48–49: Hyperparameter Tuning & AutoML
+Goal: Automate model optimization.
+• Integrate SageMaker Automatic Model Tuning - Bayesian optimization (ML Engineer, SageMaker Tuning API, 3 days)
+• Build tuning budget enforcer (Backend Engineer, OPA + AWS Pricing API, 2 days)
+• Implement AutoML integration (ML Engineer, H2O.ai or Autopilot, 4 days)
+• Build tuning result explainer in PM-readable English (ML Engineer, Claude Sonnet 4, 2 days)
+• Test: run tuning on 3 model types (QA Engineer, SageMaker, 3 days)
+Week 50–51: ML Governance, Model Registry & Explainability
+Goal: Ensure all ML operations are compliant, auditable, and explainable.
+• Build model approval workflow - requires 2 approvals (ML Engineer, Python + DynamoDB, 3 days)
+• Implement model registry with versioning (ML Engineer, MLflow Model Registry, 2 days)
+• Build model explainability integration with SHAP (ML Engineer, SHAP + Python, 3 days)
+• Implement bias detection across protected attributes (ML Engineer, Fairlearn, 3 days)
+• Build ML audit trail with immutable logging (Backend Engineer, AWS S3 + DynamoDB, 2 days)
+• Test: deploy unapproved model (verify blocked) and test bias detection (QA Engineer, 3 days)
+
+Phase 5 AI Tool Summary
+Claude Sonnet 4: ML intent parsing, training config generation, cost estimation, tuning result explanation
+LangGraph: Orchestrates multi-step ML workflows with state tracking
+MLflow: Experiment tracking and model registry
+Evidently AI: Drift detection engine (prediction drift + concept drift)
+SHAP: Model explainability and feature importance
+H2O.ai / SageMaker Autopilot: AutoML for algorithm selection and hyperparameter tuning
+Great Expectations: Training data validation
+Fairlearn: Bias detection in training data and predictions
+Cursor Agent Mode: Builds ML dashboard components
+Phase 5 Deliverables (Exit Criteria)
+• MLOps Agent parses 30 ML golden test commands with >90% accuracy
+• Model training pipeline trains 5 model types successfully
+• Shadow deployment tested: 24hr validation before production
+• Drift detection fires correctly in 90% of simulated scenarios
+• Hyperparameter tuning finds optimal parameters within budget
+• Model approval workflow blocks unapproved models (100% of tests)
+• ML audit trail captures all training/deployment decisions immutably
+• Bias detection identifies bias in 3 intentionally biased test datasets
+• Model explainability generates interpretable explanations for all deployed models
+Phase 5 Risks & Mitigations
+MODEL TRAINING ON WRONG DATASET [Extreme]: Explicit data_source parameter required. Data validator checks schema. PM approval for production data.
+DEPLOYED MODEL CATASTROPHIC ACCURACY DROP [Extreme]: Shadow deployment mandatory 24hr. Canary rollout 48hr. Auto-rollback if drops >10%.
+MODEL DRIFT UNDETECTED [High]: Dual drift detection: prediction + concept. Alerts if degrades 3 consecutive days.
+HYPERPARAMETER TUNING EXHAUSTS BUDGET [High]: Cost ceiling enforced before tuning. Max jobs/cost in OPA policy.
+BIASED MODEL DEPLOYED [Extreme]: Bias detection pre-approval. Models with >15% disparity flagged for manual review.
+MODEL REGISTRY VERSIONING CONFLICT [Medium]: Immutable versioning with unique IDs. Optimistic locking on concurrent deployments.
+TRAINING DATA CONTAINS PII [Extreme]: Data validator scans for PII patterns. Flagged datasets require legal approval.
+AUTOML SELECTS WRONG ALGORITHM [Medium]: MLOps Agent reviews AutoML results. Claude validates algorithm choice. PM receives explanation.
+
+MLOps Agent Architecture
+The MLOps Agent integrates with the existing Triple-Agent Architecture (Architect, SRE, Security) to form a Quadruple-Agent system responsible for the complete machine learning lifecycle: model training, deployment with shadow testing, monitoring and drift detection, hyperparameter tuning, and ML governance.
+Agent Interaction Flow
+Example: PM command "Deploy fraud detection model v2.3 to production"
+1. NLP Parser converts to JSON
+2. Security Agent validates approval, bias tests, audit trail
+3. MLOps Agent validates model performance, generates deployment config
+4. Architect Agent provisions SageMaker endpoint, auto-scaling, API Gateway
+5. MLOps Agent initiates 24-hour shadow deployment
+6. SRE Agent monitors endpoint latency, error rate, prediction quality
+7. MLOps Agent starts canary rollout: 5% → 25% → 50% → 100% over 48 hours
+8. SRE Agent monitors for accuracy drops or latency spikes
+9. MLOps Agent completes deployment, logs to audit trail, updates PM Dashboard
