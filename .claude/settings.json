@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(python \"C:\\\\Users\\\\pqm847\\\\Documents\\\\PromptOps\\\\phase5-mlops\\\\monitoring\\\\drift_detector.py\")",
-      "Bash(python \"C:\\\\Users\\\\pqm847\\\\Documents\\\\PromptOps\\\\phase5-mlops\\\\tuning\\\\hyperparameter_tuner.py\")"
+      "Bash(python \"C:\\\\Users\\\\pqm847\\\\Documents\\\\PromptOps\\\\phase5-mlops\\\\tuning\\\\hyperparameter_tuner.py\")",
+      "Bash(python model_registry.py)",
+      "Bash(python approval_workflow.py)",
+      "Bash(python explainability_engine.py)",
+      "Bash(python bias_detector.py)",
+      "Bash(python audit_trail.py)"
     ]
   }
 }

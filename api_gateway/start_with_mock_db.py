@@ -432,6 +432,14 @@ try:
 except ImportError:
     logger.warning("Tuning routes not available")
 
+# Governance routes (no database needed)
+try:
+    import governance_routes
+    app.include_router(governance_routes.router)
+    logger.info("Governance routes loaded")
+except ImportError:
+    logger.warning("Governance routes not available")
+
 # NOTE: Full database-backed routes commented out for mock mode
 # import autonomy_routes
 # app.include_router(autonomy_routes.router)

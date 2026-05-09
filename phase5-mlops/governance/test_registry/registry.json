@@ -1,0 +1,71 @@
+{
+  "models": {
+    "churn-prediction": [
+      {
+        "name": "churn-prediction",
+        "version": "v1",
+        "model_uri": "s3://models/churn/model.tar.gz",
+        "framework": "xgboost",
+        "stage": "Development",
+        "status": "Pending",
+        "metrics": {
+          "accuracy": 0.92,
+          "auc": 0.95
+        },
+        "params": {
+          "max_depth": 7,
+          "eta": 0.15
+        },
+        "tags": {
+          "team": "ml-team",
+          "use_case": "churn"
+        },
+        "description": "XGBoost model for customer churn prediction",
+        "registered_at": "2026-05-09T02:27:07.437944",
+        "registered_by": "system",
+        "model_hash": "57c8faa5d1e44262",
+        "lineage": {
+          "parent_version": null,
+          "training_job": null,
+          "tuning_job": null
+        }
+      },
+      {
+        "name": "churn-prediction",
+        "version": "v2",
+        "model_uri": "s3://models/churn/model_v2.tar.gz",
+        "framework": "xgboost",
+        "stage": "Staging",
+        "status": "Approved",
+        "metrics": {
+          "accuracy": 0.94,
+          "auc": 0.96
+        },
+        "params": {
+          "max_depth": 8,
+          "eta": 0.12
+        },
+        "tags": {},
+        "description": "",
+        "registered_at": "2026-05-09T02:27:07.439550",
+        "registered_by": "system",
+        "model_hash": "dea1b4729866f5d2",
+        "lineage": {
+          "parent_version": null,
+          "training_job": null,
+          "tuning_job": null
+        },
+        "stage_transitioned_at": "2026-05-09T02:27:07.441110",
+        "status_updated_at": "2026-05-09T02:27:07.442084",
+        "status_history": [
+          {
+            "status": "Approved",
+            "comment": "Approved by ML team after validation",
+            "timestamp": "2026-05-09T02:27:07.442146"
+          }
+        ]
+      }
+    ]
+  },
+  "experiments": {}
+}

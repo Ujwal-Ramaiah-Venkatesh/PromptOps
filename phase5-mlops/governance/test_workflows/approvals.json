@@ -1,0 +1,143 @@
+{
+  "churn-prediction_v2_dev_to_staging_1778273857.698185": {
+    "request_id": "churn-prediction_v2_dev_to_staging_1778273857.698185",
+    "model_name": "churn-prediction",
+    "model_version": "v2",
+    "source_stage": "Development",
+    "target_stage": "Staging",
+    "workflow_stage": "dev_to_staging",
+    "status": "Approved",
+    "requested_by": "ml_engineer_1",
+    "requested_at": "2026-05-09T02:27:37.699186",
+    "reason": "Model shows 2% improvement over v1",
+    "metrics": {
+      "accuracy": 0.92,
+      "auc": 0.95
+    },
+    "policy": {
+      "required_approvers": 1,
+      "required_roles": [
+        "ml_engineer"
+      ]
+    },
+    "automated_checks": [
+      {
+        "check": "metrics_threshold",
+        "passed": true,
+        "details": "Metrics meet thresholds"
+      },
+      {
+        "check": "bias_check",
+        "passed": true,
+        "details": "No significant bias detected"
+      }
+    ],
+    "approvals": [
+      {
+        "approver": "ml_engineer_2",
+        "approver_role": "ml_engineer",
+        "approved_at": "2026-05-09T02:27:37.700791",
+        "comment": "Metrics look good, approved for staging"
+      }
+    ],
+    "rejections": [],
+    "approved_at": "2026-05-09T02:27:37.700888"
+  },
+  "churn-prediction_v2_staging_to_prod_1778273857.702095": {
+    "request_id": "churn-prediction_v2_staging_to_prod_1778273857.702095",
+    "model_name": "churn-prediction",
+    "model_version": "v2",
+    "source_stage": "Staging",
+    "target_stage": "Production",
+    "workflow_stage": "staging_to_prod",
+    "status": "Approved",
+    "requested_by": "ml_engineer_1",
+    "requested_at": "2026-05-09T02:27:37.702102",
+    "reason": "Staging validation successful",
+    "metrics": {
+      "accuracy": 0.94,
+      "auc": 0.96
+    },
+    "policy": {
+      "required_approvers": 2,
+      "required_roles": [
+        "ml_lead",
+        "devops_lead"
+      ]
+    },
+    "automated_checks": [
+      {
+        "check": "metrics_threshold",
+        "passed": true,
+        "details": "Metrics meet thresholds"
+      },
+      {
+        "check": "bias_check",
+        "passed": true,
+        "details": "No significant bias detected"
+      },
+      {
+        "check": "drift_check",
+        "passed": true,
+        "details": "No data drift detected"
+      },
+      {
+        "check": "load_test",
+        "passed": true,
+        "details": "Model passes load test (p95 < 100ms)"
+      }
+    ],
+    "approvals": [
+      {
+        "approver": "ml_lead",
+        "approver_role": "ml_lead",
+        "approved_at": "2026-05-09T02:27:37.703130",
+        "comment": "Model performance validated in staging"
+      },
+      {
+        "approver": "devops_lead",
+        "approver_role": "devops_lead",
+        "approved_at": "2026-05-09T02:27:37.704020",
+        "comment": "Infrastructure ready for deployment"
+      }
+    ],
+    "rejections": [],
+    "approved_at": "2026-05-09T02:27:37.704029"
+  },
+  "fraud-detection_v1_dev_to_staging_1778273857.705016": {
+    "request_id": "fraud-detection_v1_dev_to_staging_1778273857.705016",
+    "model_name": "fraud-detection",
+    "model_version": "v1",
+    "source_stage": "Development",
+    "target_stage": "Staging",
+    "workflow_stage": "dev_to_staging",
+    "status": "Rejected",
+    "requested_by": "ml_engineer_3",
+    "requested_at": "2026-05-09T02:27:37.705020",
+    "reason": "Initial version",
+    "metrics": {
+      "accuracy": 0.75
+    },
+    "policy": {
+      "required_approvers": 1,
+      "required_roles": [
+        "ml_engineer"
+      ]
+    },
+    "automated_checks": [
+      {
+        "check": "metrics_threshold",
+        "passed": false,
+        "details": "Failed: accuracy 0.750 < 0.85"
+      },
+      {
+        "check": "bias_check",
+        "passed": true,
+        "details": "No significant bias detected"
+      }
+    ],
+    "approvals": [],
+    "rejections": [],
+    "rejection_reason": "Failed automated checks: metrics_threshold"
+  }
+}
