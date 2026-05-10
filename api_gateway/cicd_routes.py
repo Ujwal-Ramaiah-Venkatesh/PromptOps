@@ -24,6 +24,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'pha
 from jenkins.pipeline_generator import PipelineGenerator
 from jenkins.jenkinsfile_builder import JenkinsfileBuilder
 from jenkins.jenkins_api_client import JenkinsAPIClient
+from github_actions.workflow_generator import WorkflowGenerator
+from github_actions.actions_integrator import ActionsIntegrator
+from github_actions.github_api_client import GitHubAPIClient
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -38,6 +41,12 @@ jenkins_client = JenkinsAPIClient(
     jenkins_url=os.getenv("JENKINS_URL", "http://localhost:8080"),
     username=os.getenv("JENKINS_USER"),
     api_token=os.getenv("JENKINS_TOKEN")
+)
+workflow_generator = WorkflowGenerator()
+actions_integrator = ActionsIntegrator()
+github_client = GitHubAPIClient(
+    github_token=os.getenv("GITHUB_TOKEN"),
+    github_repo=os.getenv("GITHUB_REPOSITORY")
 )
 
 
@@ -352,6 +361,203 @@ async def get_jenkins_server_info():
 
 
 # ============================================================================
+# GitHub Actions Endpoints
+# ============================================================================
+
+class WorkflowGenerationRequest(BaseModel):
+    """Request to generate GitHub Actions workflow."""
+    workflow_name: str
+    workflow_type: str = "ci"
+    language: str = "java"
+    build_tool: str = "maven"
+    branches: List[str] = ["main", "develop"]
+    enable_tests: bool = True
+    enable_security_scan: bool = True
+    enable_docker: bool = False
+    docker_registry: Optional[str] = None
+    deploy_environments: List[str] = []
+    matrix_versions: Optional[List[str]] = None
+
+
+class HybridPipelineRequest(BaseModel):
+    """Request to create hybrid pipeline."""
+    pipeline_name: str
+    strategy: str = "jenkins_primary"
+    jenkins_config: Optional[Dict[str, Any]] = None
+    actions_config: Optional[Dict[str, Any]] = None
+    shared_artifacts: Optional[List[str]] = None
+
+
+@router.post("/actions/workflows/generate")
+async def generate_github_workflow(request: WorkflowGenerationRequest):
+    """
+    Generate GitHub Actions workflow.
+
+    **Workflow Types:** ci, cd, security, release, pull_request
+    **Languages:** java, node, python, go, rust
+    **Build Tools:** maven, gradle, npm, yarn, pip, cargo
+    """
+    try:
+        workflow = workflow_generator.generate_workflow(
+            workflow_name=request.workflow_name,
+            workflow_type=request.workflow_type,
+            language=request.language,
+            build_tool=request.build_tool,
+            branches=request.branches,
+            enable_tests=request.enable_tests,
+            enable_security_scan=request.enable_security_scan,
+            enable_docker=request.enable_docker,
+            docker_registry=request.docker_registry,
+            deploy_environments=request.deploy_environments,
+            matrix_versions=request.matrix_versions
+        )
+        return workflow
+
+    except Exception as e:
+        logger.error(f"Failed to generate workflow: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/actions/workflows/create")
+async def create_github_workflow_file(
+    workflow_name: str,
+    workflow_yaml: str,
+    commit_message: str = "Add workflow",
+    branch: str = "main"
+):
+    """Create GitHub Actions workflow file in repository."""
+    try:
+        result = github_client.create_workflow_file(
+            workflow_name=workflow_name,
+            workflow_yaml=workflow_yaml,
+            commit_message=commit_message,
+            branch=branch
+        )
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to create workflow file: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/actions/workflows/{workflow_id}/dispatch")
+async def dispatch_github_workflow(
+    workflow_id: str,
+    ref: str = "main",
+    inputs: Optional[Dict[str, Any]] = None
+):
+    """Trigger GitHub Actions workflow dispatch."""
+    try:
+        result = github_client.dispatch_workflow(
+            workflow_id=workflow_id,
+            ref=ref,
+            inputs=inputs
+        )
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to dispatch workflow: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/actions/runs")
+async def list_github_workflow_runs(
+    workflow_id: Optional[str] = None,
+    status: Optional[str] = None,
+    branch: Optional[str] = None,
+    per_page: int = 30
+):
+    """List GitHub Actions workflow runs."""
+    try:
+        runs = github_client.list_workflow_runs(
+            workflow_id=workflow_id,
+            status=status,
+            branch=branch,
+            per_page=per_page
+        )
+        return runs
+
+    except Exception as e:
+        logger.error(f"Failed to list workflow runs: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/actions/runs/{run_id}")
+async def get_github_workflow_run(run_id: int):
+    """Get GitHub Actions workflow run details."""
+    try:
+        run = github_client.get_workflow_run(run_id)
+        return run
+
+    except Exception as e:
+        logger.error(f"Failed to get workflow run: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/actions/runs/{run_id}/cancel")
+async def cancel_github_workflow_run(run_id: int):
+    """Cancel GitHub Actions workflow run."""
+    try:
+        result = github_client.cancel_workflow_run(run_id)
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to cancel workflow run: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/hybrid/pipelines")
+async def create_hybrid_pipeline(request: HybridPipelineRequest):
+    """
+    Create hybrid Jenkins + GitHub Actions pipeline.
+
+    **Strategies:**
+    - jenkins_primary: Jenkins for main builds, Actions for PR checks
+    - actions_primary: Actions for CI, Jenkins for deployment
+    - parallel: Both platforms run independently
+    - conditional: Branch-based routing
+    """
+    try:
+        hybrid = actions_integrator.create_hybrid_pipeline(
+            pipeline_name=request.pipeline_name,
+            strategy=request.strategy,
+            jenkins_config=request.jenkins_config,
+            actions_config=request.actions_config,
+            shared_artifacts=request.shared_artifacts
+        )
+        return hybrid
+
+    except Exception as e:
+        logger.error(f"Failed to create hybrid pipeline: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/hybrid/recommendations")
+async def get_hybrid_recommendations(
+    project_characteristics: Dict[str, Any]
+):
+    """
+    Get hybrid orchestration strategy recommendations.
+
+    **Project Characteristics:**
+    - has_legacy_jenkins: bool
+    - team_size: int
+    - uses_kubernetes: bool
+    - pr_frequency: str (low, medium, high)
+    - build_complexity: str (low, medium, high)
+    """
+    try:
+        recommendations = actions_integrator.get_orchestration_recommendations(
+            project_characteristics=project_characteristics
+        )
+        return recommendations
+
+    except Exception as e:
+        logger.error(f"Failed to get recommendations: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
 # Health Endpoint
 # ============================================================================
 
@@ -365,9 +571,13 @@ async def cicd_health():
         "components": {
             "pipeline_generator": "ok",
             "jenkinsfile_builder": "ok",
-            "jenkins_client": jenkins_status.get("status", "unknown")
+            "jenkins_client": jenkins_status.get("status", "unknown"),
+            "workflow_generator": "ok",
+            "actions_integrator": "ok",
+            "github_client": "ok"
         },
         "jenkins_url": jenkins_client.jenkins_url,
-        "version": "1.0.0",
-        "phase": "6_week_52-53"
+        "github_repo": github_client.github_repo,
+        "version": "2.0.0",
+        "phase": "6_week_54-55"
     }
