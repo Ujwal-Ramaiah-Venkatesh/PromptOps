@@ -35,6 +35,10 @@ from security.snyk_scanner import SnykScanner
 from security.sbom_generator import SBOMGenerator
 from security.vulnerability_db import VulnerabilityDB
 from security.security_policy import SecurityPolicy
+from infrastructure.terraform_generator import TerraformGenerator
+from infrastructure.cloudformation_builder import CloudFormationBuilder
+from infrastructure.state_manager import StateManager
+from infrastructure.drift_detector import DriftDetector
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -67,6 +71,10 @@ snyk_scanner = SnykScanner()
 sbom_generator = SBOMGenerator()
 vulnerability_db = VulnerabilityDB()
 security_policy = SecurityPolicy()
+terraform_generator = TerraformGenerator()
+cloudformation_builder = CloudFormationBuilder()
+state_manager = StateManager()
+drift_detector = DriftDetector()
 
 
 # ============================================================================
@@ -949,6 +957,198 @@ async def get_base_image_recommendations(image: str):
 
 
 # ============================================================================
+# Infrastructure as Code Endpoints
+# ============================================================================
+
+class TerraformModuleRequest(BaseModel):
+    """Request to generate Terraform module."""
+    module_name: str
+    provider: str
+    resources: List[Dict[str, Any]]
+    variables: Optional[Dict[str, Any]] = None
+    outputs: Optional[Dict[str, Any]] = None
+
+
+@router.post("/iac/terraform/generate-module")
+async def generate_terraform_module(request: TerraformModuleRequest):
+    """
+    Generate Terraform module.
+
+    **Providers:** aws, azure, gcp
+    **Resources:** ec2, s3, vpc, rds, eks, vm, storage, aks, compute, gke
+    """
+    try:
+        module = terraform_generator.generate_module(
+            module_name=request.module_name,
+            provider=request.provider,
+            resources=request.resources,
+            variables=request.variables,
+            outputs=request.outputs
+        )
+        return module
+
+    except Exception as e:
+        logger.error(f"Failed to generate Terraform module: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/iac/terraform/generate-backend")
+async def generate_terraform_backend(backend_type: str, config: Dict[str, Any]):
+    """
+    Generate Terraform backend configuration.
+
+    **Backend Types:** s3, azurerm, gcs, local
+    """
+    try:
+        backend_config = terraform_generator.generate_backend_config(backend_type, config)
+        return {"backend_type": backend_type, "configuration": backend_config}
+
+    except Exception as e:
+        logger.error(f"Failed to generate backend config: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class CloudFormationStackRequest(BaseModel):
+    """Request to generate CloudFormation stack."""
+    stack_type: str
+    stack_name: str
+    parameters: Optional[Dict[str, Any]] = None
+
+
+@router.post("/iac/cloudformation/generate-stack")
+async def generate_cloudformation_stack(request: CloudFormationStackRequest):
+    """
+    Generate CloudFormation stack.
+
+    **Stack Types:** ec2, vpc, rds, s3
+    """
+    try:
+        if request.stack_type == "ec2":
+            stack = cloudformation_builder.generate_ec2_stack(
+                stack_name=request.stack_name,
+                instance_type=request.parameters.get("instance_type", "t3.micro") if request.parameters else "t3.micro"
+            )
+        elif request.stack_type == "vpc":
+            stack = cloudformation_builder.generate_vpc_stack(
+                stack_name=request.stack_name,
+                cidr_block=request.parameters.get("cidr_block", "10.0.0.0/16") if request.parameters else "10.0.0.0/16"
+            )
+        elif request.stack_type == "rds":
+            stack = cloudformation_builder.generate_rds_stack(
+                stack_name=request.stack_name,
+                db_name=request.parameters.get("db_name", "mydb") if request.parameters else "mydb"
+            )
+        elif request.stack_type == "s3":
+            stack = cloudformation_builder.generate_s3_stack(
+                stack_name=request.stack_name,
+                bucket_name=request.parameters.get("bucket_name", "my-bucket") if request.parameters else "my-bucket"
+            )
+        else:
+            raise HTTPException(status_code=400, detail=f"Unsupported stack type: {request.stack_type}")
+
+        return stack
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to generate CloudFormation stack: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/iac/cloudformation/export")
+async def export_cloudformation_template(template: Dict[str, Any], format: str = "yaml"):
+    """
+    Export CloudFormation template.
+
+    **Formats:** json, yaml
+    """
+    try:
+        exported = cloudformation_builder.export_template(template, format)
+        return {"format": format, "template": exported}
+
+    except Exception as e:
+        logger.error(f"Failed to export CloudFormation template: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/iac/state/initialize")
+async def initialize_state_backend(backend_type: str, backend_config: Dict[str, Any]):
+    """
+    Initialize IaC state backend.
+
+    **Backend Types:** s3, azurerm, gcs, local
+    """
+    try:
+        manager = StateManager(backend_type, backend_config)
+        result = manager.initialize_backend()
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to initialize state backend: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/iac/state/save")
+async def save_infrastructure_state(state_data: Dict[str, Any], lock: bool = True):
+    """Save infrastructure state."""
+    try:
+        result = state_manager.save_state(state_data, lock)
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to save state: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/iac/state/load")
+async def load_infrastructure_state(version: Optional[int] = None):
+    """Load infrastructure state."""
+    try:
+        result = state_manager.load_state(version)
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to load state: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/iac/drift/detect")
+async def detect_infrastructure_drift(desired_state: Dict[str, Any], actual_state: Dict[str, Any]):
+    """Detect infrastructure drift."""
+    try:
+        result = drift_detector.detect_drift(desired_state, actual_state)
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to detect drift: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/iac/drift/remediation-plan")
+async def generate_drift_remediation(drift_result: Dict[str, Any]):
+    """Generate drift remediation plan."""
+    try:
+        plan = drift_detector.generate_remediation_plan(drift_result)
+        return plan
+
+    except Exception as e:
+        logger.error(f"Failed to generate remediation plan: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/iac/drift/trends")
+async def get_drift_trends():
+    """Get infrastructure drift trends."""
+    try:
+        trends = drift_detector.get_drift_trends()
+        return trends
+
+    except Exception as e:
+        logger.error(f"Failed to get drift trends: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
 # Health Endpoint
 # ============================================================================
 
@@ -973,11 +1173,15 @@ async def cicd_health():
             "snyk_scanner": "ok",
             "sbom_generator": "ok",
             "vulnerability_db": "ok",
-            "security_policy": "ok"
+            "security_policy": "ok",
+            "terraform_generator": "ok",
+            "cloudformation_builder": "ok",
+            "state_manager": "ok",
+            "drift_detector": "ok"
         },
         "jenkins_url": jenkins_client.jenkins_url,
         "github_repo": github_client.github_repo,
         "argocd_url": argocd_client.argocd_url,
-        "version": "4.0.0",
-        "phase": "6_week_58-59"
+        "version": "5.0.0",
+        "phase": "6_week_60-61"
     }
