@@ -27,6 +27,9 @@ from jenkins.jenkins_api_client import JenkinsAPIClient
 from github_actions.workflow_generator import WorkflowGenerator
 from github_actions.actions_integrator import ActionsIntegrator
 from github_actions.github_api_client import GitHubAPIClient
+from argocd.app_generator import AppGenerator
+from argocd.gitops_manager import GitOpsManager
+from argocd.argocd_api_client import ArgoCDAPIClient
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -47,6 +50,12 @@ actions_integrator = ActionsIntegrator()
 github_client = GitHubAPIClient(
     github_token=os.getenv("GITHUB_TOKEN"),
     github_repo=os.getenv("GITHUB_REPOSITORY")
+)
+app_generator = AppGenerator()
+gitops_manager = GitOpsManager()
+argocd_client = ArgoCDAPIClient(
+    argocd_url=os.getenv("ARGOCD_URL", "http://localhost:8080"),
+    auth_token=os.getenv("ARGOCD_TOKEN")
 )
 
 
@@ -561,6 +570,146 @@ async def get_hybrid_recommendations(
 # Health Endpoint
 # ============================================================================
 
+# ============================================================================
+# ArgoCD GitOps Endpoints
+# ============================================================================
+
+class ArgoCDAppRequest(BaseModel):
+    """Request to generate ArgoCD application."""
+    app_name: str
+    namespace: str
+    repo_url: str
+    path: str
+    source_type: str = "kustomize"
+    target_revision: str = "HEAD"
+    sync_policy: str = "automatic"
+
+
+@router.post("/argocd/applications/generate")
+async def generate_argocd_application(request: ArgoCDAppRequest):
+    """
+    Generate ArgoCD Application manifest.
+
+    **Source Types:** kustomize, helm, directory
+    **Sync Policies:** manual, automatic
+    """
+    try:
+        app = app_generator.generate_application(
+            app_name=request.app_name,
+            namespace=request.namespace,
+            repo_url=request.repo_url,
+            path=request.path,
+            source_type=request.source_type,
+            target_revision=request.target_revision,
+            sync_policy=request.sync_policy
+        )
+        return app
+
+    except Exception as e:
+        logger.error(f"Failed to generate ArgoCD application: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/argocd/applications/create")
+async def create_argocd_application(app_manifest: Dict[str, Any]):
+    """Create ArgoCD application in cluster."""
+    try:
+        result = argocd_client.create_application(app_manifest)
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to create ArgoCD application: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/argocd/applications")
+async def list_argocd_applications(project: Optional[str] = None):
+    """List ArgoCD applications."""
+    try:
+        apps = argocd_client.list_applications(project=project)
+        return {"total": len(apps), "applications": apps}
+
+    except Exception as e:
+        logger.error(f"Failed to list applications: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/argocd/applications/{app_name}")
+async def get_argocd_application(app_name: str):
+    """Get ArgoCD application details."""
+    try:
+        app = argocd_client.get_application(app_name)
+        return app
+
+    except Exception as e:
+        logger.error(f"Failed to get application: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/argocd/applications/{app_name}/sync")
+async def sync_argocd_application(app_name: str, prune: bool = False):
+    """Trigger ArgoCD application sync."""
+    try:
+        result = argocd_client.sync_application(app_name, prune=prune)
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to sync application: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/argocd/applications/{app_name}/health")
+async def get_application_health(app_name: str):
+    """Get ArgoCD application health status."""
+    try:
+        health = argocd_client.get_application_health(app_name)
+        return health
+
+    except Exception as e:
+        logger.error(f"Failed to get health: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/gitops/kustomize")
+async def create_kustomize_structure(
+    app_name: str,
+    environments: List[str] = ["dev", "staging", "prod"]
+):
+    """Create Kustomize base + overlays structure."""
+    try:
+        structure = gitops_manager.create_kustomize_structure(
+            app_name=app_name,
+            environments=environments
+        )
+        return structure
+
+    except Exception as e:
+        logger.error(f"Failed to create Kustomize structure: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/gitops/helm-values")
+async def create_helm_values(
+    app_name: str,
+    environments: List[str] = ["dev", "staging", "prod"]
+):
+    """Create Helm values files per environment."""
+    try:
+        values = gitops_manager.create_helm_values(
+            app_name=app_name,
+            environments=environments
+        )
+        return values
+
+    except Exception as e:
+        logger.error(f"Failed to create Helm values: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# Health Endpoint
+# ============================================================================
+
 @router.get("/health")
 async def cicd_health():
     """Check CI/CD service health."""
@@ -574,10 +723,14 @@ async def cicd_health():
             "jenkins_client": jenkins_status.get("status", "unknown"),
             "workflow_generator": "ok",
             "actions_integrator": "ok",
-            "github_client": "ok"
+            "github_client": "ok",
+            "app_generator": "ok",
+            "gitops_manager": "ok",
+            "argocd_client": "ok"
         },
         "jenkins_url": jenkins_client.jenkins_url,
         "github_repo": github_client.github_repo,
-        "version": "2.0.0",
-        "phase": "6_week_54-55"
+        "argocd_url": argocd_client.argocd_url,
+        "version": "3.0.0",
+        "phase": "6_week_56-57"
     }
