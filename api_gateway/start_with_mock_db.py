@@ -440,6 +440,14 @@ try:
 except ImportError:
     logger.warning("Governance routes not available")
 
+# CI/CD routes (no database needed)
+try:
+    import cicd_routes
+    app.include_router(cicd_routes.router)
+    logger.info("CI/CD routes loaded")
+except ImportError:
+    logger.warning("CI/CD routes not available")
+
 # NOTE: Full database-backed routes commented out for mock mode
 # import autonomy_routes
 # app.include_router(autonomy_routes.router)
