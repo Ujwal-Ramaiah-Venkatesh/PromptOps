@@ -30,6 +30,11 @@ from github_actions.github_api_client import GitHubAPIClient
 from argocd.app_generator import AppGenerator
 from argocd.gitops_manager import GitOpsManager
 from argocd.argocd_api_client import ArgoCDAPIClient
+from security.trivy_scanner import TrivyScanner
+from security.snyk_scanner import SnykScanner
+from security.sbom_generator import SBOMGenerator
+from security.vulnerability_db import VulnerabilityDB
+from security.security_policy import SecurityPolicy
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -57,6 +62,11 @@ argocd_client = ArgoCDAPIClient(
     argocd_url=os.getenv("ARGOCD_URL", "http://localhost:8080"),
     auth_token=os.getenv("ARGOCD_TOKEN")
 )
+trivy_scanner = TrivyScanner()
+snyk_scanner = SnykScanner()
+sbom_generator = SBOMGenerator()
+vulnerability_db = VulnerabilityDB()
+security_policy = SecurityPolicy()
 
 
 # ============================================================================
@@ -707,6 +717,238 @@ async def create_helm_values(
 
 
 # ============================================================================
+# Container Security Scanning Endpoints
+# ============================================================================
+
+class ScanImageRequest(BaseModel):
+    """Request to scan container image."""
+    image: str
+    scanner: str = "trivy"  # trivy, snyk, both
+    scan_type: str = "vuln"
+    ignore_unfixed: bool = False
+
+
+@router.post("/security/scan/image")
+async def scan_container_image(request: ScanImageRequest):
+    """
+    Scan container image for vulnerabilities.
+
+    **Scanners:** trivy, snyk, both
+    **Scan Types:** vuln, config, secret, license
+    """
+    try:
+        results = {}
+
+        if request.scanner in ["trivy", "both"]:
+            trivy_result = trivy_scanner.scan_image(
+                image=request.image,
+                scan_type=request.scan_type,
+                ignore_unfixed=request.ignore_unfixed
+            )
+            results["trivy"] = trivy_result
+
+            # Import to vulnerability DB
+            if trivy_result.get("status") == "success":
+                vulnerability_db.import_scan_results(trivy_result, scanner="trivy")
+
+        if request.scanner in ["snyk", "both"]:
+            snyk_result = snyk_scanner.scan_container_image(
+                image=request.image
+            )
+            results["snyk"] = snyk_result
+
+            # Import to vulnerability DB
+            if snyk_result.get("status") == "success":
+                vulnerability_db.import_scan_results(snyk_result, scanner="snyk")
+
+        return results
+
+    except Exception as e:
+        logger.error(f"Failed to scan image: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/security/scan/filesystem")
+async def scan_filesystem(path: str, scanner: str = "trivy"):
+    """Scan filesystem for vulnerabilities."""
+    try:
+        if scanner == "trivy":
+            result = trivy_scanner.scan_filesystem(path)
+            return result
+        else:
+            raise HTTPException(status_code=400, detail=f"Scanner {scanner} not supported for filesystem")
+
+    except Exception as e:
+        logger.error(f"Failed to scan filesystem: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/security/sbom/generate")
+async def generate_sbom(target: str, target_type: str = "image", output_format: str = "spdx-json"):
+    """
+    Generate Software Bill of Materials (SBOM).
+
+    **Target Types:** image, filesystem
+    **Formats:** spdx-json, spdx-tag, cyclonedx-json, cyclonedx-xml
+    """
+    try:
+        if target_type == "image":
+            result = sbom_generator.generate_image_sbom(target, output_format)
+        elif target_type == "filesystem":
+            result = sbom_generator.generate_filesystem_sbom(target, output_format)
+        else:
+            raise HTTPException(status_code=400, detail=f"Invalid target type: {target_type}")
+
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to generate SBOM: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/security/sbom/analyze")
+async def analyze_sbom(sbom_data: Dict[str, Any]):
+    """Analyze SBOM for statistics."""
+    try:
+        analysis = sbom_generator.analyze_sbom(sbom_data)
+        return analysis
+
+    except Exception as e:
+        logger.error(f"Failed to analyze SBOM: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/security/vulnerabilities")
+async def get_vulnerabilities(
+    severity: Optional[str] = None,
+    status: Optional[str] = None,
+    package_name: Optional[str] = None
+):
+    """Get vulnerabilities with filters."""
+    try:
+        vulns = vulnerability_db.get_vulnerabilities(
+            severity=severity,
+            status=status,
+            package_name=package_name
+        )
+        return {"total": len(vulns), "vulnerabilities": vulns}
+
+    except Exception as e:
+        logger.error(f"Failed to get vulnerabilities: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/security/vulnerabilities/summary")
+async def get_vulnerability_summary():
+    """Get vulnerability summary statistics."""
+    try:
+        summary = vulnerability_db.get_summary()
+        return summary
+
+    except Exception as e:
+        logger.error(f"Failed to get vulnerability summary: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/security/risk-score")
+async def calculate_risk_score(target: str = "all"):
+    """Calculate risk score for target."""
+    try:
+        risk_score = vulnerability_db.calculate_risk_score(target)
+        return {
+            "target": target,
+            "risk_score": risk_score,
+            "risk_level": "critical" if risk_score >= 70 else "high" if risk_score >= 50 else "medium" if risk_score >= 30 else "low"
+        }
+
+    except Exception as e:
+        logger.error(f"Failed to calculate risk score: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/security/remediation-plan")
+async def get_remediation_plan():
+    """Generate remediation plan for open vulnerabilities."""
+    try:
+        plan = vulnerability_db.get_remediation_plan()
+        return plan
+
+    except Exception as e:
+        logger.error(f"Failed to generate remediation plan: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class PolicyEvaluationRequest(BaseModel):
+    """Request to evaluate policy."""
+    scan_results: Dict[str, Any]
+    policy_name: Optional[str] = None
+
+
+@router.post("/security/policy/evaluate")
+async def evaluate_policy(request: PolicyEvaluationRequest):
+    """Evaluate scan results against security policy."""
+    try:
+        evaluation = security_policy.evaluate_scan_results(
+            scan_results=request.scan_results,
+            policy_name=request.policy_name
+        )
+        return evaluation
+
+    except Exception as e:
+        logger.error(f"Failed to evaluate policy: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/security/policy/evaluate-licenses")
+async def evaluate_licenses(sbom_data: Dict[str, Any], policy_name: Optional[str] = None):
+    """Evaluate SBOM licenses against policy."""
+    try:
+        evaluation = security_policy.evaluate_licenses(sbom_data, policy_name)
+        return evaluation
+
+    except Exception as e:
+        logger.error(f"Failed to evaluate licenses: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+class ExemptionRequest(BaseModel):
+    """Request to add exemption."""
+    vuln_id: str
+    reason: str
+    expiry_date: Optional[str] = None
+    approved_by: Optional[str] = None
+
+
+@router.post("/security/exemptions")
+async def add_exemption(request: ExemptionRequest):
+    """Add vulnerability exemption."""
+    try:
+        exemption = security_policy.add_exemption(
+            vuln_id=request.vuln_id,
+            reason=request.reason,
+            expiry_date=request.expiry_date,
+            approved_by=request.approved_by
+        )
+        return exemption
+
+    except Exception as e:
+        logger.error(f"Failed to add exemption: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/security/recommendations/base-image")
+async def get_base_image_recommendations(image: str):
+    """Get base image upgrade recommendations."""
+    try:
+        recommendations = snyk_scanner.get_base_image_recommendations(image)
+        return recommendations
+
+    except Exception as e:
+        logger.error(f"Failed to get recommendations: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
 # Health Endpoint
 # ============================================================================
 
@@ -726,11 +968,16 @@ async def cicd_health():
             "github_client": "ok",
             "app_generator": "ok",
             "gitops_manager": "ok",
-            "argocd_client": "ok"
+            "argocd_client": "ok",
+            "trivy_scanner": "ok",
+            "snyk_scanner": "ok",
+            "sbom_generator": "ok",
+            "vulnerability_db": "ok",
+            "security_policy": "ok"
         },
         "jenkins_url": jenkins_client.jenkins_url,
         "github_repo": github_client.github_repo,
         "argocd_url": argocd_client.argocd_url,
-        "version": "3.0.0",
-        "phase": "6_week_56-57"
+        "version": "4.0.0",
+        "phase": "6_week_58-59"
     }
