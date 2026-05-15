@@ -71,7 +71,10 @@
       "Bash(python \"C:\\\\Users\\\\pqm847\\\\Documents\\\\PromptOps\\\\phase5-mlops\\\\deployment\\\\shadow_deployer.py\")",
       "Bash(python \"C:\\\\Users\\\\pqm847\\\\Documents\\\\PromptOps\\\\phase5-mlops\\\\deployment\\\\canary_deployer.py\")",
       "Bash(python \"C:\\\\Users\\\\pqm847\\\\Documents\\\\PromptOps\\\\phase5-mlops\\\\deployment\\\\prediction_comparator.py\")",
-      "Bash(python \"C:\\\\Users\\\\pqm847\\\\Documents\\\\PromptOps\\\\phase5-mlops\\\\monitoring\\\\performance_monitor.py\")"
+      "Bash(python \"C:\\\\Users\\\\pqm847\\\\Documents\\\\PromptOps\\\\phase5-mlops\\\\monitoring\\\\performance_monitor.py\")",
+      "Bash(python test_workaround_fixes.py)",
+      "Bash(curl -s http://localhost:8002/)",
+      "Bash(pkill -f mobile_ui_server.py)"
     ]
   }
 }

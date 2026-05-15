@@ -7,7 +7,34 @@
       "Bash(python approval_workflow.py)",
       "Bash(python explainability_engine.py)",
       "Bash(python bias_detector.py)",
-      "Bash(python audit_trail.py)"
+      "Bash(python audit_trail.py)",
+      "Bash(python pipeline_generator.py)",
+      "Bash(python jenkinsfile_builder.py)",
+      "Bash(python workflow_generator.py)",
+      "Bash(python actions_integrator.py)",
+      "Bash(python app_generator.py)",
+      "Bash(python trivy_scanner.py)",
+      "Bash(chmod +x /tmp/check_apk_status.sh)",
+      "Bash(/tmp/check_apk_status.sh)",
+      "Bash(curl -s -o /dev/null -w \"Status: %{http_code}\\\\n\" \"https://gitpod.io\")",
+      "Bash(chmod +x /tmp/active_deploy.sh)",
+      "Bash(nohup bash /tmp/active_deploy.sh)",
+      "Bash(cd /c/Users/pqm847/Documents/PromptOps/mobile-deployment *)",
+      "Bash(start COPY_THIS_COMMAND.txt)",
+      "Bash(chmod +x /tmp/live_monitor.sh)",
+      "Bash(pkill -f \"active_deploy\")",
+      "Bash(pkill -f \"watch_and_deploy\")",
+      "Bash(/tmp/live_monitor.sh)",
+      "Bash(timeout 30 tail -f /tmp/live.log)",
+      "Bash(chmod +x /tmp/watch_downloads.sh)",
+      "Bash(nohup bash /tmp/watch_downloads.sh)",
+      "Bash(echo \"Monitor started with PID: $!\")",
+      "Bash(pkill -f watch_downloads.sh)",
+      "Bash(python /tmp/simple_monitor.py)",
+      "Bash(python mobile-deployment/simple_monitor.py)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\pqm847\\Downloads"
     ]
   }
 }

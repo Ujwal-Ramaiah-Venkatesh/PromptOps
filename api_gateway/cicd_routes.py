@@ -20,6 +20,8 @@ import logging
 
 # Add phase6-cicd to path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'phase6-cicd'))
+# Add mobile-deployment to path
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'mobile-deployment'))
 
 from jenkins.pipeline_generator import PipelineGenerator
 from jenkins.jenkinsfile_builder import JenkinsfileBuilder
@@ -39,6 +41,9 @@ from infrastructure.terraform_generator import TerraformGenerator
 from infrastructure.cloudformation_builder import CloudFormationBuilder
 from infrastructure.state_manager import StateManager
 from infrastructure.drift_detector import DriftDetector
+from deploy_android_app import AndroidDeploymentOrchestrator
+from aws_mobile_deploy import AWSMobileDeployer
+from android_builder import AndroidBuilder
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -1152,6 +1157,169 @@ async def get_drift_trends():
 # Health Endpoint
 # ============================================================================
 
+# ============================================================================
+# Mobile Deployment Endpoints
+# ============================================================================
+
+class MobileDeploymentRequest(BaseModel):
+    """Request to deploy mobile application."""
+    repo_url: str = Field(..., description="Git repository URL")
+    branch: str = Field(default="main", description="Git branch to deploy")
+    app_name: str = Field(..., description="Application name")
+    deployment_option: str = Field(default="A", description="Deployment option: A (AWS), B (Firebase), C (Play Store)")
+    aws_bucket: Optional[str] = Field(None, description="AWS S3 bucket name (for Option A)")
+    aws_region: str = Field(default="us-east-1", description="AWS region")
+
+
+class APKUploadRequest(BaseModel):
+    """Request to upload APK directly."""
+    apk_path: str = Field(..., description="Path to APK file")
+    app_name: str = Field(..., description="Application name")
+    version: str = Field(..., description="App version")
+    aws_bucket: str = Field(..., description="AWS S3 bucket name")
+    aws_region: str = Field(default="us-east-1", description="AWS region")
+
+
+@router.post("/mobile/deploy")
+async def deploy_mobile_app(request: MobileDeploymentRequest):
+    """
+    Deploy mobile application from Git repository.
+
+    **Deployment Options:**
+    - A: AWS S3 + CloudFront (Direct APK hosting)
+    - B: Firebase App Distribution (Beta testing)
+    - C: Google Play Store (Production)
+
+    **Workflow:**
+    1. Clone repository
+    2. Build APK using Gradle
+    3. Deploy to selected platform
+    4. Generate download page (Option A)
+    """
+    try:
+        orchestrator = AndroidDeploymentOrchestrator()
+
+        aws_config = {
+            "bucket_name": request.aws_bucket,
+            "region": request.aws_region
+        } if request.aws_bucket else None
+
+        result = orchestrator.deploy_from_git(
+            repo_url=request.repo_url,
+            branch=request.branch,
+            app_name=request.app_name,
+            deployment_option=request.deployment_option,
+            aws_config=aws_config
+        )
+
+        orchestrator.cleanup()
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to deploy mobile app: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/mobile/upload-apk")
+async def upload_apk_to_aws(request: APKUploadRequest):
+    """
+    Upload APK directly to AWS S3 + CloudFront.
+
+    **Use Case:** When APK is already built locally.
+    """
+    try:
+        deployer = AWSMobileDeployer(
+            bucket_name=request.aws_bucket,
+            region=request.aws_region
+        )
+
+        result = deployer.deploy_app(
+            apk_path=request.apk_path,
+            app_name=request.app_name,
+            version=request.version,
+            create_distribution=True
+        )
+
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to upload APK: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/mobile/build")
+async def build_android_apk(
+    project_path: str,
+    module: str = "app",
+    build_type: str = "debug"
+):
+    """
+    Build Android APK from local project.
+
+    **Build Types:**
+    - debug: Debug APK (faster, for testing)
+    - release: Release APK (optimized, for production)
+    """
+    try:
+        builder = AndroidBuilder(project_path)
+
+        if build_type == "debug":
+            result = builder.build_debug_apk(module)
+        elif build_type == "release":
+            result = builder.build_release_apk(module)
+        else:
+            raise HTTPException(status_code=400, detail=f"Invalid build_type: {build_type}")
+
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to build APK: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/mobile/version-info")
+async def get_app_version_info(project_path: str, module: str = "app"):
+    """Extract version information from Android project."""
+    try:
+        builder = AndroidBuilder(project_path)
+        version_info = builder.get_version_info(module)
+        return version_info
+
+    except Exception as e:
+        logger.error(f"Failed to get version info: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/mobile/aws/create-bucket")
+async def create_aws_bucket(bucket_name: str, region: str = "us-east-1"):
+    """Create AWS S3 bucket for mobile app hosting."""
+    try:
+        deployer = AWSMobileDeployer(bucket_name=bucket_name, region=region)
+        result = deployer.create_bucket()
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to create bucket: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/mobile/aws/create-cdn")
+async def create_cloudfront_cdn(bucket_name: str):
+    """Create CloudFront CDN distribution for mobile app."""
+    try:
+        deployer = AWSMobileDeployer(bucket_name=bucket_name)
+        result = deployer.create_cloudfront_distribution(bucket_name)
+        return result
+
+    except Exception as e:
+        logger.error(f"Failed to create CDN: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# Health Endpoint
+# ============================================================================
+
 @router.get("/health")
 async def cicd_health():
     """Check CI/CD service health."""
@@ -1177,11 +1345,13 @@ async def cicd_health():
             "terraform_generator": "ok",
             "cloudformation_builder": "ok",
             "state_manager": "ok",
-            "drift_detector": "ok"
+            "drift_detector": "ok",
+            "android_builder": "ok",
+            "aws_mobile_deployer": "ok"
         },
         "jenkins_url": jenkins_client.jenkins_url,
         "github_repo": github_client.github_repo,
         "argocd_url": argocd_client.argocd_url,
-        "version": "5.0.0",
-        "phase": "6_week_60-61"
+        "version": "6.0.0",
+        "phase": "6_mobile_deployment"
     }
