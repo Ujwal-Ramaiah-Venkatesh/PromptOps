@@ -1,0 +1,13 @@
+app_name    = "jewelry-vault"
+environment = "production"
+aws_region  = "us-east-1"
+bucket_name = "jewelry-vault-promptops-REPLACE_ME"
+
+# Optional custom domain + HTTPS (CloudFront + ACM + Route53)
+enable_custom_domain = false
+domain_name          = "app.example.com"
+hosted_zone_id       = "Z1234567890ABC"
+
+# Optional: if you already have an ACM cert in us-east-1, set it here.
+# If empty, Terraform creates and validates one via DNS.
+acm_certificate_arn = ""

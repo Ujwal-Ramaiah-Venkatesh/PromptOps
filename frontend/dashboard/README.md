@@ -1,6 +1,10 @@
-# PromptOps Dashboard
-
-Premium React dashboard for the PromptOps Agentic DevOps Platform.
+<div align="center">
+  <img src="../../assets/promptops-logo.png" alt="PromptOps Logo" width="200"/>
+  
+  # PromptOps Dashboard
+  
+  Premium React dashboard for the PromptOps Agentic DevOps Platform.
+</div>
 
 ## Quick Start
 

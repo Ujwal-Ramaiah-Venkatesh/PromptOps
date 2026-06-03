@@ -18,68 +18,82 @@ import sys
 import os
 import logging
 
+# Configure logging early so import-time warnings are safe
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Add phase6-cicd to path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'phase6-cicd'))
 # Add mobile-deployment to path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'mobile-deployment'))
 
-from jenkins.pipeline_generator import PipelineGenerator
-from jenkins.jenkinsfile_builder import JenkinsfileBuilder
-from jenkins.jenkins_api_client import JenkinsAPIClient
-from github_actions.workflow_generator import WorkflowGenerator
-from github_actions.actions_integrator import ActionsIntegrator
-from github_actions.github_api_client import GitHubAPIClient
-from argocd.app_generator import AppGenerator
-from argocd.gitops_manager import GitOpsManager
-from argocd.argocd_api_client import ArgoCDAPIClient
-from security.trivy_scanner import TrivyScanner
-from security.snyk_scanner import SnykScanner
-from security.sbom_generator import SBOMGenerator
-from security.vulnerability_db import VulnerabilityDB
-from security.security_policy import SecurityPolicy
-from infrastructure.terraform_generator import TerraformGenerator
-from infrastructure.cloudformation_builder import CloudFormationBuilder
-from infrastructure.state_manager import StateManager
-from infrastructure.drift_detector import DriftDetector
-from deploy_android_app import AndroidDeploymentOrchestrator
-from aws_mobile_deploy import AWSMobileDeployer
-from android_builder import AndroidBuilder
+# Import core CI/CD modules
+try:
+    from jenkins.pipeline_generator import PipelineGenerator
+    from jenkins.jenkinsfile_builder import JenkinsfileBuilder
+    from jenkins.jenkins_api_client import JenkinsAPIClient
+    from github_actions.workflow_generator import WorkflowGenerator
+    from github_actions.actions_integrator import ActionsIntegrator
+    from github_actions.github_api_client import GitHubAPIClient
+    from argocd.app_generator import AppGenerator
+    from argocd.gitops_manager import GitOpsManager
+    from argocd.argocd_api_client import ArgoCDAPIClient
+    from security.trivy_scanner import TrivyScanner
+    from security.snyk_scanner import SnykScanner
+    from security.sbom_generator import SBOMGenerator
+    from security.vulnerability_db import VulnerabilityDB
+    from security.security_policy import SecurityPolicy
+    from infrastructure.terraform_generator import TerraformGenerator
+    from infrastructure.cloudformation_builder import CloudFormationBuilder
+    from infrastructure.state_manager import StateManager
+    from infrastructure.drift_detector import DriftDetector
+except ImportError as e:
+    logger.warning(f"Some CI/CD modules not available: {e}")
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Import mobile deployment modules (optional)
+try:
+    from deploy_android_app import AndroidDeploymentOrchestrator
+    from aws_mobile_deploy import AWSMobileDeployer
+    from android_builder import AndroidBuilder
+    MOBILE_DEPLOYMENT_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"Mobile deployment modules not available: {e}")
+    AndroidDeploymentOrchestrator = None
+    AWSMobileDeployer = None
+    AndroidBuilder = None
+    MOBILE_DEPLOYMENT_AVAILABLE = False
 
 # Create router
 router = APIRouter(prefix="/api/v1/cicd", tags=["cicd"])
 
 # Initialize components
-pipeline_generator = PipelineGenerator()
+pipeline_generator = PipelineGenerator() if 'PipelineGenerator' in globals() else None
 jenkins_client = JenkinsAPIClient(
     jenkins_url=os.getenv("JENKINS_URL", "http://localhost:8080"),
     username=os.getenv("JENKINS_USER"),
     api_token=os.getenv("JENKINS_TOKEN")
-)
-workflow_generator = WorkflowGenerator()
-actions_integrator = ActionsIntegrator()
+) if 'JenkinsAPIClient' in globals() else None
+workflow_generator = WorkflowGenerator() if 'WorkflowGenerator' in globals() else None
+actions_integrator = ActionsIntegrator() if 'ActionsIntegrator' in globals() else None
 github_client = GitHubAPIClient(
     github_token=os.getenv("GITHUB_TOKEN"),
     github_repo=os.getenv("GITHUB_REPOSITORY")
-)
-app_generator = AppGenerator()
-gitops_manager = GitOpsManager()
+) if 'GitHubAPIClient' in globals() else None
+app_generator = AppGenerator() if 'AppGenerator' in globals() else None
+gitops_manager = GitOpsManager() if 'GitOpsManager' in globals() else None
 argocd_client = ArgoCDAPIClient(
     argocd_url=os.getenv("ARGOCD_URL", "http://localhost:8080"),
     auth_token=os.getenv("ARGOCD_TOKEN")
-)
-trivy_scanner = TrivyScanner()
-snyk_scanner = SnykScanner()
-sbom_generator = SBOMGenerator()
-vulnerability_db = VulnerabilityDB()
-security_policy = SecurityPolicy()
-terraform_generator = TerraformGenerator()
-cloudformation_builder = CloudFormationBuilder()
-state_manager = StateManager()
-drift_detector = DriftDetector()
+) if 'ArgoCDAPIClient' in globals() else None
+trivy_scanner = TrivyScanner() if 'TrivyScanner' in globals() else None
+snyk_scanner = SnykScanner() if 'SnykScanner' in globals() else None
+sbom_generator = SBOMGenerator() if 'SBOMGenerator' in globals() else None
+vulnerability_db = VulnerabilityDB() if 'VulnerabilityDB' in globals() else None
+security_policy = SecurityPolicy() if 'SecurityPolicy' in globals() else None
+terraform_generator = TerraformGenerator() if 'TerraformGenerator' in globals() else None
+cloudformation_builder = CloudFormationBuilder() if 'CloudFormationBuilder' in globals() else None
+state_manager = StateManager() if 'StateManager' in globals() else None
+drift_detector = DriftDetector() if 'DriftDetector' in globals() else None
 
 
 # ============================================================================
@@ -1196,6 +1210,12 @@ async def deploy_mobile_app(request: MobileDeploymentRequest):
     3. Deploy to selected platform
     4. Generate download page (Option A)
     """
+    if not MOBILE_DEPLOYMENT_AVAILABLE:
+        raise HTTPException(
+            status_code=503,
+            detail="Mobile deployment service is not available. Required modules are missing."
+        )
+    
     try:
         orchestrator = AndroidDeploymentOrchestrator()
 

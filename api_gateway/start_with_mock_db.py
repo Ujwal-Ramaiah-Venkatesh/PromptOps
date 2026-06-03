@@ -103,7 +103,10 @@ import auth.dependencies
 auth.dependencies.get_db = get_mock_db
 
 # Import auth routes module from parent directory
-import auth_routes
+try:
+    import auth_routes as auth_routes_module
+except ImportError:
+    import auth_routes_old as auth_routes_module
 
 app = FastAPI(title="PromptOps API Gateway (Mock DB)", version="1.0.0")
 
@@ -187,7 +190,7 @@ class ScaleRequest(BaseModel):
     environment: str
 
 # Include auth routes
-app.include_router(auth_routes.router)
+app.include_router(auth_routes_module.router)
 
 # Mock autonomy endpoints for demo (database not required)
 from fastapi import APIRouter
@@ -415,6 +418,14 @@ try:
     logger.info("Deployment routes loaded")
 except ImportError:
     logger.warning("Deployment routes not available")
+
+# Static deploy routes for UI S3 deployments
+try:
+    import static_deploy_routes
+    app.include_router(static_deploy_routes.router)
+    logger.info("Static deploy routes loaded")
+except ImportError:
+    logger.warning("Static deploy routes not available")
 
 # Monitoring routes (no database needed)
 try:

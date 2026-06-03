@@ -1,0 +1,15 @@
+# PromptOps Mobile Deployment Requirements
+# =========================================
+
+# AWS SDK for S3 and CloudFront
+boto3>=1.28.0
+botocore>=1.31.0
+
+# Optional: Firebase Admin SDK (for Option B - Future)
+# firebase-admin>=6.2.0
+
+# Optional: Google Play Developer API (for Option C - Future)
+# google-api-python-client>=2.95.0
+# google-auth>=2.22.0
+# google-auth-oauthlib>=1.0.0
+# google-auth-httplib2>=0.1.0

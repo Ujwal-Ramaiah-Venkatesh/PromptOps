@@ -1,0 +1,135 @@
+TEXT CLARITY TEMPLATE - COPY THIS INTO EVERY GOOGLE VIDS PROMPT
+================================================================
+
+Add this to the "TEXT OVERLAY" section of each prompt:
+
+TEXT OVERLAY REQUIREMENTS:
+- Font: Bold sans-serif (Arial Bold, Helvetica Bold, or Roboto Bold)
+- Size: MINIMUM 72pt for normal text, 80-100pt for numbers/stats
+- Weight: Bold or Extra Bold
+- Color: White (#FFFFFF) with 3-4px black outline/shadow
+- Background: Semi-transparent dark overlay (rgba(0,0,0,0.7-0.8)) behind ALL text
+- Position: Center screen or lower third (never in corners or edges)
+- Duration: Display EACH text element for MINIMUM 3 seconds
+- Contrast: High contrast between text and background
+- Spacing: Generous letter-spacing for easy reading
+- Shadow: 3-4px black drop shadow on all text
+
+EXPORT REQUIREMENTS:
+- Resolution: 1920x1080 (Full HD)
+- Bitrate: Minimum 12 Mbps (higher is better)
+- Format: MP4 (H.264)
+- No compression artifacts around text
+
+
+================================================================
+EXAMPLE TEXT OVERLAY SPECIFICATION:
+================================================================
+
+TEXT OVERLAY: Display LARGE, BOLD, CLEAR text on screen:
+- "Your Main Text Here" (Font size: 80pt minimum, Bold weight, White color with 4px black shadow/outline)
+- "Your Secondary Text" (Font size: 64pt minimum, Bold weight, White color with 3px black shadow)
+- Position: Center screen for maximum visibility
+- Background: Semi-transparent dark overlay (rgba(0,0,0,0.75)) behind ALL text
+- Display each text for minimum 3 seconds
+- Use high contrast colors for maximum readability
+- Ensure text is clearly visible against any background
+
+
+================================================================
+POST-PRODUCTION TEXT FIX (If Google Vids text is unclear)
+================================================================
+
+CAPCUT:
+1. Select clip → "Text" tab
+2. Add text with same words
+3. Font: Arial Black or Montserrat Bold
+4. Size: 100-120
+5. Color: White (#FFFFFF)
+6. Effects → Stroke: Black, 4px
+7. Effects → Shadow: Black, 60% opacity, offset 3px
+8. Duration: Match voiceover, minimum 3 seconds
+
+DAVINCI RESOLVE:
+1. Effects Library → Titles → "Lower Third" or "Basic Text"
+2. Edit text in inspector
+3. Font: Arial Black, Size: 100-120
+4. Text+ Node → Add Stroke: Black, 3-4px
+5. Add drop shadow: Angle 135°, Distance 5, Blur 3
+6. Background → Add rectangle shape, black, 75% opacity
+
+CLIPCHAMP:
+1. Text menu → Add text
+2. Font: Arial Black or Bebas Neue Bold
+3. Size: Extra Large (use slider at max)
+4. Text effects → Outline: Black, Thick (3-4px)
+5. Add shape behind text: Rectangle, black, 70% opacity
+6. Duration: Extend to 3+ seconds
+
+
+================================================================
+TEXT READABILITY CHECKLIST
+================================================================
+
+Before finalizing ANY clip, verify:
+✅ Can you read EVERY letter from 6 feet away?
+✅ Is text still readable on smartphone screen?
+✅ Does text stay on screen for 3+ seconds minimum?
+✅ Is there enough contrast (light text on dark OR dark text on light)?
+✅ Are numbers/stats extra large and bold?
+✅ Does text have outline/shadow for separation from background?
+✅ Is font simple and professional (not fancy/decorative)?
+✅ Is text positioned in center or lower third (not corners)?
+✅ Exported at Full HD 1080p with 12+ Mbps bitrate?
+
+
+================================================================
+FONT SIZE GUIDE BY TEXT TYPE
+================================================================
+
+CRITICAL STATS (Dollar amounts, percentages, time):
+→ 80-100pt, Extra Bold, Bright color (white or orange)
+→ Example: "$840K", "10X", "35-40%"
+
+PRIMARY MESSAGES:
+→ 72-80pt, Bold, White with black shadow
+→ Example: "Cloud Complexity", "Service Degradation"
+
+SECONDARY DETAILS:
+→ 60-68pt, Medium Bold, White with shadow
+→ Example: "Better Coordination Needed"
+
+TERTIARY/SUPPORTING:
+→ 48-56pt, Regular Bold, Light color
+→ Example: Timestamps, small labels
+
+
+================================================================
+COMMON MISTAKES TO AVOID
+================================================================
+
+❌ Font size below 60pt (too small)
+❌ No shadow/outline on text (blends into background)
+❌ Fancy decorative fonts (hard to read quickly)
+❌ White text on light background (low contrast)
+❌ Text in corners/edges (gets cut off on some screens)
+❌ Text duration under 2 seconds (not enough time to read)
+❌ Low export quality/bitrate (text appears pixelated)
+❌ No background overlay (text gets lost in busy scenes)
+
+
+================================================================
+QUICK FIX FORMULA
+================================================================
+
+If ANY text is unclear after generation:
+
+1. Open clip in video editor
+2. Add text overlay with EXACT same words
+3. Use: Arial Black, Size 100, White, Black Outline 4px
+4. Add black background rectangle at 70% opacity
+5. Position in lower third
+6. Duration: 3 seconds minimum
+7. Test on phone - can you read it? If NO, make text even LARGER
+
+This will fix 99% of text clarity issues!

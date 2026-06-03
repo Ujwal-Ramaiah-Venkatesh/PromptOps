@@ -1,0 +1,94 @@
+==========================================
+  PROMPTOPS DEMO - START INSTRUCTIONS
+==========================================
+
+CURRENT STATUS:
+✅ Frontend is RUNNING on http://localhost:5173
+❌ Backend needs to be started manually
+
+---
+
+STEP 1: Start Backend
+----------------------
+1. Open a NEW Command Prompt or Terminal
+2. Copy and paste these commands:
+
+cd C:\Users\pqm847\Documents\PromptOps\api_gateway
+python start_with_mock_db.py
+
+3. Wait for this message:
+   "Starting server... API: http://localhost:8000"
+
+---
+
+STEP 2: Verify Setup
+---------------------
+Open these URLs in browser:
+
+1. Backend API Docs: http://localhost:8000/docs
+   (Should show FastAPI Swagger UI)
+
+2. Frontend App: http://localhost:5173
+   (Should show PromptOps login page)
+
+---
+
+STEP 3: Test Login
+-------------------
+On http://localhost:5173:
+
+Email: admin@promptops.com
+Password: admin123
+
+Click "Sign In"
+
+---
+
+STEP 4: Start Recording
+------------------------
+Once logged in successfully:
+
+1. Open OBS Studio OR press Win+G (Game Bar)
+2. Start recording
+3. Follow the demo script in DEMO_RECORDING_GUIDE.md
+
+---
+
+DEMO FLOW (Quick Reference):
+-----------------------------
+1. Login (15s)
+2. Natural Language Command (30s)
+3. Autonomy Tiers (25s)
+4. Infrastructure Ingestion (20s)
+5. Discovery Dashboard (25s)
+6. Security & Audit (15s)
+7. Statistics (15s)
+
+Total: ~2-3 minutes
+
+---
+
+TROUBLESHOOTING:
+----------------
+Q: Backend won't start?
+A: Check if Python dependencies are installed:
+   pip install fastapi uvicorn sqlalchemy pydantic
+
+Q: Port 8000 already in use?
+A: Find and kill the process:
+   netstat -ano | findstr :8000
+
+Q: Frontend shows blank page?
+A: Clear cache and hard refresh (Ctrl+Shift+R)
+
+---
+
+🎬 READY TO RECORD!
+-------------------
+1. Start backend (Step 1 above)
+2. Open http://localhost:5173
+3. Login with admin credentials
+4. Start your screen recording software
+5. Follow the demo script
+
+==========================================

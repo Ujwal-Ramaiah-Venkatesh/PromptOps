@@ -12,7 +12,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
-import { useAuth } from '../contexts/AuthContext';
+import './PremiumWorkflows.css';
 
 interface ScanStatus {
   scan_id: string;
@@ -56,7 +56,6 @@ interface ScanReport {
 }
 
 export const DiscoveryDashboard: React.FC = () => {
-  const { user } = useAuth();
   const [currentScan, setCurrentScan] = useState<ScanStatus | null>(null);
   const [scanReport, setScanReport] = useState<ScanReport | null>(null);
   const [loading, setLoading] = useState(false);
@@ -182,94 +181,61 @@ export const DiscoveryDashboard: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '32px' }}>
-      {/* Header */}
-      <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c', marginBottom: '8px' }}>
-          🔍 Discovery & Onboarding
-        </h1>
-        <p style={{ color: '#718096', fontSize: '16px' }}>
-          Scan AWS accounts, infer context, and import existing infrastructure
-        </p>
-      </div>
+    <div className="workflow-page">
+      <header className="workflow-header">
+        <div className="workflow-eyebrow">Discovery & Onboarding</div>
+        <h1 className="workflow-title">Scan AWS and onboard existing resources fast</h1>
+        <p className="workflow-subtitle">Read-only scan, resource inference, and guided Terraform import.</p>
+      </header>
 
-      {/* Error Alert */}
+      <section className="workflow-onboarding">
+        <h3>Recommended Flow</h3>
+        <p>Run these steps in order for clean onboarding.</p>
+        <div className="workflow-onboarding-grid">
+          <div className="workflow-step-card">
+            <div className="workflow-step-card-title">1. Configure scan scope</div>
+            <div className="workflow-step-card-text">Select regions and resource types to avoid noisy results.</div>
+          </div>
+          <div className="workflow-step-card">
+            <div className="workflow-step-card-title">2. Review inferred metadata</div>
+            <div className="workflow-step-card-text">Check confidence before selecting resources for import.</div>
+          </div>
+          <div className="workflow-step-card">
+            <div className="workflow-step-card-title">3. Import in batches</div>
+            <div className="workflow-step-card-text">Start small, validate outputs, then continue with remaining resources.</div>
+          </div>
+        </div>
+      </section>
+
       {error && (
-        <div style={{
-          padding: '16px',
-          background: '#fef2f2',
-          border: '1px solid #fecaca',
-          borderRadius: '8px',
-          color: '#991b1b',
-          marginBottom: '24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
+        <div className="workflow-alert">
           <span>⚠ {error}</span>
-          <button
-            onClick={() => setError(null)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#991b1b',
-              cursor: 'pointer',
-              fontSize: '18px'
-            }}
-          >
-            ✕
-          </button>
+          <button onClick={() => setError(null)} aria-label="Dismiss error">×</button>
         </div>
       )}
 
-      {/* Tabs */}
-      <div style={{
-        display: 'flex',
-        gap: '8px',
-        marginBottom: '24px',
-        borderBottom: '2px solid #e2e8f0'
-      }}>
+      <div className="workflow-tabs">
         {(['scan', 'results', 'import'] as const).map(view => (
           <button
             key={view}
             onClick={() => setActiveView(view)}
-            style={{
-              padding: '12px 24px',
-              background: 'transparent',
-              border: 'none',
-              borderBottom: activeView === view ? '2px solid #667eea' : '2px solid transparent',
-              color: activeView === view ? '#667eea' : '#718096',
-              fontWeight: activeView === view ? '600' : '400',
-              cursor: 'pointer',
-              marginBottom: '-2px',
-              textTransform: 'capitalize'
-            }}
+            className={`workflow-tab ${activeView === view ? 'is-active' : ''}`}
           >
-            {view}
+            {view === 'scan' ? 'Scan Setup' : view === 'results' ? 'Scan Results' : 'Import'}
           </button>
         ))}
       </div>
 
-      {/* Scan Configuration */}
       {activeView === 'scan' && (
-        <div style={{
-          background: 'white',
-          padding: '32px',
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-        }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1a202c', marginBottom: '24px' }}>
-            Configure Discovery Scan
-          </h2>
+        <section className="workflow-card">
+          <h2>Configure Discovery Scan</h2>
+          <div className="workflow-card-subtitle">Discovery is read-only and does not modify AWS resources.</div>
 
-          {/* Regions */}
-          <div style={{ marginBottom: '24px' }}>
-            <label style={{ fontSize: '14px', fontWeight: '600', color: '#4a5568', marginBottom: '8px', display: 'block' }}>
-              AWS Regions
-            </label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          <div style={{ marginTop: '16px' }}>
+            <label className="workflow-inline-label">AWS Regions</label>
+            <div className="workflow-chip-grid">
               {['us-east-1', 'us-west-2', 'eu-west-1', 'ap-southeast-1'].map(region => (
-                <label key={region} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                <label key={region} className="workflow-chip" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
                     checked={regions.includes(region)}
@@ -281,27 +247,24 @@ export const DiscoveryDashboard: React.FC = () => {
                       }
                     }}
                   />
-                  <span style={{ fontSize: '14px', color: '#4a5568' }}>{region}</span>
+                  {region}
                 </label>
               ))}
             </div>
           </div>
 
-          {/* Resource Types */}
-          <div style={{ marginBottom: '24px' }}>
-            <label style={{ fontSize: '14px', fontWeight: '600', color: '#4a5568', marginBottom: '8px', display: 'block' }}>
-              Resource Types
-            </label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          <div style={{ marginTop: '16px' }}>
+            <label className="workflow-inline-label">Resource Types</label>
+            <div className="workflow-chip-grid">
               {[
-                { value: 'ec2_instance', label: 'EC2 Instances' },
-                { value: 'rds_instance', label: 'RDS Databases' },
-                { value: 's3_bucket', label: 'S3 Buckets' },
-                { value: 'vpc', label: 'VPCs' },
-                { value: 'subnet', label: 'Subnets' },
-                { value: 'security_group', label: 'Security Groups' }
+                { value: 'ec2_instance', label: 'EC2' },
+                { value: 'rds_instance', label: 'RDS' },
+                { value: 's3_bucket', label: 'S3' },
+                { value: 'vpc', label: 'VPC' },
+                { value: 'subnet', label: 'Subnet' },
+                { value: 'security_group', label: 'Security Group' }
               ].map(type => (
-                <label key={type.value} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                <label key={type.value} className="workflow-chip" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
                     checked={resourceTypes.includes(type.value)}
@@ -313,357 +276,156 @@ export const DiscoveryDashboard: React.FC = () => {
                       }
                     }}
                   />
-                  <span style={{ fontSize: '14px', color: '#4a5568' }}>{type.label}</span>
+                  {type.label}
                 </label>
               ))}
             </div>
           </div>
 
-          {/* Start Button */}
-          <button
-            onClick={startScan}
-            disabled={loading || regions.length === 0 || resourceTypes.length === 0}
-            style={{
-              padding: '12px 32px',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: (loading || regions.length === 0 || resourceTypes.length === 0) ? 'not-allowed' : 'pointer',
-              fontWeight: '600',
-              fontSize: '16px',
-              opacity: (loading || regions.length === 0 || resourceTypes.length === 0) ? 0.5 : 1
-            }}
-          >
-            {loading ? 'Starting Scan...' : '🔍 Start Discovery Scan'}
-          </button>
-
-          <div style={{
-            marginTop: '24px',
-            padding: '16px',
-            background: '#eef2ff',
-            borderRadius: '8px',
-            fontSize: '14px',
-            color: '#4c51bf'
-          }}>
-            💡 <strong>Note:</strong> Discovery scan is read-only and makes no changes to your infrastructure.
-            Typical scan takes 5-10 minutes for 250 resources.
+          <div className="workflow-actions" style={{ marginTop: '20px' }}>
+            <button
+              onClick={startScan}
+              disabled={loading || regions.length === 0 || resourceTypes.length === 0}
+              className="workflow-btn workflow-btn-primary"
+            >
+              {loading ? 'Starting Scan...' : 'Start Discovery Scan'}
+            </button>
           </div>
-        </div>
+        </section>
       )}
 
-      {/* Scan Results */}
       {activeView === 'results' && (
-        <div>
-          {/* Scan Status */}
+        <section>
           {currentScan && (
-            <div style={{
-              background: 'white',
-              padding: '24px',
-              borderRadius: '12px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-              marginBottom: '24px'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div style={{ fontSize: '16px', fontWeight: '600', color: '#1a202c', marginBottom: '4px' }}>
-                    Scan Status: <span style={{ color: currentScan.status === 'completed' ? '#34a853' : '#f9ab00' }}>
-                      {currentScan.status.toUpperCase()}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '14px', color: '#718096' }}>
-                    Discovered {currentScan.total_resources} resources • Started {new Date(currentScan.started_at).toLocaleString()}
-                  </div>
-                </div>
-
-                {currentScan.status === 'running' && (
-                  <div style={{ fontSize: '24px', fontWeight: '700', color: '#667eea' }}>
-                    {currentScan.progress_percent}%
-                  </div>
-                )}
+            <article className="workflow-card">
+              <h2>Current Scan</h2>
+              <div className="workflow-card-subtitle">
+                Status: <strong>{currentScan.status.toUpperCase()}</strong> · {currentScan.total_resources} resources discovered
               </div>
-
+              <div className="workflow-card-subtitle">Started: {new Date(currentScan.started_at).toLocaleString()}</div>
               {currentScan.status === 'running' && (
-                <div style={{
-                  marginTop: '16px',
-                  height: '8px',
-                  background: '#e2e8f0',
-                  borderRadius: '4px',
-                  overflow: 'hidden'
-                }}>
-                  <div style={{
-                    width: `${currentScan.progress_percent}%`,
-                    height: '100%',
-                    background: 'linear-gradient(90deg, #667eea 0%, #764ba2 100%)',
-                    transition: 'width 0.5s'
-                  }} />
+                <div style={{ marginTop: '10px' }}>
+                  <div style={{ height: '8px', borderRadius: '8px', background: '#e2e8f0', overflow: 'hidden' }}>
+                    <div
+                      style={{
+                        width: `${currentScan.progress_percent}%`,
+                        height: '100%',
+                        transition: 'width 0.3s',
+                        background: 'linear-gradient(90deg, #0ea5e9 0%, #0f766e 100%)'
+                      }}
+                    />
+                  </div>
+                  <div style={{ marginTop: '6px', fontSize: '12px', color: '#475569' }}>{currentScan.progress_percent}% complete</div>
                 </div>
               )}
-            </div>
+            </article>
           )}
 
-          {/* Report Summary */}
-          {scanReport && (
+          {scanReport ? (
             <>
-              {/* Stats Grid */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '16px',
-                marginBottom: '24px'
-              }}>
-                <div style={{
-                  background: 'white',
-                  padding: '20px',
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-                }}>
-                  <div style={{ fontSize: '14px', color: '#718096', marginBottom: '4px' }}>Total Resources</div>
-                  <div style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c' }}>{scanReport.total_resources}</div>
-                </div>
-
-                <div style={{
-                  background: 'white',
-                  padding: '20px',
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-                }}>
-                  <div style={{ fontSize: '14px', color: '#718096', marginBottom: '4px' }}>High Confidence</div>
-                  <div style={{ fontSize: '32px', fontWeight: '700', color: '#34a853' }}>
-                    {scanReport.coverage.high_confidence_count}
-                  </div>
-                </div>
-
-                <div style={{
-                  background: 'white',
-                  padding: '20px',
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-                }}>
-                  <div style={{ fontSize: '14px', color: '#718096', marginBottom: '4px' }}>Tagged</div>
-                  <div style={{ fontSize: '32px', fontWeight: '700', color: '#667eea' }}>
-                    {scanReport.coverage.tagged_count}
-                  </div>
-                </div>
-
-                <div style={{
-                  background: 'white',
-                  padding: '20px',
-                  borderRadius: '12px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-                }}>
-                  <div style={{ fontSize: '14px', color: '#718096', marginBottom: '4px' }}>Tag Consistency</div>
-                  <div style={{ fontSize: '32px', fontWeight: '700', color: '#f9ab00' }}>
-                    {(scanReport.patterns.tag_consistency * 100).toFixed(0)}%
-                  </div>
-                </div>
+              <div className="workflow-stats-grid">
+                <article className="workflow-stat">
+                  <div className="workflow-stat-label">Total Resources</div>
+                  <div className="workflow-stat-value">{scanReport.total_resources}</div>
+                </article>
+                <article className="workflow-stat">
+                  <div className="workflow-stat-label">High Confidence</div>
+                  <div className="workflow-stat-value" style={{ color: '#16a34a' }}>{scanReport.coverage.high_confidence_count}</div>
+                </article>
+                <article className="workflow-stat">
+                  <div className="workflow-stat-label">Tagged</div>
+                  <div className="workflow-stat-value" style={{ color: '#0284c7' }}>{scanReport.coverage.tagged_count}</div>
+                </article>
+                <article className="workflow-stat">
+                  <div className="workflow-stat-label">Tag Consistency</div>
+                  <div className="workflow-stat-value" style={{ color: '#d97706' }}>{(scanReport.patterns.tag_consistency * 100).toFixed(0)}%</div>
+                </article>
               </div>
 
-              {/* Resources Table */}
-              <div style={{
-                background: 'white',
-                padding: '24px',
-                borderRadius: '12px',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '16px'
-                }}>
-                  <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1a202c' }}>
-                    Discovered Resources ({scanReport.resources.length})
-                  </h3>
-
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                      onClick={selectAll}
-                      style={{
-                        padding: '6px 12px',
-                        background: '#f7fafc',
-                        border: '2px solid #e2e8f0',
-                        borderRadius: '6px',
-                        fontSize: '13px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Select All
-                    </button>
-                    <button
-                      onClick={clearSelection}
-                      style={{
-                        padding: '6px 12px',
-                        background: '#f7fafc',
-                        border: '2px solid #e2e8f0',
-                        borderRadius: '6px',
-                        fontSize: '13px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      Clear
-                    </button>
+              <article className="workflow-card">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                  <h2>Discovered Resources ({scanReport.resources.length})</h2>
+                  <div className="workflow-actions">
+                    <button onClick={selectAll} className="workflow-btn workflow-btn-secondary">Select All</button>
+                    <button onClick={clearSelection} className="workflow-btn workflow-btn-secondary">Clear</button>
                     <button
                       onClick={() => setActiveView('import')}
                       disabled={selectedResources.size === 0}
-                      style={{
-                        padding: '6px 12px',
-                        background: selectedResources.size > 0 ? '#667eea' : '#e2e8f0',
-                        color: selectedResources.size > 0 ? 'white' : '#a0aec0',
-                        border: 'none',
-                        borderRadius: '6px',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        cursor: selectedResources.size > 0 ? 'pointer' : 'not-allowed'
-                      }}
+                      className="workflow-btn workflow-btn-primary"
                     >
                       Import ({selectedResources.size})
                     </button>
                   </div>
                 </div>
 
-                <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                  {scanReport.resources.map(resource => (
-                    <div
-                      key={resource.resource_id}
-                      style={{
-                        padding: '16px',
-                        background: selectedResources.has(resource.resource_id) ? '#eef2ff' : '#f7fafc',
-                        borderRadius: '8px',
-                        marginBottom: '8px',
-                        border: selectedResources.has(resource.resource_id) ? '2px solid #667eea' : '2px solid #e2e8f0',
-                        cursor: 'pointer'
-                      }}
-                      onClick={() => toggleResourceSelection(resource.resource_id)}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: '15px', fontWeight: '600', color: '#1a202c', marginBottom: '4px' }}>
-                            {resource.name || resource.resource_id}
-                          </div>
-                          <div style={{ fontSize: '13px', color: '#718096', marginBottom: '8px' }}>
-                            {resource.resource_type} • {resource.region}
-                          </div>
-
-                          {(resource.inferred_environment || resource.inferred_project) && (
-                            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                              {resource.inferred_environment && (
-                                <span style={{
-                                  padding: '2px 8px',
-                                  background: `${getConfidenceColor(resource.confidence_score)}20`,
-                                  color: getConfidenceColor(resource.confidence_score),
-                                  borderRadius: '4px',
-                                  fontSize: '12px',
-                                  fontWeight: '600'
-                                }}>
-                                  Environment: {resource.inferred_environment}
-                                </span>
-                              )}
-                              {resource.inferred_project && (
-                                <span style={{
-                                  padding: '2px 8px',
-                                  background: '#e2e8f0',
-                                  color: '#4a5568',
-                                  borderRadius: '4px',
-                                  fontSize: '12px',
-                                  fontWeight: '600'
-                                }}>
-                                  Project: {resource.inferred_project}
-                                </span>
-                              )}
+                <div className="workflow-list" style={{ marginTop: '12px', maxHeight: '520px', overflowY: 'auto' }}>
+                  {scanReport.resources.map(resource => {
+                    const selected = selectedResources.has(resource.resource_id);
+                    return (
+                      <article
+                        key={resource.resource_id}
+                        className={`workflow-list-item ${selected ? 'is-selected' : ''}`}
+                        onClick={() => toggleResourceSelection(resource.resource_id)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <div className="workflow-item-header">
+                          <div>
+                            <div className="workflow-item-title">{resource.name || resource.resource_id}</div>
+                            <div className="workflow-item-meta">{resource.resource_type} · {resource.region}</div>
+                            <div className="workflow-chip-grid" style={{ marginTop: '6px' }}>
+                              {resource.inferred_environment && <span className="workflow-chip">Env: {resource.inferred_environment}</span>}
+                              {resource.inferred_project && <span className="workflow-chip">Project: {resource.inferred_project}</span>}
                             </div>
-                          )}
-                        </div>
-
-                        <div style={{ textAlign: 'right' }}>
-                          <div style={{
-                            padding: '4px 8px',
-                            background: `${getConfidenceColor(resource.confidence_score)}20`,
-                            color: getConfidenceColor(resource.confidence_score),
-                            borderRadius: '4px',
-                            fontSize: '12px',
-                            fontWeight: '600',
-                            marginBottom: '4px'
-                          }}>
-                            {(resource.confidence_score * 100).toFixed(0)}% confidence
                           </div>
-                          <input
-                            type="checkbox"
-                            checked={selectedResources.has(resource.resource_id)}
-                            onChange={() => {}}
-                            style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-                          />
+                          <div style={{ textAlign: 'right' }}>
+                            <div className="workflow-badge" style={{ background: `${getConfidenceColor(resource.confidence_score)}20`, color: getConfidenceColor(resource.confidence_score) }}>
+                              {(resource.confidence_score * 100).toFixed(0)}% confidence
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={selected}
+                              onChange={() => toggleResourceSelection(resource.resource_id)}
+                              onClick={(e) => e.stopPropagation()}
+                              style={{ marginTop: '8px', width: '17px', height: '17px' }}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  ))}
+                      </article>
+                    );
+                  })}
                 </div>
-              </div>
-            </>
-          )}
-
-          {!currentScan && !scanReport && (
-            <div style={{
-              background: 'white',
-              padding: '60px 32px',
-              borderRadius: '12px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-              textAlign: 'center',
-              color: '#718096'
-            }}>
-              No scan results yet. Start a discovery scan to view resources.
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Import Preview */}
-      {activeView === 'import' && (
-        <div style={{
-          background: 'white',
-          padding: '32px',
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-        }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1a202c', marginBottom: '16px' }}>
-            Import Preview
-          </h2>
-
-          {selectedResources.size > 0 ? (
-            <>
-              <div style={{ marginBottom: '24px', fontSize: '14px', color: '#4a5568' }}>
-                Ready to import <strong>{selectedResources.size}</strong> resources into Terraform state.
-                This will generate Terraform code for each resource.
-              </div>
-
-              <button
-                onClick={importResources}
-                disabled={loading}
-                style={{
-                  padding: '12px 32px',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  fontWeight: '600',
-                  fontSize: '16px',
-                  opacity: loading ? 0.5 : 1
-                }}
-              >
-                {loading ? 'Importing...' : `✓ Import ${selectedResources.size} Resources`}
-              </button>
+              </article>
             </>
           ) : (
-            <div style={{
-              padding: '40px',
-              textAlign: 'center',
-              color: '#718096'
-            }}>
-              No resources selected. Go to Results tab and select resources to import.
+            <div className="workflow-empty">No scan report yet. Start a scan from the setup tab.</div>
+          )}
+        </section>
+      )}
+
+      {activeView === 'import' && (
+        <section className="workflow-card">
+          <h2>Import Selected Resources</h2>
+          <div className="workflow-card-subtitle">Generate Terraform-aligned state from discovered infrastructure.</div>
+          {selectedResources.size > 0 ? (
+            <>
+              <p style={{ marginTop: '12px', color: '#475569' }}>
+                You selected <strong>{selectedResources.size}</strong> resources for import.
+              </p>
+              <div className="workflow-actions" style={{ marginTop: '14px' }}>
+                <button onClick={importResources} disabled={loading} className="workflow-btn workflow-btn-primary">
+                  {loading ? 'Importing...' : `Import ${selectedResources.size} Resources`}
+                </button>
+                <button onClick={() => setActiveView('results')} className="workflow-btn workflow-btn-secondary">
+                  Back to Results
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="workflow-empty" style={{ marginTop: '14px' }}>
+              No resources selected yet. Pick resources from Scan Results.
             </div>
           )}
-        </div>
+        </section>
       )}
     </div>
   );

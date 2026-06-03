@@ -1,0 +1,17 @@
+Create a 90 second professional technology explainer video for PromptOps cloud operations platform. Dark blue and black background with red and orange accents for problems. Modern cinematic style with fast cuts.
+
+Scene 1 (12 seconds): Show stressed engineer at desk with three monitors displaying AWS Azure and GCP dashboards. Red alerts stack up across screens. Text overlay says 1000 plus cloud resources across multiple clouds.
+
+Scene 2 (15 seconds): Split screen showing engineer on emergency call at 2 AM on left side. Right side shows cost meter rising with 5600 dollars per minute and timer showing 6 to 8 hours. Text says 80 percent time firefighting not innovating.
+
+Scene 3 (18 seconds): Animated money burning with idle cloud servers marked unused. Show open storage buckets with security warnings. Pie chart reveals 35 to 40 percent wasted spend. Text says cloud waste from misconfigurations.
+
+Scene 4 (20 seconds): Black Friday scenario showing website traffic spike at 6 PM then site crash at 6:45 PM and restore at 8:30 PM. Revenue counter climbs to 840000 dollars lost. Text says preventable disaster.
+
+Scene 5 (13 seconds): Show AWS Azure and GCP as separate disconnected platforms with alerts firing everywhere. Engineer overwhelmed in center. Text says no unified view just reactive chaos.
+
+Scene 6 (12 seconds): Fade to black then show white text appearing PROACTIVE PREDICTIVE AUTOMATED. PromptOps logo appears with tagline prevent problems before they cost millions and website promptops.com.
+
+Professional urgent voiceover for first 78 seconds then shift to confident hopeful tone. Key message is DevOps teams drowning in complexity spending time firefighting with massive waste and preventable outages but PromptOps offers proactive predictive automated solution.
+
+Export 1920x1080 at 30fps with captions.

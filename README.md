@@ -1,10 +1,14 @@
-# 🚀 PromptOps - Agentic DevOps Platform
-
-[![Backend Tests](https://github.com/Ujwal-Ramaiah-Venkatesh/PromptOps/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/Ujwal-Ramaiah-Venkatesh/PromptOps/actions/workflows/backend-tests.yml)
-[![Frontend Tests](https://github.com/Ujwal-Ramaiah-Venkatesh/PromptOps/actions/workflows/frontend-tests.yml/badge.svg)](https://github.com/Ujwal-Ramaiah-Venkatesh/PromptOps/actions/workflows/frontend-tests.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-**Natural language interface for DevOps operations with intelligent automation.**
+<div align="center">
+  <img src="assets/promptops-logo.png" alt="PromptOps Logo" width="300"/>
+  
+  # 🚀 PromptOps - Agentic DevOps Platform
+  
+  [![Backend Tests](https://github.com/Ujwal-Ramaiah-Venkatesh/PromptOps/actions/workflows/backend-tests.yml/badge.svg)](https://github.com/Ujwal-Ramaiah-Venkatesh/PromptOps/actions/workflows/backend-tests.yml)
+  [![Frontend Tests](https://github.com/Ujwal-Ramaiah-Venkatesh/PromptOps/actions/workflows/frontend-tests.yml/badge.svg)](https://github.com/Ujwal-Ramaiah-Venkatesh/PromptOps/actions/workflows/frontend-tests.yml)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  
+  **Natural language interface for DevOps operations with intelligent automation.**
+</div>
 
 Transform natural language commands into infrastructure actions with context-aware AI, risk-based autonomy tiers, and automatic drift detection.
 
@@ -75,11 +79,9 @@ npm run dev
 # Access at http://localhost:3003
 ```
 
-### Login Credentials
-```
-Admin: admin@promptops.com / admin123
-PM:    pm@promptops.com / pm123
-```
+### Demo Access
+The local demo environment seeds sample users when you run `python api_gateway/start_with_mock_db.py`.
+Set your own local credentials or seed data for any shared or deployed environment.
 
 **See [QUICK_START.md](QUICK_START.md) for detailed setup instructions.**
 
@@ -153,10 +155,14 @@ npm run test:ui                   # Interactive UI
 | Document | Description |
 |----------|-------------|
 | [QUICK_START.md](QUICK_START.md) | 5-minute setup guide |
-| [DEPLOYMENT.md](DEPLOYMENT.md) | Production deployment (AWS/GCP/Azure) |
-| [FRONTEND_TESTING_READY.md](FRONTEND_TESTING_READY.md) | Manual testing checklist |
-| [TEST_STATUS.md](TEST_STATUS.md) | Test suite status |
-| [FINAL_STATUS.md](FINAL_STATUS.md) | Complete project status |
+| [DEPLOYMENT.md](DEPLOYMENT.md) | Production deployment overview |
+| [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) | Detailed deployment guide |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | System architecture and design |
+| [PRODUCT_OVERVIEW.md](PRODUCT_OVERVIEW.md) | Product capabilities and positioning |
+| [TESTING_GUIDE.md](TESTING_GUIDE.md) | Manual and automated testing instructions |
+| [RUN_TESTS.md](RUN_TESTS.md) | Test execution reference |
+| [SECURITY_AUDIT.md](SECURITY_AUDIT.md) | Security review and hardening notes |
+| [docs/archive/README.md](docs/archive/README.md) | Historical reports and archived project artifacts |
 | [API Docs](http://localhost:8000/docs) | Swagger API documentation |
 
 ---

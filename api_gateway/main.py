@@ -15,7 +15,7 @@ Author: PromptOps Team - Week 11-12
 Date: 2026-04-28
 """
 
-from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks, status
+from fastapi import FastAPI, HTTPException, Depends, BackgroundTasks, status, Form, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, EmailStr
@@ -25,6 +25,10 @@ from uuid import UUID, uuid4
 import sys
 import os
 import logging
+
+# Configure logging early so import-time warnings are safe
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -36,9 +40,30 @@ from decomposition.decomposition_engine import DecompositionEngine
 from context.context_aware_parser import ContextAwareParser
 from context.drift_detector import DriftDetector
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Import routers
+try:
+    from cicd_routes import router as cicd_router
+except Exception as e:
+    logger.warning(f"Failed to import cicd_routes: {e}")
+    cicd_router = None
+
+try:
+    from cloudwatch_routes import router as cloudwatch_router
+except Exception as e:
+    logger.warning(f"Failed to import cloudwatch_routes: {e}")
+    cloudwatch_router = None
+
+try:
+    from deployment_routes import router as deployment_router
+except Exception as e:
+    logger.warning(f"Failed to import deployment_routes: {e}")
+    deployment_router = None
+
+try:
+    from static_deploy_routes import router as static_deploy_router
+except Exception as e:
+    logger.warning(f"Failed to import static_deploy_routes: {e}")
+    static_deploy_router = None
 
 # ============================================================================
 # FastAPI App Initialization
@@ -67,6 +92,34 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ============================================================================
+# Register Routers
+# ============================================================================
+
+if cicd_router:
+    app.include_router(cicd_router)
+    logger.info("✓ CI/CD router registered at /api/v1/cicd")
+else:
+    logger.warning("✗ CI/CD router could not be registered")
+
+if deployment_router:
+    app.include_router(deployment_router)
+    logger.info("✓ Deployment router registered at /api/v1/deployment")
+else:
+    logger.warning("✗ Deployment router could not be registered")
+
+if static_deploy_router:
+    app.include_router(static_deploy_router)
+    logger.info("✓ Static deploy router registered at /api/v1/deploy")
+else:
+    logger.warning("✗ Static deploy router could not be registered")
+
+if cloudwatch_router:
+    app.include_router(cloudwatch_router)
+    logger.info("✓ CloudWatch observability router registered at /api/v1/monitoring/cloudwatch")
+else:
+    logger.warning("✗ CloudWatch router could not be registered")
 
 # ============================================================================
 # Pydantic Models
@@ -238,6 +291,20 @@ class HealthResponse(BaseModel):
     services: Dict[str, str]
 
 
+class AuthUser(BaseModel):
+    id: str
+    email: EmailStr
+    full_name: str
+    role: str
+    is_active: bool = True
+
+
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: AuthUser
+
+
 # ============================================================================
 # Global State (In-memory for now, will move to DB)
 # ============================================================================
@@ -253,6 +320,46 @@ audit_store: List[Dict[str, Any]] = []
 
 # Store drift events
 drift_store: List[Dict[str, Any]] = []
+
+# Mock auth users for local dashboard testing
+mock_users: Dict[str, Dict[str, Any]] = {
+    "admin@promptops.com": {
+        "id": "1",
+        "email": "admin@promptops.com",
+        "full_name": "Admin User",
+        "role": "admin",
+        "password": "admin123",
+        "is_active": True,
+    },
+    "pm@promptops.com": {
+        "id": "2",
+        "email": "pm@promptops.com",
+        "full_name": "Product Manager",
+        "role": "pm",
+        "password": "pm123",
+        "is_active": True,
+    },
+}
+
+
+def _build_mock_token(email: str) -> str:
+    return f"mock-token:{email}"
+
+
+def _get_current_user_from_header(authorization: Optional[str] = Header(default=None)) -> AuthUser:
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+
+    token = authorization.split(" ", 1)[1]
+    if not token.startswith("mock-token:"):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+    email = token.replace("mock-token:", "", 1)
+    user = mock_users.get(email)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+    return AuthUser(**{k: v for k, v in user.items() if k != "password"})
 
 # ============================================================================
 # Initialize Backend Services
@@ -277,6 +384,30 @@ else:
 # ============================================================================
 # Health Check
 # ============================================================================
+
+@app.post("/api/v1/auth/login", response_model=LoginResponse, tags=["Auth"])
+async def login(username: str = Form(...), password: str = Form(...)):
+    """Local mock login used by dashboard manual testing."""
+    user = mock_users.get(username)
+    if not user or user.get("password") != password:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+
+    auth_user = AuthUser(**{k: v for k, v in user.items() if k != "password"})
+    return {
+        "access_token": _build_mock_token(auth_user.email),
+        "token_type": "bearer",
+        "user": auth_user,
+    }
+
+
+@app.get("/api/v1/auth/me", response_model=AuthUser, tags=["Auth"])
+async def get_current_user(current_user: AuthUser = Depends(_get_current_user_from_header)):
+    return current_user
+
+
+@app.post("/api/v1/auth/logout", tags=["Auth"])
+async def logout(current_user: AuthUser = Depends(_get_current_user_from_header)):
+    return {"message": f"Logged out {current_user.email}"}
 
 @app.get("/health", response_model=HealthResponse, tags=["Health"])
 async def health_check():

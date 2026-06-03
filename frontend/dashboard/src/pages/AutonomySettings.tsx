@@ -11,7 +11,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
-import { useAuth } from '../contexts/AuthContext';
+import './PremiumWorkflows.css';
 
 interface AutonomyTier {
   risk_level: string;
@@ -44,7 +44,6 @@ interface Stats {
 }
 
 export const AutonomySettings: React.FC = () => {
-  const { user } = useAuth();
   const [settings, setSettings] = useState<AutonomySettings | null>(null);
   const [actionTypes, setActionTypes] = useState<ActionType[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -146,362 +145,173 @@ export const AutonomySettings: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '400px',
-        color: '#718096'
-      }}>
-        Loading autonomy settings...
+      <div className="workflow-page">
+        <div className="workflow-empty">Loading autonomy settings...</div>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px' }}>
-      {/* Header */}
-      <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c', marginBottom: '8px' }}>
-          ⚙️ Autonomy Settings
-        </h1>
-        <p style={{ color: '#718096', fontSize: '16px' }}>
-          Configure risk-based auto-execution to reduce approval fatigue
+    <div className="workflow-page">
+      <header className="workflow-header">
+        <div className="workflow-eyebrow">Autonomy Controls</div>
+        <h1 className="workflow-title">Risk-based automation with guardrails</h1>
+        <p className="workflow-subtitle">
+          Decide which actions can run automatically and which always require explicit approval.
         </p>
-      </div>
+      </header>
 
-      {/* Error Alert */}
+      <section className="workflow-onboarding">
+        <h3>How to Configure Safely</h3>
+        <p>Use these three steps to avoid risky automation mistakes.</p>
+        <div className="workflow-onboarding-grid">
+          <div className="workflow-step-card">
+            <div className="workflow-step-card-title">1. Enable low-risk first</div>
+            <div className="workflow-step-card-text">Start with LOW and MEDIUM tiers to build confidence.</div>
+          </div>
+          <div className="workflow-step-card">
+            <div className="workflow-step-card-title">2. Keep high-risk manual</div>
+            <div className="workflow-step-card-text">HIGH and CRITICAL should usually remain approval-gated.</div>
+          </div>
+          <div className="workflow-step-card">
+            <div className="workflow-step-card-title">3. Monitor execution rate</div>
+            <div className="workflow-step-card-text">Use stats below to confirm the policy behaves as intended.</div>
+          </div>
+        </div>
+      </section>
+
       {error && (
-        <div style={{
-          padding: '16px',
-          background: '#fef2f2',
-          border: '1px solid #fecaca',
-          borderRadius: '8px',
-          color: '#991b1b',
-          marginBottom: '24px'
-        }}>
-          ⚠ {error}
+        <div className="workflow-alert">
+          <span>⚠ {error}</span>
+          <button onClick={() => setError(null)} aria-label="Dismiss error">×</button>
         </div>
       )}
 
-      {/* Stats Cards */}
       {stats && (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '16px',
-          marginBottom: '32px'
-        }}>
-          <div style={{
-            background: 'white',
-            padding: '20px',
-            borderRadius: '12px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-          }}>
-            <div style={{ fontSize: '14px', color: '#718096', marginBottom: '4px' }}>Total Actions</div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c' }}>{stats.total_actions}</div>
-          </div>
-
-          <div style={{
-            background: 'white',
-            padding: '20px',
-            borderRadius: '12px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-          }}>
-            <div style={{ fontSize: '14px', color: '#718096', marginBottom: '4px' }}>Auto-Executed</div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#34a853' }}>{stats.auto_executed}</div>
-          </div>
-
-          <div style={{
-            background: 'white',
-            padding: '20px',
-            borderRadius: '12px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-          }}>
-            <div style={{ fontSize: '14px', color: '#718096', marginBottom: '4px' }}>Manual Approved</div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#f9ab00' }}>{stats.manual_approved}</div>
-          </div>
-
-          <div style={{
-            background: 'white',
-            padding: '20px',
-            borderRadius: '12px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-          }}>
-            <div style={{ fontSize: '14px', color: '#718096', marginBottom: '4px' }}>Auto Rate</div>
-            <div style={{ fontSize: '32px', fontWeight: '700', color: '#667eea' }}>
-              {stats.auto_execution_rate.toFixed(1)}%
-            </div>
-          </div>
-        </div>
+        <section className="workflow-stats-grid">
+          <article className="workflow-stat">
+            <div className="workflow-stat-label">Total Actions</div>
+            <div className="workflow-stat-value">{stats.total_actions}</div>
+          </article>
+          <article className="workflow-stat">
+            <div className="workflow-stat-label">Auto Executed</div>
+            <div className="workflow-stat-value" style={{ color: '#16a34a' }}>{stats.auto_executed}</div>
+          </article>
+          <article className="workflow-stat">
+            <div className="workflow-stat-label">Manual Approved</div>
+            <div className="workflow-stat-value" style={{ color: '#d97706' }}>{stats.manual_approved}</div>
+          </article>
+          <article className="workflow-stat">
+            <div className="workflow-stat-label">Auto Execution Rate</div>
+            <div className="workflow-stat-value" style={{ color: '#0284c7' }}>{stats.auto_execution_rate.toFixed(1)}%</div>
+          </article>
+        </section>
       )}
 
-      {/* Tabs */}
-      <div style={{
-        display: 'flex',
-        gap: '8px',
-        marginBottom: '24px',
-        borderBottom: '2px solid #e2e8f0'
-      }}>
+      <div className="workflow-tabs">
         {(['settings', 'actions', 'history'] as const).map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            style={{
-              padding: '12px 24px',
-              background: 'transparent',
-              border: 'none',
-              borderBottom: activeTab === tab ? '2px solid #667eea' : '2px solid transparent',
-              color: activeTab === tab ? '#667eea' : '#718096',
-              fontWeight: activeTab === tab ? '600' : '400',
-              cursor: 'pointer',
-              marginBottom: '-2px',
-              textTransform: 'capitalize'
-            }}
+            className={`workflow-tab ${activeTab === tab ? 'is-active' : ''}`}
           >
-            {tab}
+            {tab === 'settings' ? 'Tier Settings' : tab === 'actions' ? 'Action Catalog' : 'Execution History'}
           </button>
         ))}
       </div>
 
-      {/* Settings Tab */}
       {activeTab === 'settings' && settings && (
-        <div style={{
-          background: 'white',
-          padding: '32px',
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-        }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '24px'
-          }}>
+        <section className="workflow-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <div>
-              <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1a202c', marginBottom: '4px' }}>
-                Risk Tier Configuration
-              </h2>
-              <p style={{ fontSize: '14px', color: '#718096' }}>
-                Enable auto-execution for LOW and MEDIUM risk operations
-              </p>
+              <h2>Risk Tier Configuration</h2>
+              <div className="workflow-card-subtitle">Toggle auto-execution per risk level.</div>
             </div>
-            <button
-              onClick={resetToDefaults}
-              disabled={saving}
-              style={{
-                padding: '8px 16px',
-                background: '#f7fafc',
-                border: '2px solid #e2e8f0',
-                borderRadius: '6px',
-                color: '#4a5568',
-                cursor: saving ? 'not-allowed' : 'pointer',
-                fontWeight: '600',
-                fontSize: '14px'
-              }}
-            >
+            <button onClick={resetToDefaults} disabled={saving} className="workflow-btn workflow-btn-secondary">
               Reset to Defaults
             </button>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="workflow-list" style={{ marginTop: '14px' }}>
             {settings.tiers.map(tier => (
-              <div
-                key={tier.risk_level}
-                style={{
-                  padding: '20px',
-                  background: '#f7fafc',
-                  borderRadius: '8px',
-                  border: `2px solid ${getRiskColor(tier.risk_level)}20`,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <div style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '8px',
-                    background: `${getRiskColor(tier.risk_level)}20`,
-                    color: getRiskColor(tier.risk_level),
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '24px',
-                    fontWeight: '700'
-                  }}>
-                    {getRiskIcon(tier.risk_level)}
-                  </div>
-
+              <article key={tier.risk_level} className="workflow-list-item">
+                <div className="workflow-item-header">
                   <div>
-                    <div style={{
-                      fontSize: '18px',
-                      fontWeight: '600',
-                      color: '#1a202c',
-                      marginBottom: '4px'
-                    }}>
+                    <div className="workflow-item-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ color: getRiskColor(tier.risk_level) }}>{getRiskIcon(tier.risk_level)}</span>
                       {tier.risk_level} Risk
                     </div>
-                    <div style={{ fontSize: '14px', color: '#718096' }}>
-                      {tier.requires_2fa && '🔒 Requires 2FA • '}
-                      {!tier.can_modify && 'Locked by policy'}
+                    <div className="workflow-item-meta">
+                      {tier.requires_2fa ? 'Requires 2FA' : 'No 2FA required'}
+                      {' · '}
+                      {tier.can_modify ? 'Editable' : 'Locked by policy'}
                     </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '13px', color: '#475569', fontWeight: 700 }}>Auto Execute</span>
+                    <button
+                      aria-label={`Toggle ${tier.risk_level} risk auto execution`}
+                      className={`workflow-switch ${tier.auto_execute ? 'is-on' : ''}`}
+                      onClick={() => tier.can_modify && toggleTier(tier.risk_level, tier.auto_execute)}
+                      disabled={!tier.can_modify || saving}
+                    >
+                      <span className="workflow-switch-knob" />
+                    </button>
                   </div>
                 </div>
-
-                <label style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  cursor: tier.can_modify ? 'pointer' : 'not-allowed',
-                  opacity: tier.can_modify ? 1 : 0.5
-                }}>
-                  <span style={{ fontSize: '14px', fontWeight: '600', color: '#4a5568' }}>
-                    Auto-Execute
-                  </span>
-                  <div
-                    onClick={() => tier.can_modify && toggleTier(tier.risk_level, tier.auto_execute)}
-                    style={{
-                      width: '48px',
-                      height: '24px',
-                      borderRadius: '12px',
-                      background: tier.auto_execute ? '#34a853' : '#cbd5e0',
-                      position: 'relative',
-                      transition: 'background 0.2s'
-                    }}
-                  >
-                    <div style={{
-                      width: '20px',
-                      height: '20px',
-                      borderRadius: '50%',
-                      background: 'white',
-                      position: 'absolute',
-                      top: '2px',
-                      left: tier.auto_execute ? '26px' : '2px',
-                      transition: 'left 0.2s',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                    }} />
-                  </div>
-                </label>
-              </div>
+              </article>
             ))}
           </div>
-
-          <div style={{
-            marginTop: '24px',
-            padding: '16px',
-            background: '#eef2ff',
-            borderRadius: '8px',
-            fontSize: '14px',
-            color: '#4c51bf'
-          }}>
-            💡 <strong>Tip:</strong> HIGH and CRITICAL risk actions always require manual approval for safety.
-            Enable auto-execution for LOW and MEDIUM to reduce approval requests by ~80%.
-          </div>
-        </div>
+        </section>
       )}
 
-      {/* Action Types Tab */}
       {activeTab === 'actions' && (
-        <div style={{
-          background: 'white',
-          padding: '32px',
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-        }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1a202c', marginBottom: '16px' }}>
-            Action Types & Risk Levels
-          </h2>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <section className="workflow-card">
+          <h2>Action Catalog by Base Risk</h2>
+          <div className="workflow-card-subtitle">Use this to understand what each automation decision affects.</div>
+          <div className="workflow-list" style={{ marginTop: '14px' }}>
             {actionTypes.map(action => (
-              <div
-                key={action.action_type}
-                style={{
-                  padding: '16px',
-                  background: '#f7fafc',
-                  borderRadius: '8px',
-                  border: '2px solid #e2e8f0'
-                }}
-              >
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'flex-start',
-                  marginBottom: '8px'
-                }}>
+              <article key={action.action_type} className="workflow-list-item">
+                <div className="workflow-item-header">
                   <div>
-                    <div style={{
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      color: '#1a202c',
-                      marginBottom: '4px'
-                    }}>
-                      {action.action_type.replace(/_/g, ' ')}
-                    </div>
-                    <div style={{ fontSize: '14px', color: '#718096' }}>
-                      {action.description}
-                    </div>
+                    <div className="workflow-item-title">{action.action_type.replace(/_/g, ' ')}</div>
+                    <div className="workflow-item-meta">{action.description}</div>
                   </div>
-
-                  <div style={{
-                    padding: '4px 12px',
-                    borderRadius: '12px',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    background: `${getRiskColor(action.base_risk)}20`,
-                    color: getRiskColor(action.base_risk),
-                    whiteSpace: 'nowrap'
-                  }}>
+                  <div className="workflow-badge" style={{ background: `${getRiskColor(action.base_risk)}20`, color: getRiskColor(action.base_risk) }}>
                     {getRiskIcon(action.base_risk)} {action.base_risk}
                   </div>
                 </div>
-
-                <div style={{
-                  fontSize: '13px',
-                  color: '#718096',
-                  fontStyle: 'italic'
-                }}>
-                  Example: {action.example}
-                </div>
-
+                <div style={{ marginTop: '8px', fontSize: '13px', color: '#64748b' }}>Example: {action.example}</div>
                 {action.total_executed > 0 && (
-                  <div style={{
-                    marginTop: '8px',
-                    fontSize: '12px',
-                    color: '#4a5568'
-                  }}>
+                  <div style={{ marginTop: '6px', fontSize: '12px', color: '#475569' }}>
                     Executed {action.total_executed} times
                   </div>
                 )}
-              </div>
+              </article>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* History Tab */}
       {activeTab === 'history' && (
-        <div style={{
-          background: 'white',
-          padding: '32px',
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-        }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1a202c', marginBottom: '16px' }}>
-            Auto-Execution History
-          </h2>
-
-          <div style={{
-            padding: '40px',
-            textAlign: 'center',
-            color: '#718096'
-          }}>
-            History view coming soon. Will show recent auto-executed actions with timestamps and outcomes.
+        <section className="workflow-card">
+          <h2>Execution History</h2>
+          <div className="workflow-card-subtitle">Recent auto-executed actions and outcomes.</div>
+          <div className="workflow-empty" style={{ marginTop: '14px' }}>
+            History view is coming soon. This section will show who triggered what and when.
           </div>
-        </div>
+        </section>
       )}
+
+      <section className="workflow-card">
+        <h2>Recommended Policy Baseline</h2>
+        <div className="workflow-chip-grid" style={{ marginTop: '10px' }}>
+          <span className="workflow-chip">LOW: Auto Execute</span>
+          <span className="workflow-chip">MEDIUM: Auto Execute + Optional 2FA</span>
+          <span className="workflow-chip">HIGH: Manual Approval</span>
+          <span className="workflow-chip">CRITICAL: Manual Approval + 2FA</span>
+        </div>
+      </section>
     </div>
   );
 };

@@ -1,7 +1,11 @@
-# PromptOps Deployment Guide
-
-**Version:** 1.0.0-rc1  
-**Date:** 2026-04-30
+<div align="center">
+  <img src="assets/promptops-logo.png" alt="PromptOps Logo" width="200"/>
+  
+  # PromptOps Deployment Guide
+  
+  **Version:** 1.0.0-rc1  
+  **Date:** 2026-04-30
+</div>
 
 ---
 

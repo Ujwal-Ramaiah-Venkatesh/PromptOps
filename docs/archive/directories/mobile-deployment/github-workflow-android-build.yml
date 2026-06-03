@@ -1,0 +1,114 @@
+# GitHub Actions Workflow - Android APK Build
+# ===========================================
+#
+# This workflow builds Android APK with Java 17 in GitHub's cloud.
+#
+# To use:
+# 1. Create folder: .github/workflows/ in your repository
+# 2. Save this file as: .github/workflows/build.yml
+# 3. Push to GitHub
+# 4. Go to Actions tab → Run workflow
+# 5. Download APK from artifacts
+#
+# Author: PromptOps DevOps Team
+# Date: 2026-05-11
+
+name: Build Android APK
+
+on:
+  # Trigger on push to main branch
+  push:
+    branches: [ main, master ]
+
+  # Trigger on pull request
+  pull_request:
+    branches: [ main, master ]
+
+  # Allow manual trigger from Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Debug APK
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'gradle'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build Debug APK
+      run: ./gradlew :androidApp:assembleDebug --no-daemon --stacktrace
+
+    - name: Get APK info
+      run: |
+        APK_PATH=$(find androidApp/build/outputs/apk/debug -name "*.apk" | head -1)
+        echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
+        echo "APK_SIZE=$(du -h $APK_PATH | cut -f1)" >> $GITHUB_ENV
+        echo "APK_NAME=$(basename $APK_PATH)" >> $GITHUB_ENV
+
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: netSenseAI-debug-apk
+        path: androidApp/build/outputs/apk/debug/*.apk
+        retention-days: 14
+
+    - name: Build summary
+      run: |
+        echo "### Build Successful! :rocket:" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **APK Name:** ${{ env.APK_NAME }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **APK Size:** ${{ env.APK_SIZE }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Java Version:** 17" >> $GITHUB_STEP_SUMMARY
+        echo "- **Build Type:** Debug" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Download the APK from the Artifacts section above." >> $GITHUB_STEP_SUMMARY
+
+  # Optional: Build release APK (if signing is configured)
+  build-release:
+    name: Build Release APK (Optional)
+    runs-on: ubuntu-latest
+    # Only run if signing keys are configured
+    if: false  # Set to true when you have signing keys
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'gradle'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # Add signing configuration here if needed
+    # - name: Configure signing
+    #   env:
+    #     KEYSTORE: ${{ secrets.KEYSTORE }}
+    #     KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+    #   run: |
+    #     echo $KEYSTORE | base64 -d > keystore.jks
+
+    - name: Build Release APK
+      run: ./gradlew :androidApp:assembleRelease --no-daemon --stacktrace
+
+    - name: Upload Release APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: netSenseAI-release-apk
+        path: androidApp/build/outputs/apk/release/*.apk
+        retention-days: 30

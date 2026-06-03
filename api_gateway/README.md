@@ -1,6 +1,10 @@
-# PromptOps API Gateway
-
-**Week 11-12 Deliverable**: Unified REST API layer connecting React dashboard to Python backend services.
+<div align="center">
+  <img src="../assets/promptops-logo.png" alt="PromptOps Logo" width="200"/>
+  
+  # PromptOps API Gateway
+  
+  **Week 11-12 Deliverable**: Unified REST API layer connecting React dashboard to Python backend services.
+</div>
 
 ---
 

@@ -1,0 +1,82 @@
+# Gitpod Configuration for netSenseAI
+# =====================================
+#
+# This file configures the Gitpod workspace for building Android APKs.
+# Place this in the root of the netSenseAI repository.
+#
+# Author: PromptOps DevOps Team
+# Date: 2026-05-11
+
+# Docker image with Android SDK and Java 17
+image: gitpod/workspace-full
+
+# Tasks to run on workspace start
+tasks:
+  - name: Build Android APK
+    init: |
+      # Install Android SDK if not present
+      if [ ! -d "$ANDROID_HOME" ]; then
+        echo "📦 Installing Android SDK..."
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+        mkdir -p $HOME/android-sdk/cmdline-tools
+        unzip -q commandlinetools-linux-9477386_latest.zip -d $HOME/android-sdk/cmdline-tools
+        mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+        export ANDROID_HOME=$HOME/android-sdk
+        export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+
+        # Accept licenses
+        yes | sdkmanager --licenses
+        sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+      fi
+
+      # Make gradlew executable
+      chmod +x gradlew
+
+      echo "✅ Environment ready!"
+      echo ""
+      echo "To build the APK, run:"
+      echo "  ./gradlew :androidApp:assembleDebug"
+      echo ""
+      echo "APK location: androidApp/build/outputs/apk/debug/"
+
+    command: |
+      echo ""
+      echo "========================================"
+      echo "  netSenseAI - Gitpod Workspace"
+      echo "========================================"
+      echo ""
+      echo "Java Version:"
+      java -version
+      echo ""
+      echo "Ready to build!"
+      echo ""
+      echo "Commands:"
+      echo "  • Build Debug APK:"
+      echo "    ./gradlew :androidApp:assembleDebug"
+      echo ""
+      echo "  • Build Release APK:"
+      echo "    ./gradlew :androidApp:assembleRelease"
+      echo ""
+      echo "  • Find APK files:"
+      echo "    find . -name '*.apk'"
+      echo ""
+      echo "========================================"
+      echo ""
+
+# Ports (if needed for development)
+ports:
+  - port: 8080
+    onOpen: ignore
+
+# VS Code extensions
+vscode:
+  extensions:
+    - vscjava.vscode-java-pack
+    - vscjava.vscode-gradle
+
+# GitHub integration
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true

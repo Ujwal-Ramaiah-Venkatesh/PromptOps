@@ -2,6 +2,7 @@
   "name": "promptops",
   "version": "0.1.0",
   "description": "Agentic DevOps Utility - Manage cloud infrastructure using plain English",
+  "icon": "assets/promptops-logo.png",
   "main": "index.js",
   "scripts": {
     "dev": "node --watch src/index.js",

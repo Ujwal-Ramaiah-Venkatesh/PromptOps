@@ -1,0 +1,177 @@
+===========================================
+  PROMPTOPS HACKATHON VIDEO
+  COMPLETE VOICEOVER SCRIPT
+  Duration: 2:58 (under 3:00 requirement)
+===========================================
+
+INSTRUCTIONS FOR AI VOICE GENERATION:
+- Use ElevenLabs.io or similar
+- Voice: Professional male (Josh) or female (Bella)
+- Tone: Confident, engaging, slight urgency at start
+- Pace: Medium-fast but clear
+- Emotion: Start tense, transition to hopeful, end inspiring
+
+===========================================
+
+[SCENE 1 - CRISIS HOOK]
+Timing: 0:00 - 0:25 (25 seconds)
+Tone: Urgent, tense
+
+"It's 2:47 AM. Your public safety infrastructure is down. Body-worn cameras offline. CommandCentral inaccessible. First responders are flying blind. Your DevOps engineer is drowning in terminal commands, Terraform scripts, and AWS documentation. Every minute counts, but the deployment will take hours. There has to be a better way."
+
+[PAUSE: 1 second]
+
+---
+
+[SCENE 2 - THE VISION]
+Timing: 0:25 - 0:40 (15 seconds)
+Tone: Hopeful, empowering
+
+"Introducing PromptOps. What if managing critical infrastructure was as simple as telling someone what you need? No complex commands. No endless documentation. Just natural language that becomes intelligent action."
+
+[PAUSE: 0.5 seconds]
+
+---
+
+[SCENE 3A - NATURAL LANGUAGE DEMO]
+Timing: 0:40 - 1:05 (25 seconds)
+Tone: Confident, explanatory
+
+"Watch what happens. Our DevOps engineer types in plain English: 'Deploy body-worn camera evidence storage with encryption and high availability.' PromptOps instantly understands the intent, identifies required AWS resources, assesses the risk level, and shows exactly what it will do."
+
+[PAUSE: 0.5 seconds]
+
+---
+
+[SCENE 3B - AUTONOMY & SAFETY]
+Timing: 1:05 - 1:30 (25 seconds)
+Tone: Reassuring, professional
+
+"Because this is high-risk infrastructure, PromptOps requires approval. Our intelligent autonomy engine protects production systems while enabling speed. One click, and the deployment begins. Real-time progress tracking. Full audit trail. What took hours now takes minutes."
+
+[PAUSE: 0.5 seconds]
+
+---
+
+[SCENE 3C - ADVANCED FEATURES]
+Timing: 1:30 - 1:50 (20 seconds)
+Tone: Impressive, feature-focused
+
+"But that's just the beginning. PromptOps automatically captures manual AWS changes and generates Terraform code. It discovers your entire cloud infrastructure and infers context. And it's built for enterprise security with comprehensive audit logs and compliance controls."
+
+[PAUSE: 0.5 seconds]
+
+---
+
+[SCENE 4 - THE IMPACT]
+Timing: 1:50 - 2:20 (30 seconds)
+Tone: Triumphant, impactful
+
+"The impact? Deployment time drops from 6 hours to 8 minutes. Infrastructure drift is automatically detected and fixed. Any team member can safely manage complex deployments, not just DevOps experts. For Motorola, this means faster emergency response system deployments, safer infrastructure operations, and more time focused on protecting those who protect us."
+
+[PAUSE: 1 second]
+
+---
+
+[SCENE 5 - THE FUTURE]
+Timing: 2:20 - 2:50 (30 seconds)
+Tone: Visionary, ambitious, inspiring
+
+"What's next? With more time and resources, we're bringing PromptOps to multi-cloud environments—AWS, Azure, GCP, Kubernetes—all in one interface. We're adding AI-powered predictive analytics to prevent issues before they happen. And we're enabling voice-activated infrastructure operations for field technicians. PromptOps: Transforming how Motorola builds and manages the infrastructure that keeps communities safe."
+
+[PAUSE: 2 seconds]
+
+---
+
+[SCENE 6 - TITLE CARD]
+Timing: 2:50 - 2:58 (8 seconds)
+Tone: [Music only, no voiceover]
+
+[Silent - display title card with music fade out]
+
+===========================================
+END OF SCRIPT
+Total Duration: 2 minutes 58 seconds
+===========================================
+
+---
+
+PRONUNCIATION GUIDE:
+- PromptOps: "PROMPT-ops" (emphasis on PROMPT)
+- AWS: "A-W-S" (spell out)
+- Terraform: "TERRA-form"
+- Kubernetes: "koo-ber-NET-eez"
+
+---
+
+PACING NOTES:
+- Speak clearly but with energy
+- Pause briefly at commas
+- Emphasize key numbers: "6 hours to 8 minutes"
+- Build energy through the script
+- Peak emotion at "protecting those who protect us"
+- Resolve confidently at ending
+
+---
+
+EMOTION ARC:
+0:00-0:25: Tension, urgency ⚠️
+0:25-0:40: Hope, relief ✨
+0:40-1:50: Confidence, demonstration 💪
+1:50-2:20: Triumph, impact 🎯
+2:20-2:50: Vision, inspiration 🚀
+2:50-2:58: Confident resolve 🏁
+
+===========================================
+
+HOW TO GENERATE THIS VOICEOVER:
+
+Option 1: ElevenLabs.io (RECOMMENDED)
+1. Go to elevenlabs.io
+2. Sign up for free account
+3. Choose voice: "Josh" (professional male) or "Bella" (professional female)
+4. Paste this entire script (remove timing markers)
+5. Generate
+6. Download as MP3 (high quality)
+
+Option 2: Murf.ai
+1. Go to murf.ai
+2. Choose "Marcus" or "Natalie" voice
+3. Paste script
+4. Generate and download
+
+Option 3: Record Yourself
+1. Use Audacity (free) or phone voice recorder
+2. Read script naturally
+3. Edit out mistakes
+4. Export as MP3
+
+Option 4: Amazon Polly (via AWS Console)
+1. Go to AWS Console → Polly
+2. Choose "Matthew" or "Joanna" voice (Neural)
+3. Paste script
+4. Download audio file
+
+===========================================
+
+BACKGROUND MUSIC SUGGESTIONS:
+
+Track 1 (0:00-1:00): Tense, building
+- Search: "Technology tension" or "Dramatic buildup"
+- Volume: Medium (don't overpower voice)
+
+Track 2 (1:00-2:20): Uplifting, confident
+- Search: "Inspiring technology" or "Innovation"
+- Volume: Medium-low
+
+Track 3 (2:20-2:58): Triumphant, epic
+- Search: "Epic technology" or "Victorious"
+- Volume: Medium, fade out at 2:55
+
+Free Music Sources:
+- YouTube Audio Library (free)
+- Epidemic Sound (paid but high quality)
+- Artlist (paid)
+- Pixabay Music (free)
+
+===========================================

@@ -88,16 +88,60 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const formData = new URLSearchParams();
-      formData.append('username', email);
-      formData.append('password', password);
+      // Mock authentication for demo purposes
+      const mockUsers: Record<string, { password: string; user: User }> = {
+        'admin@promptops.com': {
+          password: 'admin123',
+          user: {
+            id: '1',
+            email: 'admin@promptops.com',
+            full_name: 'Admin User',
+            role: 'admin',
+            is_active: true
+          }
+        },
+        'pm@promptops.com': {
+          password: 'pm123',
+          user: {
+            id: '2',
+            email: 'pm@promptops.com',
+            full_name: 'PM Manager',
+            role: 'pm',
+            is_active: true
+          }
+        }
+      };
 
-      const response = await fetch(`${API_BASE}/api/v1/auth/login`, {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const mockUser = mockUsers[email.toLowerCase()];
+
+      if (!mockUser || mockUser.password !== password) {
+        throw new Error('Invalid email or password');
+      }
+
+      // Generate mock token
+      const mockToken = 'mock_jwt_token_' + Date.now();
+      const expiryTime = Date.now() + (24 * 60 * 60 * 1000); // 24 hours
+
+      // Store in state and localStorage
+      setToken(mockToken);
+      setUser(mockUser.user);
+      localStorage.setItem(TOKEN_KEY, mockToken);
+      localStorage.setItem(USER_KEY, JSON.stringify(mockUser.user));
+      localStorage.setItem(TOKEN_EXPIRY_KEY, expiryTime.toString());
+
+      setIsLoading(false);
+      return;
+
+      /* Original API call - commented out for demo mode
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
         },
-        body: formData.toString(),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
@@ -120,6 +164,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       setToken(accessToken);
       setUser(userData);
+      */
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -129,6 +174,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const logout = () => {
+    const currentToken = localStorage.getItem(TOKEN_KEY);
+
+    // Best-effort server logout for audit logging.
+    if (currentToken) {
+      fetch(`${API_BASE}/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${currentToken}`,
+        },
+      }).catch((err) => {
+        console.warn('Logout audit endpoint failed:', err);
+      });
+    }
+
     // Clear storage
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
@@ -146,7 +205,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     try {
       // Verify token is still valid by fetching current user
-      const response = await fetch(`${API_BASE}/api/v1/auth/me`, {
+      const response = await fetch(`${API_BASE}/auth/me`, {
         headers: {
           'Authorization': `Bearer ${currentToken}`,
         },

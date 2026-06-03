@@ -1,0 +1,24 @@
+Create a 50-second B2B tech explainer video for PromptOps about cloud operations problems.
+
+STYLE: Dark blue/black backgrounds, red/orange accents, cinematic documentary tone, fast cuts, tense electronic orchestral music.
+
+SCENE 1 (0-10s): Stressed DevOps engineer at desk, 3 monitors showing AWS/Azure/GCP dashboards, red alerts stacking rapidly. Text: "1,000+ cloud resources / 3 clouds, zero unified view"
+VOICEOVER: "DevOps teams are drowning in cloud complexity. Thousands of resources across multiple clouds with no unified view."
+
+SCENE 2 (10-20s): Split screen - LEFT: engineer on 2AM emergency call, coffee spilling. RIGHT: cost meter "$5,600/min", timer "6-8 hrs to detect". Text: "80% time FIREFIGHTING / Not innovating"
+VOICEOVER: "Eighty percent firefighting, not innovating. Six to eight hours just to detect issues. Five thousand six hundred dollars per minute in downtime."
+
+SCENE 3 (20-30s): Dollar bills burning, 3D cloud VMs marked "UNUSED-89 DAYS", storage buckets with broken locks "EXPOSED", pie chart showing 40% waste. Text: "35-40% cloud spend WASTED / $2.4M lost annually / 70% from human errors"
+VOICEOVER: "Thirty-five to forty percent of cloud spend wasted. Two point four million annually. Seventy percent from simple human errors and misconfigurations."
+
+SCENE 4 (30-42s): E-commerce scenario - 6PM: "BLACK FRIDAY SALE" banner, traffic spikes 10X. 6:45PM: "503 Error", shopping carts exploding. 8:30PM: site restored, revenue counter shows $840,000 lost. Text: "6PM: Traffic spikes 10X / 6:45PM: CRASH / 8:30PM: Restored / 2.5 hrs = $840K LOST / 100% PREVENTABLE"
+VOICEOVER: "Black Friday. Six PM, traffic spikes ten times. Six forty-five, complete crash. Eight-thirty, finally restored. Eight hundred forty thousand dollars lost in two-and-a-half hours. Completely preventable."
+
+SCENE 5 (42-47s): 3D visualization - AWS/Azure/GCP as floating disconnected islands, separate alert beacons, engineer tiny in center overwhelmed. Text: "No unified view / No drift detection / Just reactive chaos"
+VOICEOVER: "Disconnected tools. No unified view. No drift detection. Just reactive chaos."
+
+SCENE 6 (47-50s): Fade to black, white text appears: "WHAT IF OPERATIONS WERE PROACTIVE?" PromptOps logo fades in. Text: "PROACTIVE? / PromptOps: AI-Powered Cloud Operations"
+VOICEOVER: "What if operations were proactive? PromptOps."
+
+TECHNICAL SPECS:
+Duration: 50 seconds | Aspect Ratio: 16:9 (1920×1080) | Frame Rate: 30fps | Style: Cinematic 3D animation with cartoon characters | Language: English | Subtitles: Enabled (white text, black box, bottom center) | BGM: Tense electronic orchestral, building tension | Color Palette: Dark blue (#0a1929), black (#000000), red (#dc2626), orange (#f97316), white (#ffffff) | Animation: Fast cuts (2-3s), dramatic camera movements (orbital, crane, zoom), particle effects (fire, sparks, data), smooth 0.3s transitions, expressive character | Voiceover: Professional authoritative voice, urgent serious tone, moderate speed, emphasis on "DROWNING", "FIREFIGHTING", "WASTED", "PREVENTABLE", "CHAOS" | Export: MP4 (H.264), 1920x1080, 10-15Mbps, AAC audio 192kbps, burned-in captions

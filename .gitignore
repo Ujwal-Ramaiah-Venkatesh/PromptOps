@@ -18,6 +18,9 @@ ENV/
 *~
 .DS_Store
 
+# Local assistant/editor config
+.claude/
+
 # Environment variables
 .env
 .env.local
@@ -60,3 +63,58 @@ htmlcov/
 # OS files
 Thumbs.db
 *.xlsx
+
+# Historical archive is kept in git; generic ignore rules above still exclude logs, caches, and other generated files inside it.
+
+# Temporary status/build files (to prevent future clutter)
+*_STATUS.md
+*_COMPLETE.md
+*_PROGRESS.md
+*_SUMMARY.md
+DEPLOY_*.md
+DEPLOYMENT_*_STATUS.md
+BUILD_*.md
+FIXES_*.md
+WORKAROUND*.md
+*QUICK_FIX*.md
+*GITPOD*.md
+*GITPOD*.txt
+START_HERE.md
+COPY_THIS_COMMAND.txt
+
+# Test execution reports (keep only source test files)
+TEST_EXECUTION_*.csv
+TEST_EXECUTION_*.md
+*TEST_RESULTS.csv
+*TEST_COMPLETE.md
+TESTING_COMPLETE*.md
+*_TEST_REPORT.md
+
+# Weekly/Phase tracking (after project completion)
+PHASE*_COMPLETE.md
+PHASE*_PROGRESS.md
+PHASE*_ROADMAP.md
+WEEK*_*.md
+
+# Enhancement tracking (after implementation)
+ENHANCEMENT-*_*.md
+ENHANCEMENTS_*.md
+
+# Temporary scripts
+debug_*.py
+execute_*_tests.py
+add_mlops_*.py
+merge_*.py
+convert_*.py
+create_tracking_*.py
+test_complete_*.py
+
+# Blueprint generation artifacts
+*_BLUEPRINT_*.docx
+*_BLUEPRINT_*.pdf
+*_Blueprint_*.md
+
+# Large flow diagrams (keep in docs/ only)
+*_FLOW_DIAGRAM.md
+*_FLOWS.md
+*_INTEGRATION*.md

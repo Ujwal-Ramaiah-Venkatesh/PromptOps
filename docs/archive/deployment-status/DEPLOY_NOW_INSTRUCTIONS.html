@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploy netSenseAI - Complete Instructions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+        h2 {
+            color: #667eea;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        .step {
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 20px;
+        }
+        .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .step-content {
+            color: #555;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .btn-large {
+            padding: 20px 40px;
+            font-size: 24px;
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .info-box {
+            background: #d1ecf1;
+            border: 2px solid #bee5eb;
+            color: #0c5460;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .timeline {
+            margin: 20px 0;
+        }
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .timeline-time {
+            width: 80px;
+            font-weight: 600;
+            color: #667eea;
+        }
+        .timeline-content {
+            flex: 1;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Deploy netSenseAI Now!</h1>
+        <div class="subtitle">Complete automated deployment in 7 minutes</div>
+
+        <div class="success-box">
+            <strong>✅ Auto-Deploy Watcher Active!</strong><br>
+            PromptOps is watching your Downloads folder. As soon as you download the APK from Gitpod, it will automatically deploy to AWS!
+        </div>
+
+        <h2>Your Automated Deployment Path</h2>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">1</span>
+                Open Gitpod Workspace
+            </div>
+            <div class="step-content">
+                <p><strong>Click the button below to open Gitpod:</strong></p>
+                <a href="https://gitpod.io/#https://github.com/kirankumarhs29/netSenseAI" class="btn btn-large" target="_blank">
+                    🚀 Open Gitpod Workspace
+                </a>
+                <p style="margin-top: 15px;"><strong>What happens:</strong></p>
+                <ul>
+                    <li>Gitpod opens in new tab</li>
+                    <li>Sign in with GitHub (one-time)</li>
+                    <li>Workspace loads (~2 minutes)</li>
+                    <li>Java 17 pre-installed and ready!</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">2</span>
+                Build APK in Gitpod
+            </div>
+            <div class="step-content">
+                <p><strong>In the Gitpod terminal (bottom of screen), run:</strong></p>
+                <div class="code">./gradlew :androidApp:assembleDebug --no-daemon</div>
+                <p><strong>Expected output:</strong></p>
+                <div class="code">> Task :androidApp:compileDebugKotlin<br>> Task :androidApp:assembleDebug<br><br>BUILD SUCCESSFUL in 3m 42s<br>45 actionable tasks: 45 executed</div>
+                <p style="margin-top: 15px;"><strong>Build time:</strong> 3-4 minutes</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">3</span>
+                Download APK from Gitpod
+            </div>
+            <div class="step-content">
+                <p><strong>Steps:</strong></p>
+                <ul>
+                    <li>Click <strong>Explorer</strong> icon (📁) in left sidebar</li>
+                    <li>Navigate to: <code>androidApp → build → outputs → apk → debug</code></li>
+                    <li>Right-click on: <code>androidApp-debug.apk</code></li>
+                    <li>Select: <strong>Download</strong></li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Download location:</strong> Your Downloads folder</p>
+                <p><strong>File size:</strong> ~25-30 MB</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">4</span>
+                Automatic Deployment <span class="status status-active">ACTIVE</span>
+            </div>
+            <div class="step-content">
+                <p><strong>⚡ Auto-magic happens here!</strong></p>
+                <div class="info-box">
+                    <strong>PromptOps Auto-Deploy Watcher is monitoring:</strong>
+                    <ul style="margin-top: 10px;">
+                        <li>Folder: <code>C:\Users\pqm847\Downloads</code></li>
+                        <li>Looking for: <code>*.apk</code> files</li>
+                        <li>Check interval: Every 5 seconds</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>When APK appears → Automatically:</strong></p>
+                    <ul>
+                        <li>Creates AWS S3 bucket</li>
+                        <li>Uploads APK (with SHA256 hash)</li>
+                        <li>Creates CloudFront CDN</li>
+                        <li>Generates download page</li>
+                        <li>Returns public URLs</li>
+                    </ul>
+                </div>
+                <p><strong>Deployment time:</strong> 2 minutes (automatic)</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">
+                <span class="step-number">5</span>
+                Get Download URLs
+            </div>
+            <div class="step-content">
+                <p><strong>After auto-deployment completes, you'll see:</strong></p>
+                <div class="code">======================================================================<br>  AUTO-DEPLOYMENT SUCCESSFUL!<br>======================================================================<br><br>Download Page: https://netsense-ai-2026.s3.us-east-1.amazonaws.com/apps/netSenseAI/1.0.0/index.html<br>Direct APK URL: https://netsense-ai-2026.s3.us-east-1.amazonaws.com/apps/netSenseAI/1.0.0/androidApp-debug.apk<br><br>======================================================================</div>
+                <p style="margin-top: 15px;"><strong>Share the download page URL with your testers!</strong></p>
+            </div>
+        </div>
+
+        <h2>⏱️ Complete Timeline</h2>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-time">0:30</div>
+                <div class="timeline-content">Open Gitpod → Sign in</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">2:00</div>
+                <div class="timeline-content">Workspace setup (automatic)</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">3:30</div>
+                <div class="timeline-content">Build APK with Gradle</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">0:30</div>
+                <div class="timeline-content">Download APK to local machine</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">2:00</div>
+                <div class="timeline-content">⚡ Auto-deploy to AWS (automatic!)</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time"><strong>8:30</strong></div>
+                <div class="timeline-content"><strong>✅ DEPLOYED!</strong></div>
+            </div>
+        </div>
+
+        <h2>🎯 Ready to Start?</h2>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="https://gitpod.io/#https://github.com/kirankumarhs29/netSenseAI" class="btn btn-large" target="_blank">
+                🚀 Click Here to Start Deployment
+            </a>
+        </div>
+
+        <div class="info-box">
+            <strong>📋 Quick Checklist:</strong>
+            <ul style="margin-top: 10px;">
+                <li>✅ Auto-deploy watcher is running</li>
+                <li>✅ Watching Downloads folder</li>
+                <li>✅ AWS credentials configured</li>
+                <li>✅ S3 bucket ready: netsense-ai-2026</li>
+                <li>✅ All you need to do: Click Gitpod link above!</li>
+            </ul>
+        </div>
+
+        <h2>❓ Need Help?</h2>
+
+        <div class="step-content">
+            <p><strong>If Gitpod build fails:</strong></p>
+            <div class="code">chmod +x gradlew<br>./gradlew :androidApp:assembleDebug --no-daemon</div>
+
+            <p style="margin-top: 15px;"><strong>If auto-deploy doesn't trigger:</strong></p>
+            <p>Run manually:</p>
+            <div class="code">cd C:\Users\pqm847\Documents\PromptOps<br><br>python mobile-deployment\deploy_prebuilt_apk.py ^<br>  --apk-path "%USERPROFILE%\Downloads\androidApp-debug.apk" ^<br>  --app-name "netSenseAI" ^<br>  --version "1.0.0" ^<br>  --aws-bucket netsense-ai-2026</div>
+
+            <p style="margin-top: 15px;"><strong>Check auto-deploy status:</strong></p>
+            <div class="code">tail -f /tmp/auto_deploy.log</div>
+        </div>
+
+        <div class="success-box" style="margin-top: 30px;">
+            <strong>🎉 Everything is ready!</strong><br>
+            Click the Gitpod link above to start your deployment journey.<br>
+            PromptOps will handle the rest automatically!
+        </div>
+    </div>
+</body>
+</html>

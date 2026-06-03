@@ -1,18 +1,12 @@
 /**
  * Ingestion Workflow UI
  * ENHANCEMENT-002: Import manual AWS changes into Terraform
- *
- * Features:
- * - View detected drift events
- * - Preview manual AWS changes
- * - Generate Terraform code from AWS state
- * - Import changes into Terraform state
- * - Rollback imported changes if needed
  */
 
 import React, { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import { useAuth } from '../contexts/AuthContext';
+import './PremiumWorkflows.css';
 
 interface DriftEvent {
   id: string;
@@ -63,8 +57,7 @@ export const IngestionWorkflow: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      // Note: These endpoints would need to be implemented on backend
-      // For now, using mock data
+      // Mock until backend ingestion endpoints are fully wired.
       setDriftEvents([
         {
           id: 'drift-001',
@@ -97,9 +90,7 @@ export const IngestionWorkflow: React.FC = () => {
 
   const loadImportHistory = async () => {
     try {
-      const response = await apiClient.get<{ imports: ImportedChange[] }>(
-        '/api/v1/ingestion/history'
-      );
+      const response = await apiClient.get<{ imports: ImportedChange[] }>('/api/v1/ingestion/history');
       setImportHistory(response.imports);
     } catch (err: any) {
       console.error('History error:', err);
@@ -111,14 +102,11 @@ export const IngestionWorkflow: React.FC = () => {
       setLoading(true);
       setSelectedDrift(drift);
 
-      const response = await apiClient.post<ImportPreview>(
-        '/api/v1/ingestion/preview',
-        {
-          resource_id: drift.resource_id,
-          resource_type: drift.resource_type,
-          aws_state: {} // Would include actual AWS state
-        }
-      );
+      const response = await apiClient.post<ImportPreview>('/api/v1/ingestion/preview', {
+        resource_id: drift.resource_id,
+        resource_type: drift.resource_type,
+        aws_state: {}
+      });
 
       setImportPreview(response);
       setError(null);
@@ -137,15 +125,11 @@ export const IngestionWorkflow: React.FC = () => {
 
     try {
       setLoading(true);
-
-      const response = await apiClient.post<ImportedChange>(
-        '/api/v1/ingestion/import',
-        {
-          resource_id: selectedDrift.resource_id,
-          resource_type: selectedDrift.resource_type,
-          aws_state: {} // Would include actual AWS state
-        }
-      );
+      await apiClient.post<ImportedChange>('/api/v1/ingestion/import', {
+        resource_id: selectedDrift.resource_id,
+        resource_type: selectedDrift.resource_type,
+        aws_state: {}
+      });
 
       alert('Successfully imported change!');
       setSelectedDrift(null);
@@ -180,14 +164,14 @@ export const IngestionWorkflow: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return '#f9ab00';
+      case 'pending': return '#f59e0b';
       case 'imported':
-      case 'applied': return '#34a853';
+      case 'applied': return '#16a34a';
       case 'reverted':
-      case 'rolled_back': return '#718096';
-      case 'failed': return '#ea4335';
-      case 'acknowledged': return '#667eea';
-      default: return '#718096';
+      case 'rolled_back': return '#64748b';
+      case 'failed': return '#dc2626';
+      case 'acknowledged': return '#0284c7';
+      default: return '#64748b';
     }
   };
 
@@ -205,430 +189,209 @@ export const IngestionWorkflow: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '32px' }}>
-      {/* Header */}
-      <div style={{ marginBottom: '32px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#1a202c', marginBottom: '8px' }}>
-          📥 Infrastructure Ingestion
-        </h1>
-        <p style={{ color: '#718096', fontSize: '16px' }}>
-          Import manual AWS Console changes into Terraform state
-        </p>
-      </div>
+    <div className="workflow-page">
+      <header className="workflow-header">
+        <div className="workflow-eyebrow">Infrastructure Ingestion</div>
+        <h1 className="workflow-title">Bring manual AWS changes back to Terraform</h1>
+        <p className="workflow-subtitle">Detect drift, preview generated code, import safely, and rollback when needed.</p>
+      </header>
 
-      {/* Error Alert */}
+      <section className="workflow-onboarding">
+        <h3>Safe Import Sequence</h3>
+        <p>Use this sequence to avoid state corruption and reduce recovery time.</p>
+        <div className="workflow-onboarding-grid">
+          <div className="workflow-step-card">
+            <div className="workflow-step-card-title">1. Review drift details</div>
+            <div className="workflow-step-card-text">Compare Terraform value vs AWS value before import.</div>
+          </div>
+          <div className="workflow-step-card">
+            <div className="workflow-step-card-title">2. Validate generated code</div>
+            <div className="workflow-step-card-text">Check validation status, warnings, and dependencies.</div>
+          </div>
+          <div className="workflow-step-card">
+            <div className="workflow-step-card-title">3. Import and monitor history</div>
+            <div className="workflow-step-card-text">Use rollback if an imported state needs correction.</div>
+          </div>
+        </div>
+      </section>
+
       {error && (
-        <div style={{
-          padding: '16px',
-          background: '#fef2f2',
-          border: '1px solid #fecaca',
-          borderRadius: '8px',
-          color: '#991b1b',
-          marginBottom: '24px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
+        <div className="workflow-alert">
           <span>⚠ {error}</span>
-          <button
-            onClick={() => setError(null)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#991b1b',
-              cursor: 'pointer',
-              fontSize: '18px'
-            }}
-          >
-            ✕
-          </button>
+          <button onClick={() => setError(null)} aria-label="Dismiss error">×</button>
         </div>
       )}
 
-      {/* Tabs */}
-      <div style={{
-        display: 'flex',
-        gap: '8px',
-        marginBottom: '24px',
-        borderBottom: '2px solid #e2e8f0'
-      }}>
+      <div className="workflow-tabs">
         {(['drift', 'history'] as const).map(tab => (
           <button
             key={tab}
             onClick={() => {
               setActiveTab(tab);
-              if (tab === 'history') loadImportHistory();
+              if (tab === 'history') {
+                loadImportHistory();
+              }
             }}
-            style={{
-              padding: '12px 24px',
-              background: 'transparent',
-              border: 'none',
-              borderBottom: activeTab === tab ? '2px solid #667eea' : '2px solid transparent',
-              color: activeTab === tab ? '#667eea' : '#718096',
-              fontWeight: activeTab === tab ? '600' : '400',
-              cursor: 'pointer',
-              marginBottom: '-2px',
-              textTransform: 'capitalize'
-            }}
+            className={`workflow-tab ${activeTab === tab ? 'is-active' : ''}`}
           >
-            {tab === 'drift' ? 'Drift Events' : 'Import History'}
+            {tab === 'drift' ? 'Drift Queue' : 'Import History'}
           </button>
         ))}
       </div>
 
-      {/* Drift Events Tab */}
       {activeTab === 'drift' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-          {/* Drift List */}
-          <div style={{
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-            maxHeight: '700px',
-            overflowY: 'auto'
-          }}>
-            <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#1a202c', marginBottom: '16px' }}>
-              Detected Drift ({driftEvents.length})
-            </h2>
+        <div className="workflow-two-col">
+          <section className="workflow-card" style={{ maxHeight: '720px', overflowY: 'auto' }}>
+            <h2>Detected Drift ({driftEvents.length})</h2>
+            <div className="workflow-card-subtitle">Select one event to preview import output.</div>
 
             {driftEvents.length === 0 ? (
-              <div style={{
-                padding: '40px',
-                textAlign: 'center',
-                color: '#718096'
-              }}>
-                No drift detected. Your Terraform state matches AWS reality.
+              <div className="workflow-empty" style={{ marginTop: '12px' }}>
+                No drift detected. Terraform and AWS are in sync.
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {driftEvents.map(drift => (
-                  <div
-                    key={drift.id}
-                    onClick={() => previewImport(drift)}
-                    style={{
-                      padding: '16px',
-                      background: selectedDrift?.id === drift.id ? '#eef2ff' : '#f7fafc',
-                      border: selectedDrift?.id === drift.id ? '2px solid #667eea' : '2px solid #e2e8f0',
-                      borderRadius: '8px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <div style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'flex-start',
-                      marginBottom: '8px'
-                    }}>
-                      <div>
-                        <div style={{ fontSize: '15px', fontWeight: '600', color: '#1a202c', marginBottom: '4px' }}>
-                          {drift.resource_id}
+              <div className="workflow-list" style={{ marginTop: '12px' }}>
+                {driftEvents.map(drift => {
+                  const selected = selectedDrift?.id === drift.id;
+                  return (
+                    <article
+                      key={drift.id}
+                      className={`workflow-list-item ${selected ? 'is-selected' : ''}`}
+                      onClick={() => previewImport(drift)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <div className="workflow-item-header">
+                        <div>
+                          <div className="workflow-item-title">{drift.resource_id}</div>
+                          <div className="workflow-item-meta">{drift.resource_type} · {drift.changes.length} changes</div>
+                          <div className="workflow-item-meta">{new Date(drift.detected_at).toLocaleString()}</div>
                         </div>
-                        <div style={{ fontSize: '13px', color: '#718096' }}>
-                          {drift.resource_type}
+                        <div className="workflow-badge" style={{ background: `${getStatusColor(drift.status)}20`, color: getStatusColor(drift.status) }}>
+                          {getStatusIcon(drift.status)} {drift.status}
                         </div>
                       </div>
-
-                      <div style={{
-                        padding: '4px 8px',
-                        borderRadius: '12px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        background: `${getStatusColor(drift.status)}20`,
-                        color: getStatusColor(drift.status)
-                      }}>
-                        {getStatusIcon(drift.status)} {drift.status}
-                      </div>
-                    </div>
-
-                    <div style={{ fontSize: '13px', color: '#718096', marginBottom: '8px' }}>
-                      {drift.changes.length} changes detected
-                    </div>
-
-                    <div style={{ fontSize: '12px', color: '#a0aec0' }}>
-                      {new Date(drift.detected_at).toLocaleString()}
-                    </div>
-                  </div>
-                ))}
+                    </article>
+                  );
+                })}
               </div>
             )}
-          </div>
+          </section>
 
-          {/* Preview Panel */}
-          <div style={{
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-          }}>
+          <section className="workflow-card">
             {selectedDrift ? (
               <>
-                <h2 style={{ fontSize: '18px', fontWeight: '600', color: '#1a202c', marginBottom: '16px' }}>
-                  Import Preview
-                </h2>
+                <h2>Import Preview</h2>
+                <div className="workflow-card-subtitle">{selectedDrift.resource_id} · {selectedDrift.resource_type}</div>
 
-                {/* Changes Summary */}
-                <div style={{ marginBottom: '24px' }}>
-                  <div style={{ fontSize: '14px', fontWeight: '600', color: '#4a5568', marginBottom: '12px' }}>
-                    Detected Changes:
-                  </div>
-
+                <div className="workflow-list" style={{ marginTop: '12px' }}>
                   {selectedDrift.changes.map((change, idx) => (
-                    <div
-                      key={idx}
-                      style={{
-                        padding: '12px',
-                        background: '#f7fafc',
-                        borderRadius: '6px',
-                        marginBottom: '8px'
-                      }}
-                    >
-                      <div style={{ fontSize: '13px', fontWeight: '600', color: '#1a202c', marginBottom: '4px' }}>
-                        {change.field}
-                      </div>
-                      <div style={{ fontSize: '12px', color: '#718096', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                    <article key={idx} className="workflow-list-item">
+                      <div className="workflow-item-title">{change.field}</div>
+                      <div className="workflow-two-col" style={{ marginTop: '8px' }}>
                         <div>
-                          <div style={{ fontWeight: '600', marginBottom: '2px' }}>Terraform:</div>
-                          <code style={{ fontSize: '11px', background: '#fef2f2', padding: '2px 4px', borderRadius: '3px' }}>
+                          <div className="workflow-item-meta">Terraform</div>
+                          <code className="workflow-chip" style={{ display: 'block', marginTop: '4px', borderRadius: '8px' }}>
                             {JSON.stringify(change.terraform_value)}
                           </code>
                         </div>
                         <div>
-                          <div style={{ fontWeight: '600', marginBottom: '2px' }}>AWS:</div>
-                          <code style={{ fontSize: '11px', background: '#f0fdf4', padding: '2px 4px', borderRadius: '3px' }}>
+                          <div className="workflow-item-meta">AWS</div>
+                          <code className="workflow-chip" style={{ display: 'block', marginTop: '4px', borderRadius: '8px' }}>
                             {JSON.stringify(change.aws_value)}
                           </code>
                         </div>
                       </div>
-                    </div>
+                    </article>
                   ))}
                 </div>
 
-                {/* Generated Terraform Code */}
                 {importPreview && (
                   <>
-                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#4a5568', marginBottom: '12px' }}>
-                      Generated Terraform:
+                    <h3 style={{ marginTop: '14px', marginBottom: '8px', fontSize: '15px' }}>Generated Terraform</h3>
+                    <pre className="workflow-code">{importPreview.terraform_code}</pre>
+
+                    <div style={{ marginTop: '10px' }} className="workflow-chip-grid">
+                      <span className="workflow-chip" style={{ borderColor: importPreview.validation_status === 'valid' ? '#86efac' : '#fecaca' }}>
+                        {importPreview.validation_status === 'valid' ? 'Validation Passed' : 'Validation Failed'}
+                      </span>
+                      {importPreview.warnings.length > 0 && <span className="workflow-chip">Warnings: {importPreview.warnings.length}</span>}
+                      {importPreview.dependencies.length > 0 && <span className="workflow-chip">Dependencies: {importPreview.dependencies.length}</span>}
                     </div>
 
-                    <pre style={{
-                      padding: '16px',
-                      background: '#1a202c',
-                      color: '#e2e8f0',
-                      borderRadius: '8px',
-                      fontSize: '12px',
-                      overflowX: 'auto',
-                      marginBottom: '16px',
-                      fontFamily: 'monospace'
-                    }}>
-                      {importPreview.terraform_code}
-                    </pre>
-
-                    {/* Validation Status */}
-                    <div style={{
-                      padding: '12px',
-                      background: importPreview.validation_status === 'valid' ? '#f0fdf4' : '#fef2f2',
-                      border: `1px solid ${importPreview.validation_status === 'valid' ? '#86efac' : '#fecaca'}`,
-                      borderRadius: '8px',
-                      marginBottom: '16px'
-                    }}>
-                      <div style={{
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: importPreview.validation_status === 'valid' ? '#166534' : '#991b1b',
-                        marginBottom: '4px'
-                      }}>
-                        {importPreview.validation_status === 'valid' ? '✓ Validation Passed' : '✗ Validation Failed'}
-                      </div>
-                      {importPreview.validation_errors.length > 0 && (
-                        <div style={{ fontSize: '12px', color: '#991b1b' }}>
-                          {importPreview.validation_errors.join(', ')}
-                        </div>
-                      )}
-                      {importPreview.warnings.length > 0 && (
-                        <div style={{ fontSize: '12px', color: '#f9ab00', marginTop: '4px' }}>
-                          ⚠ {importPreview.warnings.join(', ')}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Dependencies */}
-                    {importPreview.dependencies.length > 0 && (
-                      <div style={{
-                        padding: '12px',
-                        background: '#eef2ff',
-                        borderRadius: '8px',
-                        marginBottom: '16px'
-                      }}>
-                        <div style={{ fontSize: '13px', fontWeight: '600', color: '#4c51bf', marginBottom: '4px' }}>
-                          Dependencies:
-                        </div>
-                        <div style={{ fontSize: '12px', color: '#4c51bf' }}>
-                          {importPreview.dependencies.join(', ')}
-                        </div>
+                    {importPreview.validation_errors.length > 0 && (
+                      <div className="workflow-alert" style={{ marginTop: '10px' }}>
+                        <span>Validation errors: {importPreview.validation_errors.join(', ')}</span>
                       </div>
                     )}
                   </>
                 )}
 
-                {/* Action Buttons */}
-                <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
+                <div className="workflow-actions" style={{ marginTop: '14px' }}>
                   <button
                     onClick={executeImport}
-                    disabled={loading || (importPreview?.validation_status === 'invalid')}
-                    style={{
-                      flex: 1,
-                      padding: '12px',
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      cursor: (loading || importPreview?.validation_status === 'invalid') ? 'not-allowed' : 'pointer',
-                      fontWeight: '600',
-                      fontSize: '14px',
-                      opacity: (loading || importPreview?.validation_status === 'invalid') ? 0.5 : 1
-                    }}
+                    disabled={loading || importPreview?.validation_status === 'invalid'}
+                    className="workflow-btn workflow-btn-primary"
                   >
-                    {loading ? 'Importing...' : '✓ Import Change'}
+                    {loading ? 'Importing...' : 'Import Change'}
                   </button>
-
                   <button
                     onClick={() => {
                       setSelectedDrift(null);
                       setImportPreview(null);
                     }}
-                    style={{
-                      flex: 1,
-                      padding: '12px',
-                      background: '#f7fafc',
-                      color: '#4a5568',
-                      border: '2px solid #e2e8f0',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      fontWeight: '600',
-                      fontSize: '14px'
-                    }}
+                    className="workflow-btn workflow-btn-secondary"
                   >
                     Cancel
                   </button>
                 </div>
               </>
             ) : (
-              <div style={{
-                padding: '60px 20px',
-                textAlign: 'center',
-                color: '#718096'
-              }}>
-                Select a drift event to preview import
-              </div>
+              <div className="workflow-empty">Select a drift event to preview the import plan.</div>
             )}
-          </div>
+          </section>
         </div>
       )}
 
-      {/* Import History Tab */}
       {activeTab === 'history' && (
-        <div style={{
-          background: 'white',
-          padding: '32px',
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-        }}>
-          <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#1a202c', marginBottom: '24px' }}>
-            Import History
-          </h2>
+        <section className="workflow-card">
+          <h2>Import History</h2>
+          <div className="workflow-card-subtitle">Track imports, review generated code, and rollback when necessary.</div>
 
           {importHistory.length === 0 ? (
-            <div style={{
-              padding: '60px 20px',
-              textAlign: 'center',
-              color: '#718096'
-            }}>
-              No imports yet. Import drift events to see history here.
+            <div className="workflow-empty" style={{ marginTop: '12px' }}>
+              No imports yet. Imported resources will appear here.
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="workflow-list" style={{ marginTop: '12px' }}>
               {importHistory.map(item => (
-                <div
-                  key={item.import_id}
-                  style={{
-                    padding: '20px',
-                    background: '#f7fafc',
-                    borderRadius: '8px',
-                    border: '2px solid #e2e8f0'
-                  }}
-                >
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-start',
-                    marginBottom: '12px'
-                  }}>
+                <article key={item.import_id} className="workflow-list-item">
+                  <div className="workflow-item-header">
                     <div>
-                      <div style={{ fontSize: '16px', fontWeight: '600', color: '#1a202c', marginBottom: '4px' }}>
-                        {item.resource_id}
-                      </div>
-                      <div style={{ fontSize: '14px', color: '#718096', marginBottom: '4px' }}>
-                        {item.resource_type}
-                      </div>
-                      <div style={{ fontSize: '13px', color: '#a0aec0' }}>
-                        Imported by {item.imported_by} • {new Date(item.imported_at).toLocaleString()}
-                      </div>
+                      <div className="workflow-item-title">{item.resource_id}</div>
+                      <div className="workflow-item-meta">{item.resource_type}</div>
+                      <div className="workflow-item-meta">Imported by {item.imported_by} · {new Date(item.imported_at).toLocaleString()}</div>
                     </div>
-
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                      <div style={{
-                        padding: '4px 12px',
-                        borderRadius: '12px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        background: `${getStatusColor(item.status)}20`,
-                        color: getStatusColor(item.status)
-                      }}>
+                    <div className="workflow-actions">
+                      <span className="workflow-badge" style={{ background: `${getStatusColor(item.status)}20`, color: getStatusColor(item.status) }}>
                         {getStatusIcon(item.status)} {item.status}
-                      </div>
-
+                      </span>
                       {(item.status === 'applied' || item.status === 'pending') && user?.role && ['lead', 'admin'].includes(user.role) && (
-                        <button
-                          onClick={() => rollbackImport(item.import_id)}
-                          style={{
-                            padding: '6px 12px',
-                            background: '#fef2f2',
-                            border: '1px solid #fecaca',
-                            borderRadius: '6px',
-                            color: '#991b1b',
-                            cursor: 'pointer',
-                            fontSize: '12px',
-                            fontWeight: '600'
-                          }}
-                        >
+                        <button onClick={() => rollbackImport(item.import_id)} className="workflow-btn workflow-btn-danger">
                           Rollback
                         </button>
                       )}
                     </div>
                   </div>
 
-                  <details style={{ fontSize: '13px', color: '#4a5568' }}>
-                    <summary style={{ cursor: 'pointer', fontWeight: '600', marginBottom: '8px' }}>
-                      View Terraform Code
-                    </summary>
-                    <pre style={{
-                      padding: '12px',
-                      background: '#1a202c',
-                      color: '#e2e8f0',
-                      borderRadius: '6px',
-                      fontSize: '11px',
-                      overflowX: 'auto',
-                      fontFamily: 'monospace'
-                    }}>
-                      {item.terraform_code}
-                    </pre>
+                  <details style={{ marginTop: '10px' }}>
+                    <summary style={{ cursor: 'pointer', fontWeight: 700, color: '#334155' }}>View Terraform Code</summary>
+                    <pre className="workflow-code" style={{ marginTop: '8px' }}>{item.terraform_code}</pre>
                   </details>
-                </div>
+                </article>
               ))}
             </div>
           )}
-        </div>
+        </section>
       )}
     </div>
   );
