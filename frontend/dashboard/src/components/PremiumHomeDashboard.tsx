@@ -88,20 +88,81 @@ export const PremiumHomeDashboard: React.FC<PremiumHomeDashboardProps> = ({ onNa
 
           {/* Welcome Card */}
           <div className="phd-card phd-welcome-card">
+            {/* Animated Background Gradient */}
+            <div className="phd-welcome-bg-gradient"></div>
+
+            {/* Floating Particles */}
+            <div className="phd-particles">
+              <div className="phd-particle"></div>
+              <div className="phd-particle"></div>
+              <div className="phd-particle"></div>
+              <div className="phd-particle"></div>
+              <div className="phd-particle"></div>
+            </div>
+
             <div className="phd-welcome-icon-container">
               <div className="phd-devops-background">
-                <div className="phd-devops-icon">☁️</div>
-                <div className="phd-devops-icon">🔒</div>
-                <div className="phd-devops-icon">⚙️</div>
-                <div className="phd-devops-icon">🚀</div>
-                <div className="phd-devops-icon">📊</div>
-                <div className="phd-devops-icon">🔄</div>
+                {/* Center Logo/Main Icon */}
+                <div className="phd-center-icon">
+                  <div className="phd-icon-ring"></div>
+                  <div className="phd-icon-ring phd-ring-2"></div>
+                  <span className="phd-main-icon">⚡</span>
+                </div>
+
+                {/* Orbiting DevOps Icons */}
+                <div className="phd-orbit-container">
+                  <div className="phd-devops-icon phd-orbit-icon phd-orbit-1">
+                    <span className="phd-icon-wrapper">☁️</span>
+                    <span className="phd-icon-label">Cloud</span>
+                  </div>
+                  <div className="phd-devops-icon phd-orbit-icon phd-orbit-2">
+                    <span className="phd-icon-wrapper">🔒</span>
+                    <span className="phd-icon-label">Security</span>
+                  </div>
+                  <div className="phd-devops-icon phd-orbit-icon phd-orbit-3">
+                    <span className="phd-icon-wrapper">⚙️</span>
+                    <span className="phd-icon-label">CI/CD</span>
+                  </div>
+                  <div className="phd-devops-icon phd-orbit-icon phd-orbit-4">
+                    <span className="phd-icon-wrapper">🚀</span>
+                    <span className="phd-icon-label">Deploy</span>
+                  </div>
+                  <div className="phd-devops-icon phd-orbit-icon phd-orbit-5">
+                    <span className="phd-icon-wrapper">📊</span>
+                    <span className="phd-icon-label">Monitor</span>
+                  </div>
+                  <div className="phd-devops-icon phd-orbit-icon phd-orbit-6">
+                    <span className="phd-icon-wrapper">🔄</span>
+                    <span className="phd-icon-label">Automate</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <h2 className="phd-welcome-title">Welcome to PromptOps!</h2>
-            <p className="phd-welcome-text">
-              Your AI-powered platform for cloud infrastructure management.
-            </p>
+
+            <div className="phd-welcome-content">
+              <h2 className="phd-welcome-title">
+                <span className="phd-title-gradient">Welcome to PromptOps!</span>
+              </h2>
+              <p className="phd-welcome-text">
+                Your AI-powered platform for cloud infrastructure management
+              </p>
+              <div className="phd-welcome-stats">
+                <div className="phd-stat-item">
+                  <div className="phd-stat-value">99.9%</div>
+                  <div className="phd-stat-label">Uptime</div>
+                </div>
+                <div className="phd-stat-divider"></div>
+                <div className="phd-stat-item">
+                  <div className="phd-stat-value">10x</div>
+                  <div className="phd-stat-label">Faster</div>
+                </div>
+                <div className="phd-stat-divider"></div>
+                <div className="phd-stat-item">
+                  <div className="phd-stat-value">24/7</div>
+                  <div className="phd-stat-label">Support</div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Quick Start Section */}
