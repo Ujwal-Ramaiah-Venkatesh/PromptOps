@@ -14,6 +14,7 @@ import json
 import logging
 from typing import Dict, Any, Optional, List
 from datetime import datetime
+from uuid import uuid4
 import boto3
 from botocore.exceptions import ClientError
 
@@ -184,6 +185,10 @@ class SageMakerTrainingGenerator:
         """
         model_type_str = intent_params.get('model_type', '').lower()
 
+        # Computer vision patterns must be checked before generic classification.
+        if any(kw in model_type_str for kw in ['image', 'vision', 'cv', 'detection', 'recognition']):
+            return "computer_vision"
+
         # Classification patterns
         if any(kw in model_type_str for kw in ['churn', 'fraud', 'classification', 'classifier']):
             return "classification"
@@ -199,10 +204,6 @@ class SageMakerTrainingGenerator:
         # Time series patterns
         if any(kw in model_type_str for kw in ['time_series', 'timeseries', 'demand', 'sales_forecast']):
             return "time_series"
-
-        # Computer vision patterns
-        if any(kw in model_type_str for kw in ['image', 'vision', 'cv', 'detection', 'recognition']):
-            return "computer_vision"
 
         # Default to classification
         logger.warning(f"Unknown model type: {model_type_str}, defaulting to classification")
@@ -220,12 +221,13 @@ class SageMakerTrainingGenerator:
             Unique job name (max 63 chars, alphanumeric + hyphens)
         """
         timestamp = datetime.utcnow().strftime('%Y%m%d-%H%M%S')
+        unique_suffix = uuid4().hex[:6]
 
         # Clean model name
         clean_name = ''.join(c if c.isalnum() else '-' for c in model_name.lower())
         clean_name = clean_name[:20]  # Limit length
 
-        job_name = f"promptops-{model_type[:10]}-{clean_name}-{timestamp}"
+        job_name = f"promptops-{model_type[:10]}-{clean_name}-{timestamp}-{unique_suffix}"
 
         # Ensure max 63 chars
         if len(job_name) > 63:

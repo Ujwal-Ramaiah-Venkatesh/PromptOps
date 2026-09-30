@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>S3 Bucket Name Validator Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+        .test { margin: 15px 0; padding: 10px; border-left: 3px solid #4caf50; background: #252526; }
+        .test.fail { border-left-color: #f44336; }
+        .label { color: #9cdcfe; font-weight: bold; }
+        .value { color: #ce9178; }
+        .pass { color: #4caf50; font-weight: bold; }
+        .fail { color: #f44336; font-weight: bold; }
+        h1 { color: #4ec9b0; }
+        h2 { color: #dcdcaa; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 S3 Bucket Name Validation Test</h1>
+    <p>Testing bucket name generation for various inputs</p>
+
+    <div id="results"></div>
+
+    <script>
+        const sanitizeBucketName = (name) => {
+            let sanitized = name
+                .toLowerCase()
+                .replace(/[^a-z0-9-]/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .replace(/-+/g, '-');
+
+            if (sanitized && !/^[a-z0-9]/.test(sanitized)) {
+                sanitized = 'app-' + sanitized;
+            }
+
+            if (sanitized && !/[a-z0-9]$/.test(sanitized)) {
+                sanitized = sanitized.replace(/-+$/, '');
+            }
+
+            if (sanitized.length > 40) {
+                sanitized = sanitized.substring(0, 40).replace(/-+$/, '');
+            }
+
+            return sanitized || 'app';
+        };
+
+        const extractAppNameFromRepoUrl = (repoUrl) => {
+            const toKebabCase = (value) => {
+                return value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, ' ')
+                    .trim()
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+            };
+
+            const parts = repoUrl.replace(/\.git$/i, '').split('/').filter(Boolean);
+            return parts.length > 0 ? toKebabCase(parts[parts.length - 1]) : 'android-app';
+        };
+
+        const validateBucketName = (name) => {
+            if (name.length < 3 || name.length > 63) return false;
+            if (!/^[a-z0-9]/.test(name)) return false;
+            if (!/[a-z0-9]$/.test(name)) return false;
+            if (!/^[a-z0-9-]+$/.test(name)) return false;
+            return true;
+        };
+
+        const testCases = [
+            {
+                name: 'GitHub: jewelry-vault',
+                repoUrl: 'https://github.com/ashi100sh/jewelry-vault',
+                expected: 'jewelry-vault'
+            },
+            {
+                name: 'GitHub: netSenseAI',
+                repoUrl: 'https://github.com/kirankumarhs29/netSenseAI',
+                expected: 'netsenseai'
+            },
+            {
+                name: 'Direct: jewelry-vault-app-from-https-github-com-ashi100sh-jewelry-vault (old bug)',
+                appName: 'jewelry-vault-app-from-https-github-com-ashi100sh-jewelry-vault',
+                expected: 'jewelry-vault-app-from-https-github-c'
+            },
+            {
+                name: 'Direct: my_app_with_underscores',
+                appName: 'my_app_with_underscores',
+                expected: 'my-app-with-underscores'
+            },
+            {
+                name: 'Direct: App.With.Dots',
+                appName: 'App.With.Dots',
+                expected: 'app-with-dots'
+            },
+            {
+                name: 'Direct: -starts-with-hyphen',
+                appName: '-starts-with-hyphen',
+                expected: 'starts-with-hyphen'
+            },
+            {
+                name: 'Direct: ends-with-hyphen-',
+                appName: 'ends-with-hyphen-',
+                expected: 'ends-with-hyphen'
+            },
+            {
+                name: 'Direct: super-long-application-name-that-should-be-truncated-to-fit-s3-limits',
+                appName: 'super-long-application-name-that-should-be-truncated-to-fit-s3-limits',
+                expected: 'super-long-application-name-that-shoul'
+            }
+        ];
+
+        const results = document.getElementById('results');
+
+        testCases.forEach((test, i) => {
+            let appName;
+            if (test.repoUrl) {
+                appName = extractAppNameFromRepoUrl(test.repoUrl);
+            } else {
+                appName = test.appName;
+            }
+
+            const bucketSuffix = '123456';
+            const sanitizedAppName = sanitizeBucketName(appName);
+            const bucketName = sanitizeBucketName(`${sanitizedAppName}-promptops-${bucketSuffix}`);
+            const isValid = validateBucketName(bucketName);
+            const isExpected = sanitizedAppName === test.expected;
+
+            const div = document.createElement('div');
+            div.className = `test ${isValid && isExpected ? 'pass' : 'fail'}`;
+            div.innerHTML = `
+                <div><span class="label">Test ${i + 1}:</span> ${test.name}</div>
+                ${test.repoUrl ? `<div><span class="label">Repo URL:</span> <span class="value">${test.repoUrl}</span></div>` : ''}
+                ${test.appName ? `<div><span class="label">Input:</span> <span class="value">${test.appName}</span></div>` : ''}
+                <div><span class="label">App Name:</span> <span class="value">${sanitizedAppName}</span> ${isExpected ? '<span class="pass">✓</span>' : `<span class="fail">✗ Expected: ${test.expected}</span>`}</div>
+                <div><span class="label">Bucket:</span> <span class="value">${bucketName}</span> (${bucketName.length} chars)</div>
+                <div><span class="label">S3 Valid:</span> ${isValid ? '<span class="pass">✓ YES</span>' : '<span class="fail">✗ NO</span>'}</div>
+            `;
+            results.appendChild(div);
+        });
+
+        // Summary
+        const summary = document.createElement('h2');
+        const passCount = testCases.filter((test, i) => {
+            let appName = test.repoUrl ? extractAppNameFromRepoUrl(test.repoUrl) : test.appName;
+            const sanitizedAppName = sanitizeBucketName(appName);
+            const bucketName = sanitizeBucketName(`${sanitizedAppName}-promptops-123456`);
+            return validateBucketName(bucketName) && sanitizedAppName === test.expected;
+        }).length;
+        summary.textContent = `✅ ${passCount}/${testCases.length} tests passed`;
+        summary.style.color = passCount === testCases.length ? '#4caf50' : '#f44336';
+        results.insertBefore(summary, results.firstChild);
+    </script>
+</body>
+</html>

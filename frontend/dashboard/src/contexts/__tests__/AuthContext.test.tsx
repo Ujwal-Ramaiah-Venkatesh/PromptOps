@@ -19,7 +19,7 @@ const TestComponent = () => {
     <div>
       <div data-testid="auth-status">{isAuthenticated ? 'authenticated' : 'not-authenticated'}</div>
       {user && <div data-testid="user-email">{user.email}</div>}
-      <button onClick={() => login('test@example.com', 'password')}>Login</button>
+      <button onClick={() => login('admin@promptops.com', 'admin123')}>Login</button>
       <button onClick={logout}>Logout</button>
     </div>
   );
@@ -66,7 +66,7 @@ describe('AuthContext', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('auth-status')).toHaveTextContent('authenticated');
-      expect(screen.getByTestId('user-email')).toHaveTextContent('test@example.com');
+      expect(screen.getByTestId('user-email')).toHaveTextContent('admin@promptops.com');
     }, { timeout: 3000 });
   });
 

@@ -17,7 +17,11 @@ Author: PromptOps Team - Week 11-12
 Date: 2026-04-29
 """
 
-from locust import HttpUser, task, between, events
+try:
+    from locust import HttpUser, task, between, events
+except (ImportError, RecursionError) as exc:
+    import pytest
+    pytest.skip(f"Locust runtime is unavailable in this pytest process: {exc}", allow_module_level=True)
 from locust.runners import MasterRunner
 import random
 import time

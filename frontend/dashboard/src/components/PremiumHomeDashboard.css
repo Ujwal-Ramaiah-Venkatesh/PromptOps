@@ -141,8 +141,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: row;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 32px;
   padding: 20px;
 }
 
@@ -200,6 +201,97 @@
   color: #c7d2fe;
   margin: 0;
   line-height: 1.6;
+}
+
+/* Welcome Stats - Horizontal Layout */
+.phd-welcome-stats {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.phd-stat-item {
+  text-align: center;
+}
+
+.phd-stat-divider {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.phd-stat-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+}
+
+.phd-stat-label {
+  font-size: 11px;
+  color: #c7d2fe;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* Orbit Container and Icons - Horizontal Layout */
+.phd-orbit-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  width: 100%;
+}
+
+.phd-orbit-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.phd-icon-wrapper {
+  font-size: 32px;
+  filter: drop-shadow(0 4px 12px rgba(139, 92, 246, 0.4));
+}
+
+.phd-icon-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #e0e7ff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Animation delays for staggered floating effect */
+.phd-orbit-1 {
+  animation-delay: 0s;
+}
+
+.phd-orbit-2 {
+  animation-delay: 0.2s;
+}
+
+.phd-orbit-3 {
+  animation-delay: 0.4s;
+}
+
+.phd-orbit-4 {
+  animation-delay: 0.6s;
+}
+
+.phd-orbit-5 {
+  animation-delay: 0.8s;
+}
+
+.phd-orbit-6 {
+  animation-delay: 1s;
 }
 
 /* Section */
@@ -528,6 +620,29 @@
 
   .phd-action-arrow {
     display: none;
+  }
+
+  /* Keep stats and badges horizontal on mobile too */
+  .phd-welcome-stats {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 16px;
+  }
+
+  .phd-stat-value {
+    font-size: 20px;
+  }
+
+  .phd-stat-label {
+    font-size: 10px;
+  }
+
+  .phd-icon-wrapper {
+    font-size: 24px;
+  }
+
+  .phd-icon-label {
+    font-size: 9px;
   }
 }
 

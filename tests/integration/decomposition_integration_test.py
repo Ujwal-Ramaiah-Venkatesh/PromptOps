@@ -44,9 +44,8 @@ class TestDecompositionIntegration(unittest.TestCase):
         api_key = os.environ.get('ANTHROPIC_API_KEY')
 
         if not api_key:
-            raise EnvironmentError(
-                "ANTHROPIC_API_KEY not set. Cannot run integration tests.\n"
-                "Set with: $env:ANTHROPIC_API_KEY=\"sk-ant-...\""
+            raise unittest.SkipTest(
+                "ANTHROPIC_API_KEY not set; skipping Claude-backed integration tests"
             )
 
         # Initialize Week 3-4 Parser
@@ -314,6 +313,10 @@ class TestLangGraphIntegration(unittest.TestCase):
     """
     Test LangGraph workflow integration.
     """
+
+    def setUp(self):
+        if not os.environ.get('ANTHROPIC_API_KEY'):
+            self.skipTest("ANTHROPIC_API_KEY not set; skipping Claude-backed workflow test")
 
     def test_langgraph_workflow(self):
         """Test: Complete LangGraph workflow."""

@@ -1,0 +1,44 @@
+╔═══════════════════════════════════════════════════════════════╗
+║           PromptOps Logo Update - Quick Reference             ║
+╚═══════════════════════════════════════════════════════════════╝
+
+📥 STEP 1: SAVE NEW LOGO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Save your new logo as:
+📁 C:\Users\pqm847\Documents\PromptOps\branding\promptops-logo.png
+
+🔄 STEP 2: RUN UPDATE SCRIPT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+cd C:\Users\pqm847\Documents\PromptOps
+update_logo.bat
+
+🌐 STEP 3: RESTART & VIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Restart frontend:
+   cd frontend\dashboard
+   npm start
+
+2. Clear browser cache: Ctrl + Shift + R
+
+3. Check: http://localhost:3000
+
+✅ VERIFY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ Login page logo (100x100px)
+✓ Navigation bar logo (48x48px)
+✓ Browser favicon updated
+
+📂 FILES UPDATED (3)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. branding/promptops-logo.png
+2. assets/promptops-logo.png
+3. frontend/dashboard/public/promptops-logo.png
+
+💡 TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Logo not updating? → Hard refresh (Ctrl+Shift+R)
+• Still old logo? → Restart dev server
+• Script error? → Check file exists in branding/ folder
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Full instructions: LOGO_UPDATE_INSTRUCTIONS.md

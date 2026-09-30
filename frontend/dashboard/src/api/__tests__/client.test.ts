@@ -20,7 +20,7 @@ describe('API Client', () => {
       await apiClient.get('/test');
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:8000/test',
+        'http://localhost:3800/test',
         expect.objectContaining({
           method: 'GET',
         })
@@ -83,7 +83,7 @@ describe('API Client', () => {
       await apiClient.post('/login', postData);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:8000/login',
+        'http://localhost:3800/login',
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify(postData),
@@ -122,7 +122,7 @@ describe('API Client', () => {
       await apiClient.put('/resource/1', putData);
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost:8000/resource/1',
+        'http://localhost:3800/resource/1',
         expect.objectContaining({
           method: 'PUT',
           body: JSON.stringify(putData),

@@ -1,0 +1,167 @@
+╔══════════════════════════════════════════════════════════════╗
+║           PROMPTOPS DEPLOYMENT DEMO                          ║
+║              Quick Reference Card                            ║
+╚══════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────┐
+│ STEP 1: START DEMO                                           │
+├──────────────────────────────────────────────────────────────┤
+│ Double-click: START_DEMO.bat                                 │
+│ Or run: START_DEMO.bat from command line                     │
+└──────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────┐
+│ STEP 2: LOGIN                                                │
+├──────────────────────────────────────────────────────────────┤
+│ URL:      http://localhost:3000                              │
+│ Email:    admin@promptops.com                                │
+│ Password: admin123                                           │
+└──────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────┐
+│ STEP 3: DEPLOYMENT FORM                                      │
+├──────────────────────────────────────────────────────────────┤
+│ App Name:    jewelry-vault-demo                              │
+│ GitHub URL:  https://github.com/ashi100sh/jewelry-vault      │
+│ Branch:      main                                            │
+│ Target:      AWS S3 Static Hosting                           │
+│ Region:      us-east-1                                       │
+│ Options:     ☑ CloudFront  ☑ HTTPS  ☑ Monitoring            │
+└──────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────┐
+│ STEP 4: DEPLOYMENT PROGRESS                                  │
+├──────────────────────────────────────────────────────────────┤
+│ Watch these steps complete:                                  │
+│ 1/8: Cloning repository                                      │
+│ 2/8: Installing dependencies                                 │
+│ 3/8: Building application                                    │
+│ 4/8: Creating S3 bucket                                      │
+│ 5/8: Uploading files                                         │
+│ 6/8: Configuring CloudFront                                  │
+│ 7/8: Setting up monitoring                                   │
+│ 8/8: Verification                                            │
+│                                                               │
+│ ⏱️ Total Time: ~2 minutes                                    │
+└──────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────┐
+│ STEP 5: VIEW DEPLOYED APP                                    │
+├──────────────────────────────────────────────────────────────┤
+│ Click: "View Application" button                             │
+│ App opens in embedded iframe within PromptOps                │
+│ URL: https://jewelry-vault-demo.s3-website-us-east-1...      │
+└──────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────┐
+│ STEP 6: SECURITY MONITORING                                  │
+├──────────────────────────────────────────────────────────────┤
+│ Navigate to: 🛡️ Security Monitor tab                        │
+│ Enter URL: [deployed app URL from above]                     │
+│ Enter Bucket: jewelry-vault-demo                             │
+│ Click: 🔒 Security Scan                                      │
+│ Wait: ~30 seconds                                            │
+│ View: Alerts tab for findings                                │
+└──────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────┐
+│ STEP 7: LOAD TESTING                                         │
+├──────────────────────────────────────────────────────────────┤
+│ Click: 🚀 Run Load Test                                      │
+│ Wait: ~60 seconds                                            │
+│ View: Tests tab for results                                  │
+│ Check: Error rate < 1% ✅                                    │
+└──────────────────────────────────────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════╗
+║ KEY TALKING POINTS                                           ║
+╠══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║ 🎯 "One-Click Deployment"                                    ║
+║    Traditional: Days of work                                 ║
+║    PromptOps: 2 minutes                                      ║
+║                                                               ║
+║ 🤖 "AI-Powered Automation"                                   ║
+║    - Auto-detects app type                                   ║
+║    - Optimizes build configuration                           ║
+║    - Configures AWS resources                                ║
+║                                                               ║
+║ 🛡️ "Built-in Security"                                       ║
+║    - Automatic vulnerability scanning                        ║
+║    - One-click remediation                                   ║
+║    - Continuous monitoring                                   ║
+║                                                               ║
+║ 📊 "Real-Time Monitoring"                                    ║
+║    - Live performance metrics                                ║
+║    - Load testing                                            ║
+║    - Auto-scaling recommendations                            ║
+║                                                               ║
+║ 💰 "Cost Savings"                                            ║
+║    - Reduce DevOps team overhead                             ║
+║    - Optimize cloud spending                                 ║
+║    - Faster time to market                                   ║
+║                                                               ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ TROUBLESHOOTING                                              ║
+╠══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║ ❌ Backend not starting?                                     ║
+║    cd api_gateway && python main.py                          ║
+║                                                               ║
+║ ❌ Frontend not starting?                                    ║
+║    cd frontend/dashboard && npm run dev                      ║
+║                                                               ║
+║ ❌ AWS credentials?                                          ║
+║    aws configure                                             ║
+║    aws sts get-caller-identity (to verify)                   ║
+║                                                               ║
+║ ❌ Deployment fails?                                         ║
+║    Check: GitHub repo accessible                             ║
+║    Check: S3 bucket name unique                              ║
+║    Check: AWS permissions correct                            ║
+║                                                               ║
+║ ❌ Page shows empty?                                         ║
+║    Press F5 to refresh                                       ║
+║    Check browser console (F12) for errors                    ║
+║    Verify both services running                              ║
+║                                                               ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ DEMO FLOW SUMMARY                                            ║
+╠══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║ 1. Login (30 sec)                                            ║
+║ 2. Home Dashboard (30 sec)                                   ║
+║ 3. Fill Deployment Form (30 sec)                             ║
+║ 4. Watch Deployment (2 min)                                  ║
+║ 5. View Deployed App (30 sec)                                ║
+║ 6. Security Scan (1 min)                                     ║
+║ 7. Load Test (1 min)                                         ║
+║                                                               ║
+║ 📊 Total Demo Time: ~6 minutes                               ║
+║                                                               ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ ALTERNATE DEMO (If Time Constrained)                        ║
+╠══════════════════════════════════════════════════════════════╣
+║                                                               ║
+║ Quick 2-Minute Demo:                                         ║
+║ 1. Show pre-deployed app                                     ║
+║ 2. Run security scan                                         ║
+║ 3. Show auto-remediation                                     ║
+║ 4. Run load test                                             ║
+║                                                               ║
+║ Pre-deploy beforehand:                                       ║
+║ • Have jewelry-vault already deployed                        ║
+║ • Show monitoring only                                       ║
+║ • Skip deployment steps                                      ║
+║                                                               ║
+╚══════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                        END OF REFERENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

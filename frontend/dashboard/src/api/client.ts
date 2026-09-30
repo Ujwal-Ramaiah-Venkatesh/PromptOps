@@ -12,6 +12,7 @@ interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   headers?: Record<string, string>;
   body?: any;
+  params?: Record<string, any>;
 }
 
 class APIClient {
@@ -35,7 +36,7 @@ class APIClient {
   }
 
   async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-    const { method = 'GET', headers = {}, body } = options;
+    const { method = 'GET', headers = {}, body, params } = options;
 
     const config: RequestInit = {
       method,
@@ -49,7 +50,14 @@ class APIClient {
       config.body = JSON.stringify(body);
     }
 
-    const url = `${this.baseURL}${endpoint}`;
+    let url = `${this.baseURL}${endpoint}`;
+
+    // Add query parameters if provided
+    if (params) {
+      const queryString = new URLSearchParams(params).toString();
+      url += `?${queryString}`;
+    }
+
     const response = await fetch(url, config);
 
     if (!response.ok) {
@@ -62,8 +70,8 @@ class APIClient {
     return response.json();
   }
 
-  get<T>(endpoint: string): Promise<T> {
-    return this.request<T>(endpoint, { method: 'GET' });
+  get<T>(endpoint: string, options?: { params?: Record<string, any> }): Promise<T> {
+    return this.request<T>(endpoint, { method: 'GET', ...options });
   }
 
   post<T>(endpoint: string, body: any): Promise<T> {

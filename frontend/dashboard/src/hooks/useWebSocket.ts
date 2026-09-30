@@ -259,3 +259,135 @@ export function useNotifications(connectionId: string) {
     clearNotifications,
   };
 }
+
+/**
+ * Hook for deployment progress updates (Q3 2026 - Week 2)
+ *
+ * @example
+ * ```typescript
+ * const { progress, isConnected } = useDeploymentProgress('deploy-123');
+ * console.log(`Progress: ${progress?.progress}%`);
+ * ```
+ */
+export function useDeploymentProgress(deploymentId?: string) {
+  const [progress, setProgress] = useState<any>(null);
+
+  const { isConnected } = useWebSocket({
+    url: `ws://localhost:8000/ws?token=${localStorage.getItem('token') || ''}`,
+    autoConnect: true,
+    onMessage: (message) => {
+      if (message.type === 'deployment.progress') {
+        // Filter by deployment ID if provided
+        if (!deploymentId || message.data?.deployment_id === deploymentId) {
+          setProgress(message.data);
+        }
+      }
+    },
+  });
+
+  return {
+    progress,
+    isConnected,
+  };
+}
+
+/**
+ * Hook for drift detection alerts (Q3 2026 - Week 2)
+ *
+ * Real-time infrastructure drift notifications
+ */
+export function useDriftAlerts() {
+  const [alerts, setAlerts] = useState<any[]>([]);
+
+  const { isConnected } = useWebSocket({
+    url: `ws://localhost:8000/ws?token=${localStorage.getItem('token') || ''}`,
+    autoConnect: true,
+    onMessage: (message) => {
+      if (message.type === 'drift.detected') {
+        setAlerts(prev => [...prev, {
+          ...message.data,
+          id: `drift-${Date.now()}`,
+          timestamp: message.timestamp,
+        }]);
+      }
+    },
+  });
+
+  const clearAlert = useCallback((id: string) => {
+    setAlerts(prev => prev.filter(alert => alert.id !== id));
+  }, []);
+
+  const clearAll = useCallback(() => {
+    setAlerts([]);
+  }, []);
+
+  return {
+    alerts,
+    clearAlert,
+    clearAll,
+    isConnected,
+  };
+}
+
+/**
+ * Hook for real-time metrics (Q3 2026 - Week 2)
+ *
+ * Live infrastructure metrics updates
+ */
+export function useRealTimeMetrics() {
+  const [metrics, setMetrics] = useState<any>(null);
+  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
+
+  const { isConnected } = useWebSocket({
+    url: `ws://localhost:8000/ws?token=${localStorage.getItem('token') || ''}`,
+    autoConnect: true,
+    onMessage: (message) => {
+      if (message.type === 'metrics.updated') {
+        setMetrics(message.data);
+        setLastUpdate(message.timestamp);
+      }
+    },
+  });
+
+  return {
+    metrics,
+    lastUpdate,
+    isConnected,
+  };
+}
+
+/**
+ * Hook for deployment logs (Q3 2026 - Week 2)
+ *
+ * Live log streaming from deployments
+ */
+export function useDeploymentLogs(deploymentId?: string) {
+  const [logs, setLogs] = useState<any[]>([]);
+
+  const { isConnected } = useWebSocket({
+    url: `ws://localhost:8000/ws?token=${localStorage.getItem('token') || ''}`,
+    autoConnect: true,
+    onMessage: (message) => {
+      if (message.type === 'deployment.log') {
+        // Filter by deployment ID if provided
+        if (!deploymentId || message.data?.deployment_id === deploymentId) {
+          setLogs(prev => [...prev, {
+            ...message.data,
+            id: `log-${Date.now()}-${Math.random()}`,
+            timestamp: message.timestamp,
+          }]);
+        }
+      }
+    },
+  });
+
+  const clearLogs = useCallback(() => {
+    setLogs([]);
+  }, []);
+
+  return {
+    logs,
+    clearLogs,
+    isConnected,
+  };
+}

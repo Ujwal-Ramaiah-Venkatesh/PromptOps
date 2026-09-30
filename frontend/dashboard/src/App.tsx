@@ -6,12 +6,13 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { AutonomySettings } from './pages/AutonomySettings';
 import { DiscoveryDashboard } from './pages/DiscoveryDashboard';
 import { IngestionWorkflow } from './pages/IngestionWorkflow';
-import { ObservabilityDashboard } from './pages/ObservabilityDashboard';
+import { UnifiedMonitoringDashboard } from './pages/UnifiedMonitoringDashboard';
+import { KubernetesDashboard } from './pages/KubernetesDashboard';
 import { PremiumHomeDashboard } from './components/PremiumHomeDashboard';
 import { DeploymentForm } from './components/DeploymentForm';
 import { apiClient } from './api/client';
 
-type Page = 'home' | 'autonomy' | 'discovery' | 'ingestion' | 'deploy-review' | 'observability';
+type Page = 'home' | 'autonomy' | 'discovery' | 'ingestion' | 'deploy-review' | 'monitoring' | 'kubernetes';
 
 const REPO_REGISTRY_STORAGE_KEY = 'promptops_repo_registry_v1';
 const DEFAULT_REPO_REGISTRY: Record<string, string> = {
@@ -22,6 +23,8 @@ const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [showDeploymentForm, setShowDeploymentForm] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successDeploymentData, setSuccessDeploymentData] = useState<any>(null);
 
   // Handle 'deploy' navigation by redirecting to home
   React.useEffect(() => {
@@ -127,6 +130,33 @@ const Dashboard: React.FC = () => {
       .filter(Boolean)
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
       .join(' ');
+  };
+
+  const sanitizeBucketName = (name: string): string => {
+    // S3 bucket names must be 3-63 characters, lowercase, alphanumeric and hyphens only
+    // Must start and end with letter or number
+    let sanitized = name
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, '-')  // Replace invalid chars with hyphen
+      .replace(/^-+|-+$/g, '')       // Remove leading/trailing hyphens
+      .replace(/-+/g, '-');           // Collapse multiple hyphens
+
+    // Ensure it starts with alphanumeric
+    if (sanitized && !/^[a-z0-9]/.test(sanitized)) {
+      sanitized = 'app-' + sanitized;
+    }
+
+    // Ensure it ends with alphanumeric
+    if (sanitized && !/[a-z0-9]$/.test(sanitized)) {
+      sanitized = sanitized.replace(/-+$/, '');
+    }
+
+    // Truncate to max 63 characters (leaving room for suffix)
+    if (sanitized.length > 40) {
+      sanitized = sanitized.substring(0, 40).replace(/-+$/, '');
+    }
+
+    return sanitized || 'app';
   };
 
   const getRepoRegistry = (): Record<string, string> => {
@@ -604,7 +634,8 @@ const Dashboard: React.FC = () => {
         const appName = extractAppNameFromRepoUrl(repoUrl);
         const serviceLabel = toTitleCase(appName);
         const bucketSuffix = `${Date.now().toString().slice(-6)}`;
-        const bucketName = `${appName}-promptops-${bucketSuffix}`;
+        const sanitizedAppName = sanitizeBucketName(appName);
+        const bucketName = sanitizeBucketName(`${sanitizedAppName}-promptops-${bucketSuffix}`);
 
         const deployRequest = {
           app_name: appName,
@@ -678,12 +709,22 @@ const Dashboard: React.FC = () => {
         });
       } else if (isDeployPreviewCommand) {
         // PM review step: generate a preview, do not execute yet
-        const appName = toKebabCase(extractAppFromDeployCommand(commandInput));
+        const repoFromCommand = extractGitHubRepoUrl(commandInput) || '';
+
+        // If GitHub URL is provided, extract app name from the repo URL
+        // Otherwise, extract from the command text
+        let appName: string;
+        if (repoFromCommand) {
+          appName = extractAppNameFromRepoUrl(repoFromCommand);
+        } else {
+          appName = toKebabCase(extractAppFromDeployCommand(commandInput));
+        }
+
         const serviceLabel = toTitleCase(appName);
         const bucketSuffix = `${Date.now().toString().slice(-6)}`;
-        const bucketName = `${appName}-promptops-${bucketSuffix}`;
+        const sanitizedAppName = sanitizeBucketName(appName);
+        const bucketName = sanitizeBucketName(`${sanitizedAppName}-promptops-${bucketSuffix}`);
         const sourcePath = `C:\\Users\\pqm847\\Documents\\${appName}`;
-        const repoFromCommand = extractGitHubRepoUrl(commandInput) || '';
         const repoUrl = repoFromCommand || getRepoForApp(appName);
 
         if (repoFromCommand) {
@@ -694,6 +735,7 @@ const Dashboard: React.FC = () => {
           app_name: appName,
           source_path: sourcePath,
           repo_url: repoUrl,
+          branch: 'main',
           bucket_name: bucketName,
           region: 'us-east-1',
           domain_required: hasDomainRequirement(commandInput),
@@ -899,7 +941,22 @@ const Dashboard: React.FC = () => {
           : 'Calling deployment API for AWS S3 static hosting'
       );
 
-      const deployEndpoint = deployType === 'android_aws' ? '/api/v1/deploy/android/aws' : '/api/v1/deploy/aws';
+      // Determine the correct deployment endpoint
+      let deployEndpoint: string;
+      const hasRepoUrl = Boolean(pendingDeploy.request.repo_url?.trim());
+
+      if (deployType === 'android_aws') {
+        deployEndpoint = '/api/v1/deploy/android/aws';
+      } else if (hasRepoUrl) {
+        // If repo URL is provided, use GitHub deployment endpoint
+        deployEndpoint = '/api/v1/deploy/github/aws';
+        appendDeployLog(`Detected GitHub repository: ${pendingDeploy.request.repo_url}`);
+        appendDeployLog('Using GitHub clone & deploy workflow...');
+      } else {
+        // Local file deployment
+        deployEndpoint = '/api/v1/deploy/aws';
+      }
+
       let deployResponse: any;
       const deployPayload = {
         ...pendingDeploy.request,
@@ -979,7 +1036,7 @@ const Dashboard: React.FC = () => {
       const responseSourceBundleUrl = deployResponse.source_bundle_url || deployResponse.bundle_url || null;
       const awsRecommendation = getAwsServiceRecommendation(deployType, pendingDeploy.request);
 
-      setCommandResult({
+      const successResult = {
         success: true,
         parsed: {
           intent_type: 'deployment',
@@ -1002,7 +1059,58 @@ const Dashboard: React.FC = () => {
         message: responseWebsiteUrl
           ? `Deployment successful. Public URL: ${responseWebsiteUrl}`
           : 'Deployment successful.'
+      };
+
+      console.log('Setting commandResult:', successResult);
+      setCommandResult(successResult);
+
+      // Show success modal popup
+      setSuccessDeploymentData({
+        appName: targetService,
+        publicUrl: responseWebsiteUrl,
+        region: responseRegion,
+        bucket: responseBucket,
+        filesUploaded: deployResponse.files_uploaded || 0,
+        credentialMode: deploySecurity.credentialMode,
+        deployedAt: new Date().toISOString(),
+        deployType: deployType,
+        repoUrl: pendingDeploy.request.repo_url || null,
+        branch: pendingDeploy.request.branch || 'main',
       });
+      setShowSuccessModal(true);
+
+      // Save deployment info to localStorage for observability dashboard
+      const deploymentInfo = {
+        app_name: targetService,
+        name: targetService,
+        website_url: responseWebsiteUrl,
+        url: responseWebsiteUrl,
+        region: responseRegion,
+        bucket: responseBucket,
+        files_uploaded: deployResponse.files_uploaded || null,
+        deployed_at: new Date().toISOString(),
+        deploy_type: deployType,
+      };
+
+      // Get existing deployments from localStorage
+      const existingDeployments = localStorage.getItem('promptops_recent_deployments');
+      let deployments = [];
+      if (existingDeployments) {
+        try {
+          deployments = JSON.parse(existingDeployments);
+        } catch (e) {
+          deployments = [];
+        }
+      }
+
+      // Add new deployment to the beginning (most recent first)
+      deployments.unshift(deploymentInfo);
+
+      // Keep only the last 10 deployments
+      deployments = deployments.slice(0, 10);
+
+      // Save back to localStorage
+      localStorage.setItem('promptops_recent_deployments', JSON.stringify(deployments));
 
       setPendingDeploy(null);
       setCommandInput('');
@@ -1017,20 +1125,54 @@ const Dashboard: React.FC = () => {
         deploy_type: deployType,
       });
     } catch (error: any) {
+      // Extract detailed error information
+      const errorMessage = error.message || 'Unknown error';
+      const errorDetails = error.response?.data?.error || error.response?.data?.message || '';
+      const errorStack = error.response?.data?.details || error.stack || '';
+      const statusCode = error.response?.status || 'N/A';
+
       setDeployProgress((prev) => ({
         ...prev,
         active: true,
         status: 'error',
-        subtitle: 'Deployment failed',
+        subtitle: 'Deployment failed - See logs below',
       }));
-      appendDeployLog(`Deployment failed: ${error.message || 'Unknown error'}`);
+
+      // Log detailed error information
+      appendDeployLog(`❌ DEPLOYMENT FAILED`);
+      appendDeployLog(`Error: ${errorMessage}`);
+      if (statusCode !== 'N/A') {
+        appendDeployLog(`Status Code: ${statusCode}`);
+      }
+      if (errorDetails) {
+        appendDeployLog(`Details: ${errorDetails}`);
+      }
+      if (errorStack) {
+        appendDeployLog(`Stack Trace: ${errorStack}`);
+      }
+
+      // Check for specific error types
+      if (errorMessage.includes('fetch') || errorMessage.includes('network')) {
+        appendDeployLog(`Possible Cause: Network connectivity issue or backend service is not running`);
+        appendDeployLog(`Solution: Check if the backend API is running and accessible`);
+      } else if (errorMessage.includes('credentials') || errorMessage.includes('auth')) {
+        appendDeployLog(`Possible Cause: AWS credentials are invalid or missing`);
+        appendDeployLog(`Solution: Verify AWS credentials are configured correctly`);
+      } else if (errorMessage.includes('bucket')) {
+        appendDeployLog(`Possible Cause: S3 bucket issue`);
+        appendDeployLog(`Solution: Check if the bucket name is valid and accessible`);
+      }
+
       setCommandResult({
         success: false,
-        message: error.message || 'Failed to deploy command'
+        message: `Deployment failed: ${errorMessage}${errorDetails ? ' - ' + errorDetails : ''}`
       });
+
       await logActivity('ui.deploy.executed.error', {
         service: targetService,
-        error: error.message || 'Failed to deploy command',
+        error: errorMessage,
+        errorDetails,
+        statusCode,
       });
     } finally {
       setIsProcessing(false);
@@ -1125,19 +1267,18 @@ const Dashboard: React.FC = () => {
               src="/promptops-logo.png"
               alt="PromptOps Logo"
               style={{
-                width: '48px',
-                height: '48px',
+                width: '64px',
+                height: '64px',
                 borderRadius: '8px',
                 objectFit: 'contain'
               }}
             />
             <span className="premium-logo-text" style={{
-              fontSize: '24px',
+              fontSize: '28px',
               fontWeight: '900',
               color: '#3d3177',
               fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-              letterSpacing: '0.02em',
-              textTransform: 'uppercase'
+              letterSpacing: '0.02em'
             }}>PromptOps</span>
           </div>
 
@@ -1147,11 +1288,12 @@ const Dashboard: React.FC = () => {
               onClick={() => setCurrentPage('home')}
               className={`premium-nav-btn ${currentPage === 'home' ? 'is-active' : ''}`}
               style={{
-                padding: '8px 16px',
+                padding: '10px 18px',
                 border: 'none',
                 cursor: 'pointer',
                 fontWeight: '600',
-                fontSize: '14px'
+                fontSize: '18px',
+                color: '#1e293b'
               }}
             >
               🏠 Home
@@ -1160,11 +1302,12 @@ const Dashboard: React.FC = () => {
               onClick={() => setCurrentPage('autonomy')}
               className={`premium-nav-btn ${currentPage === 'autonomy' ? 'is-active' : ''}`}
               style={{
-                padding: '8px 16px',
+                padding: '10px 18px',
                 border: 'none',
                 cursor: 'pointer',
                 fontWeight: '600',
-                fontSize: '14px'
+                fontSize: '18px',
+                color: '#1e293b'
               }}
             >
               ⚙️ Autonomy
@@ -1173,11 +1316,12 @@ const Dashboard: React.FC = () => {
               onClick={() => setCurrentPage('discovery')}
               className={`premium-nav-btn ${currentPage === 'discovery' ? 'is-active' : ''}`}
               style={{
-                padding: '8px 16px',
+                padding: '10px 18px',
                 border: 'none',
                 cursor: 'pointer',
                 fontWeight: '600',
-                fontSize: '14px'
+                fontSize: '18px',
+                color: '#1e293b'
               }}
             >
               🔍 Discovery
@@ -1186,43 +1330,61 @@ const Dashboard: React.FC = () => {
               onClick={() => setCurrentPage('ingestion')}
               className={`premium-nav-btn ${currentPage === 'ingestion' ? 'is-active' : ''}`}
               style={{
-                padding: '8px 16px',
+                padding: '10px 18px',
                 border: 'none',
                 cursor: 'pointer',
                 fontWeight: '600',
-                fontSize: '14px'
+                fontSize: '18px',
+                color: '#1e293b'
               }}
             >
               📥 Ingestion
             </button>
             <button
-              onClick={() => setCurrentPage('observability')}
-              className={`premium-nav-btn ${currentPage === 'observability' ? 'is-active' : ''}`}
+              onClick={() => setCurrentPage('monitoring')}
+              className={`premium-nav-btn ${currentPage === 'monitoring' ? 'is-active' : ''}`}
               style={{
-                padding: '8px 16px',
+                padding: '10px 18px',
                 border: 'none',
                 cursor: 'pointer',
                 fontWeight: '600',
-                fontSize: '14px'
+                fontSize: '18px',
+                color: '#1e293b'
               }}
             >
-              📊 Observability
+              📊 Monitoring
+            </button>
+            <button
+              onClick={() => setCurrentPage('kubernetes')}
+              className={`premium-nav-btn ${currentPage === 'kubernetes' ? 'is-active' : ''}`}
+              style={{
+                padding: '10px 18px',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: '600',
+                fontSize: '18px',
+                color: '#1e293b'
+              }}
+            >
+              Kubernetes
             </button>
           </div>
         </div>
 
-        <div className="premium-user-chip" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-          <span style={{ color: '#334155', fontSize: '13px', fontWeight: 600 }}>{user?.full_name || user?.role.toUpperCase()}</span>
+        <div className="premium-user-chip" style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
           <div className="premium-avatar" style={{
-            width: '40px',
-            height: '40px',
+            width: '44px',
+            height: '44px',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            background: 'linear-gradient(135deg, #3d3177 0%, #5b21b6 100%)',
             color: 'white',
-            fontWeight: '600'
-          }}>{user?.email.charAt(0).toUpperCase()}</div>
+            fontWeight: '700',
+            fontSize: '18px',
+            boxShadow: '0 2px 8px rgba(61, 49, 119, 0.3)'
+          }}>{user?.role === 'pm' ? 'PM' : user?.email.charAt(0).toUpperCase()}</div>
           <button
             onClick={async () => {
               await logActivity('ui.auth.logout.clicked', { page: currentPage });
@@ -1230,14 +1392,15 @@ const Dashboard: React.FC = () => {
             }}
             className="premium-logout-btn"
             style={{
-              padding: '8px 16px',
+              padding: '10px 20px',
               background: 'transparent',
-              border: '1px solid #d7e3f8',
-              borderRadius: '6px',
-              color: '#0f172a',
+              border: '2px solid #d7e3f8',
+              borderRadius: '8px',
+              color: '#1e293b',
               cursor: 'pointer',
-              fontWeight: '600',
-              fontSize: '14px'
+              fontWeight: '700',
+              fontSize: '15px',
+              fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
             }}
           >
             Logout
@@ -1254,7 +1417,8 @@ const Dashboard: React.FC = () => {
         {currentPage === 'autonomy' && <AutonomySettings />}
         {currentPage === 'discovery' && <DiscoveryDashboard />}
         {currentPage === 'ingestion' && <IngestionWorkflow />}
-        {currentPage === 'observability' && <ObservabilityDashboard />}
+        {currentPage === 'monitoring' && <UnifiedMonitoringDashboard />}
+        {currentPage === 'kubernetes' && <KubernetesDashboard />}
 
         {/* Home Page */}
         {currentPage === 'home' && !pendingDeploy && (
@@ -1757,37 +1921,175 @@ const Dashboard: React.FC = () => {
                     <div style={{
                       width: `${Math.round((deployProgress.currentStep / deployProgress.totalSteps) * 100)}%`,
                       height: '100%',
-                      background: 'linear-gradient(90deg, #5f8bff 0%, #7c4dff 100%)',
+                      background: deployProgress.status === 'error'
+                        ? 'linear-gradient(90deg, #ef4444 0%, #dc2626 100%)'
+                        : deployProgress.status === 'success'
+                        ? 'linear-gradient(90deg, #10b981 0%, #059669 100%)'
+                        : 'linear-gradient(90deg, #5f8bff 0%, #7c4dff 100%)',
                       transition: 'width 0.25s ease'
                     }} />
                   </div>
 
                   <div style={{
                     fontSize: '13px',
-                    color: deployProgress.status === 'error' ? '#b91c1c' : '#64748b',
-                    marginBottom: '16px'
+                    color: deployProgress.status === 'error' ? '#b91c1c' : deployProgress.status === 'success' ? '#059669' : '#64748b',
+                    marginBottom: '16px',
+                    fontWeight: deployProgress.status === 'success' ? 600 : 400
                   }}>
                     {deployProgress.subtitle}
                   </div>
 
+                  {/* Debug: Show status */}
+                  {deployProgress.status === 'success' && (
+                    <div style={{
+                      background: '#fef3c7',
+                      border: '1px solid #fbbf24',
+                      borderRadius: '8px',
+                      padding: '12px',
+                      marginBottom: '16px',
+                      fontSize: '13px',
+                      color: '#92400e'
+                    }}>
+                      🔍 Debug: Deployment status is SUCCESS. Checking for result data...
+                      {commandResult ? ' ✅ Command result exists' : ' ❌ No command result'}
+                      {commandResult?.parsed ? ' ✅ Parsed data exists' : ' ❌ No parsed data'}
+                      {commandResult?.parsed?.parameters ? ' ✅ Parameters exist' : ' ❌ No parameters'}
+                    </div>
+                  )}
+
+                  {/* Success Details Card */}
+                  {(() => {
+                    const showSuccess = deployProgress.status === 'success' &&
+                                       commandResult?.success === true &&
+                                       commandResult?.parsed?.parameters;
+
+                    console.log('Success Card Check:', {
+                      deployStatus: deployProgress.status,
+                      commandSuccess: commandResult?.success,
+                      hasParameters: !!commandResult?.parsed?.parameters,
+                      publicUrl: commandResult?.parsed?.parameters?.public_url,
+                      showSuccess: showSuccess
+                    });
+
+                    return showSuccess;
+                  })() && (
+                    <div style={{
+                      background: 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
+                      borderRadius: '10px',
+                      padding: '20px',
+                      marginBottom: '16px',
+                      border: '1px solid #6ee7b7'
+                    }}>
+                      <div style={{ fontSize: '20px', fontWeight: 700, color: '#065f46', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>✅</span> Deployment Successful
+                      </div>
+
+                      {commandResult.parsed.parameters.public_url && (
+                        <div style={{ marginBottom: '16px' }}>
+                          <div style={{ fontSize: '13px', color: '#047857', fontWeight: 600, marginBottom: '6px' }}>
+                            🌐 Public URL
+                          </div>
+                          <a
+                            href={commandResult.parsed.parameters.public_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'inline-block',
+                              padding: '10px 16px',
+                              background: '#fff',
+                              color: '#5f8bff',
+                              borderRadius: '6px',
+                              textDecoration: 'none',
+                              fontWeight: 600,
+                              fontSize: '14px',
+                              border: '1px solid #c7d2fe',
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                            }}
+                          >
+                            {commandResult.parsed.parameters.public_url} →
+                          </a>
+                        </div>
+                      )}
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '12px' }}>
+                        <div style={{ background: '#fff', borderRadius: '8px', padding: '12px', border: '1px solid #d1fae5' }}>
+                          <div style={{ fontSize: '12px', color: '#047857', marginBottom: '4px' }}>Region</div>
+                          <div style={{ fontSize: '14px', fontWeight: 600, color: '#065f46' }}>
+                            {commandResult.parsed.parameters.region || 'us-east-1'}
+                          </div>
+                        </div>
+
+                        <div style={{ background: '#fff', borderRadius: '8px', padding: '12px', border: '1px solid #d1fae5' }}>
+                          <div style={{ fontSize: '12px', color: '#047857', marginBottom: '4px' }}>S3 Bucket</div>
+                          <div style={{ fontSize: '14px', fontWeight: 600, color: '#065f46', wordBreak: 'break-all' }}>
+                            {commandResult.parsed.parameters.bucket || 'N/A'}
+                          </div>
+                        </div>
+
+                        {commandResult.parsed.parameters.files_uploaded && (
+                          <div style={{ background: '#fff', borderRadius: '8px', padding: '12px', border: '1px solid #d1fae5' }}>
+                            <div style={{ fontSize: '12px', color: '#047857', marginBottom: '4px' }}>Files Uploaded</div>
+                            <div style={{ fontSize: '14px', fontWeight: 600, color: '#065f46' }}>
+                              {commandResult.parsed.parameters.files_uploaded} files
+                            </div>
+                          </div>
+                        )}
+
+                        <div style={{ background: '#fff', borderRadius: '8px', padding: '12px', border: '1px solid #d1fae5' }}>
+                          <div style={{ fontSize: '12px', color: '#047857', marginBottom: '4px' }}>Credential Mode</div>
+                          <div style={{ fontSize: '14px', fontWeight: 600, color: '#065f46' }}>
+                            {commandResult.parsed.parameters.credential_mode === 'manual' ? 'Manual' : 'AWS CLI'}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Next Steps */}
+                      <div style={{ marginTop: '16px', padding: '12px', background: '#fff', borderRadius: '8px', border: '1px solid #d1fae5' }}>
+                        <div style={{ fontSize: '13px', color: '#047857', fontWeight: 600, marginBottom: '8px' }}>
+                          📊 Next Steps
+                        </div>
+                        <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: '#065f46', lineHeight: '1.8' }}>
+                          <li>Visit your application at the public URL above</li>
+                          <li>Enable monitoring to track health, security, and performance</li>
+                          <li>Configure custom domain (optional) using Route 53</li>
+                          <li>Set up CloudFront CDN for HTTPS and better performance</li>
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+
                   <div style={{
-                    background: '#0f172a',
+                    background: deployProgress.status === 'error' ? '#1a1210' : '#0f172a',
                     color: '#86efac',
                     borderRadius: '10px',
                     padding: '14px',
-                    maxHeight: '300px',
+                    maxHeight: '400px',
                     overflowY: 'auto',
                     fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                     fontSize: '12px',
                     lineHeight: 1.6,
-                    border: '1px solid #1e293b'
+                    border: deployProgress.status === 'error' ? '1px solid #7f1d1d' : '1px solid #1e293b'
                   }}>
                     {deployProgress.logs.length === 0 ? (
                       <div style={{ color: '#93c5fd' }}>Waiting for deployment logs...</div>
                     ) : (
-                      deployProgress.logs.map((line, idx) => (
-                        <div key={idx}>{line}</div>
-                      ))
+                      deployProgress.logs.map((line, idx) => {
+                        // Style different log types
+                        let color = '#86efac'; // default green
+                        if (line.includes('❌') || line.includes('FAILED') || line.includes('Error:')) {
+                          color = '#fca5a5'; // red for errors
+                        } else if (line.includes('Possible Cause:')) {
+                          color = '#fcd34d'; // yellow for causes
+                        } else if (line.includes('Solution:')) {
+                          color = '#93c5fd'; // blue for solutions
+                        } else if (line.includes('Status Code:') || line.includes('Details:')) {
+                          color = '#f9a8d4'; // pink for details
+                        }
+
+                        return (
+                          <div key={idx} style={{ color }}>{line}</div>
+                        );
+                      })
                     )}
                   </div>
                 </div>
@@ -1802,6 +2104,632 @@ const Dashboard: React.FC = () => {
             onSubmit={handleDeploymentFormSubmit}
             onCancel={handleDeploymentFormCancel}
           />
+        )}
+
+        {/* Success Modal Popup - Premium Design */}
+        {showSuccessModal && successDeploymentData && (
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(135deg, rgba(30, 13, 60, 0.95) 0%, rgba(5, 150, 105, 0.85) 100%)',
+              backdropFilter: 'blur(10px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 10000,
+              padding: '20px',
+              animation: 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+            }}
+            onClick={() => setShowSuccessModal(false)}
+          >
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #ffffff 0%, #fafffe 100%)',
+                borderRadius: '24px',
+                maxWidth: '650px',
+                width: '100%',
+                maxHeight: '92vh',
+                overflowY: 'auto',
+                boxShadow: '0 25px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset',
+                animation: 'slideUpBounce 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Decorative gradient orbs */}
+              <div style={{
+                position: 'absolute',
+                top: '-100px',
+                right: '-100px',
+                width: '300px',
+                height: '300px',
+                background: 'radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)',
+                borderRadius: '50%',
+                pointerEvents: 'none',
+                animation: 'pulse 3s ease-in-out infinite'
+              }} />
+              <div style={{
+                position: 'absolute',
+                bottom: '-150px',
+                left: '-150px',
+                width: '400px',
+                height: '400px',
+                background: 'radial-gradient(circle, rgba(124, 77, 255, 0.1) 0%, transparent 70%)',
+                borderRadius: '50%',
+                pointerEvents: 'none',
+                animation: 'pulse 4s ease-in-out infinite'
+              }} />
+
+              {/* Header - Premium Gradient */}
+              <div style={{
+                background: 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)',
+                padding: '32px 24px',
+                borderTopLeftRadius: '22px',
+                borderTopRightRadius: '22px',
+                color: 'white',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                {/* Shine effect */}
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: '-100%',
+                  width: '100%',
+                  height: '100%',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%)',
+                  animation: 'shine 3s ease-in-out infinite'
+                }} />
+
+                <button
+                  onClick={() => setShowSuccessModal(false)}
+                  style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '20px',
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '50%',
+                    width: '36px',
+                    height: '36px',
+                    cursor: 'pointer',
+                    fontSize: '22px',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                    zIndex: 10
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+                    e.currentTarget.style.transform = 'rotate(90deg) scale(1.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                    e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
+                  }}
+                >
+                  ×
+                </button>
+
+                {/* Success badge */}
+                <div style={{
+                  display: 'inline-block',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  borderRadius: '50px',
+                  padding: '8px 16px',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  marginBottom: '16px',
+                  letterSpacing: '0.5px',
+                  textTransform: 'uppercase'
+                }}>
+                  ✓ Deployed Successfully
+                </div>
+
+                <div style={{ fontSize: '48px', marginBottom: '12px', textAlign: 'center', animation: 'bounce 1s ease-in-out' }}>
+                  🎉
+                </div>
+                <div style={{
+                  fontSize: '32px',
+                  fontWeight: 800,
+                  textAlign: 'center',
+                  marginBottom: '10px',
+                  textShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                  letterSpacing: '-0.5px'
+                }}>
+                  Deployment Successful!
+                </div>
+                <div style={{
+                  fontSize: '16px',
+                  opacity: 0.95,
+                  textAlign: 'center',
+                  fontWeight: 400,
+                  letterSpacing: '0.2px'
+                }}>
+                  Your application is now live and accessible worldwide
+                </div>
+              </div>
+
+              {/* Body */}
+              <div style={{ padding: '32px 28px', position: 'relative' }}>
+                {/* Application Name - Premium Card */}
+                <div style={{
+                  background: 'linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)',
+                  borderRadius: '16px',
+                  padding: '24px',
+                  marginBottom: '24px',
+                  border: '1px solid #e5e7eb',
+                  boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(16, 185, 129, 0.1)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  transition: 'all 0.3s ease'
+                }}>
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    width: '100px',
+                    height: '100px',
+                    background: 'radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%)',
+                    borderRadius: '50%'
+                  }} />
+                  <div style={{
+                    fontSize: '13px',
+                    color: '#047857',
+                    fontWeight: 600,
+                    marginBottom: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    <span style={{ fontSize: '18px' }}>📦</span> Application Name
+                  </div>
+                  <div style={{
+                    fontSize: '28px',
+                    fontWeight: 800,
+                    background: 'linear-gradient(135deg, #065f46 0%, #047857 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                    letterSpacing: '-0.5px'
+                  }}>
+                    {successDeploymentData.appName}
+                  </div>
+                </div>
+
+                {/* Public URL - Premium Hero Section */}
+                {successDeploymentData.publicUrl && (
+                  <div style={{
+                    background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+                    borderRadius: '20px',
+                    padding: '28px',
+                    marginBottom: '28px',
+                    border: '2px solid transparent',
+                    backgroundImage: 'linear-gradient(white, white), linear-gradient(135deg, #10b981 0%, #7c4dff 100%)',
+                    backgroundOrigin: 'border-box',
+                    backgroundClip: 'padding-box, border-box',
+                    boxShadow: '0 8px 32px rgba(16, 185, 129, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.5) inset',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}>
+                    {/* Animated gradient overlay */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '-50%',
+                      left: '-50%',
+                      width: '200%',
+                      height: '200%',
+                      background: 'radial-gradient(circle, rgba(16, 185, 129, 0.05) 0%, transparent 50%)',
+                      animation: 'rotate 20s linear infinite',
+                      pointerEvents: 'none'
+                    }} />
+
+                    <div style={{
+                      fontSize: '15px',
+                      color: '#047857',
+                      fontWeight: 700,
+                      marginBottom: '16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px',
+                      position: 'relative',
+                      zIndex: 1
+                    }}>
+                      <span style={{
+                        fontSize: '24px',
+                        animation: 'float 2s ease-in-out infinite'
+                      }}>🌐</span>
+                      Your Application is Live!
+                    </div>
+
+                    <a
+                      href={successDeploymentData.publicUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'block',
+                        padding: '20px 32px',
+                        background: 'linear-gradient(135deg, #5f8bff 0%, #7c4dff 100%)',
+                        color: 'white',
+                        borderRadius: '16px',
+                        textDecoration: 'none',
+                        fontWeight: 700,
+                        fontSize: '18px',
+                        textAlign: 'center',
+                        transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                        boxShadow: '0 8px 24px rgba(95, 139, 255, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        border: 'none',
+                        cursor: 'pointer',
+                        zIndex: 1
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                        e.currentTarget.style.boxShadow = '0 12px 32px rgba(95, 139, 255, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2) inset';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(95, 139, 255, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset';
+                      }}
+                    >
+                      <span style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%)',
+                        animation: 'shimmer 2.5s infinite',
+                        zIndex: -1
+                      }} />
+                      <span style={{ fontSize: '22px', marginRight: '8px' }}>🚀</span>
+                      Visit Your Application
+                      <span style={{ marginLeft: '8px', fontSize: '20px' }}>→</span>
+                    </a>
+
+                    <div style={{
+                      marginTop: '16px',
+                      padding: '12px 16px',
+                      background: 'rgba(255, 255, 255, 0.7)',
+                      backdropFilter: 'blur(10px)',
+                      borderRadius: '12px',
+                      fontSize: '12px',
+                      color: '#475569',
+                      textAlign: 'center',
+                      wordBreak: 'break-all',
+                      fontFamily: 'ui-monospace, monospace',
+                      fontWeight: 500,
+                      border: '1px solid rgba(148, 163, 184, 0.2)',
+                      position: 'relative',
+                      zIndex: 1
+                    }}>
+                      {successDeploymentData.publicUrl}
+                    </div>
+                  </div>
+                )}
+
+                {/* Deployment Details Grid - Premium Cards */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '16px',
+                  marginBottom: '24px'
+                }}>
+                  {[
+                    { icon: '🌍', label: 'Region', value: successDeploymentData.region, color: '#3b82f6' },
+                    { icon: '📁', label: 'S3 Bucket', value: successDeploymentData.bucket, color: '#8b5cf6', small: true },
+                    { icon: '📄', label: 'Files Uploaded', value: `${successDeploymentData.filesUploaded} files`, color: '#ec4899' },
+                    { icon: '🔐', label: 'Credentials', value: successDeploymentData.credentialMode === 'manual' ? 'Manual' : 'AWS CLI', color: '#10b981' }
+                  ].map((item, index) => (
+                    <div key={index} style={{
+                      background: 'linear-gradient(135deg, #ffffff 0%, #fafafa 100%)',
+                      borderRadius: '14px',
+                      padding: '18px',
+                      border: '1px solid #e5e7eb',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.04)',
+                      transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                      cursor: 'default',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = `0 8px 24px ${item.color}20`;
+                      e.currentTarget.style.borderColor = item.color + '40';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.04)';
+                      e.currentTarget.style.borderColor = '#e5e7eb';
+                    }}>
+                      <div style={{
+                        position: 'absolute',
+                        top: '-20px',
+                        right: '-20px',
+                        width: '80px',
+                        height: '80px',
+                        background: `radial-gradient(circle, ${item.color}15 0%, transparent 70%)`,
+                        borderRadius: '50%'
+                      }} />
+                      <div style={{
+                        fontSize: '24px',
+                        marginBottom: '8px',
+                        display: 'inline-block'
+                      }}>
+                        {item.icon}
+                      </div>
+                      <div style={{
+                        fontSize: '11px',
+                        color: '#6b7280',
+                        marginBottom: '6px',
+                        fontWeight: 600,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}>
+                        {item.label}
+                      </div>
+                      <div style={{
+                        fontSize: item.small ? '13px' : '16px',
+                        fontWeight: 700,
+                        color: '#1f2937',
+                        wordBreak: item.small ? 'break-all' : 'normal'
+                      }}>
+                        {item.value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Additional Details */}
+                {successDeploymentData.repoUrl && (
+                  <div style={{
+                    background: 'white',
+                    borderRadius: '10px',
+                    padding: '16px',
+                    marginBottom: '20px',
+                    border: '1px solid #e5e7eb',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                  }}>
+                    <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '8px' }}>
+                      📂 Source Repository
+                    </div>
+                    <div style={{ fontSize: '14px', color: '#1f2937', marginBottom: '4px', wordBreak: 'break-all' }}>
+                      {successDeploymentData.repoUrl}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                      Branch: <span style={{ fontWeight: 600 }}>{successDeploymentData.branch}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Next Steps */}
+                <div style={{
+                  background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+                  borderRadius: '10px',
+                  padding: '16px',
+                  border: '1px solid #93c5fd'
+                }}>
+                  <div style={{ fontSize: '14px', color: '#1e40af', fontWeight: 600, marginBottom: '12px' }}>
+                    📊 What's Next?
+                  </div>
+                  <ul style={{
+                    margin: 0,
+                    paddingLeft: '20px',
+                    fontSize: '13px',
+                    color: '#1e3a8a',
+                    lineHeight: '2'
+                  }}>
+                    <li><strong>Visit your app</strong> - Click the button above to see it live</li>
+                    <li><strong>Enable monitoring</strong> - Track performance and health</li>
+                    <li><strong>Configure domain</strong> - Set up a custom domain (optional)</li>
+                    <li><strong>Add HTTPS</strong> - Enable CloudFront CDN for SSL</li>
+                  </ul>
+                </div>
+
+                {/* Action Buttons - Premium Style */}
+                <div style={{
+                  display: 'flex',
+                  gap: '14px',
+                  marginTop: '28px'
+                }}>
+                  {successDeploymentData.publicUrl && (
+                    <a
+                      href={successDeploymentData.publicUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        flex: 1,
+                        padding: '16px 24px',
+                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                        color: 'white',
+                        borderRadius: '14px',
+                        textDecoration: 'none',
+                        fontWeight: 700,
+                        fontSize: '15px',
+                        textAlign: 'center',
+                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        border: 'none',
+                        cursor: 'pointer',
+                        boxShadow: '0 6px 20px rgba(16, 185, 129, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1) inset',
+                        position: 'relative',
+                        overflow: 'hidden'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                        e.currentTarget.style.boxShadow = '0 10px 30px rgba(16, 185, 129, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.2) inset';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.1) inset';
+                      }}
+                    >
+                      <span style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%)',
+                        animation: 'shimmer 2s infinite'
+                      }} />
+                      🚀 Open App
+                    </a>
+                  )}
+                  <button
+                    onClick={() => setShowSuccessModal(false)}
+                    style={{
+                      flex: 1,
+                      padding: '16px 24px',
+                      background: 'linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)',
+                      color: '#374151',
+                      borderRadius: '14px',
+                      fontWeight: 700,
+                      fontSize: '15px',
+                      border: '1.5px solid #e5e7eb',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                      position: 'relative'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)';
+                      e.currentTarget.style.borderColor = '#9ca3af';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)';
+                      e.currentTarget.style.borderColor = '#e5e7eb';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Premium Animations */}
+            <style dangerouslySetInnerHTML={{
+              __html: `
+                @keyframes fadeIn {
+                  from {
+                    opacity: 0;
+                  }
+                  to {
+                    opacity: 1;
+                  }
+                }
+
+                @keyframes slideUpBounce {
+                  0% {
+                    opacity: 0;
+                    transform: translateY(60px) scale(0.95);
+                  }
+                  50% {
+                    opacity: 1;
+                    transform: translateY(-10px) scale(1.02);
+                  }
+                  100% {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                  }
+                }
+
+                @keyframes pulse {
+                  0%, 100% {
+                    opacity: 0.3;
+                    transform: scale(1);
+                  }
+                  50% {
+                    opacity: 0.6;
+                    transform: scale(1.05);
+                  }
+                }
+
+                @keyframes shine {
+                  0% {
+                    left: -100%;
+                  }
+                  50%, 100% {
+                    left: 100%;
+                  }
+                }
+
+                @keyframes shimmer {
+                  0% {
+                    left: -100%;
+                  }
+                  100% {
+                    left: 100%;
+                  }
+                }
+
+                @keyframes bounce {
+                  0%, 100% {
+                    transform: translateY(0) scale(1);
+                  }
+                  50% {
+                    transform: translateY(-10px) scale(1.1);
+                  }
+                }
+
+                @keyframes float {
+                  0%, 100% {
+                    transform: translateY(0px);
+                  }
+                  50% {
+                    transform: translateY(-8px);
+                  }
+                }
+
+                @keyframes rotate {
+                  from {
+                    transform: rotate(0deg);
+                  }
+                  to {
+                    transform: rotate(360deg);
+                  }
+                }
+
+                /* Scrollbar styling */
+                div::-webkit-scrollbar {
+                  width: 8px;
+                }
+
+                div::-webkit-scrollbar-track {
+                  background: #f1f5f9;
+                  border-radius: 10px;
+                }
+
+                div::-webkit-scrollbar-thumb {
+                  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                  border-radius: 10px;
+                }
+
+                div::-webkit-scrollbar-thumb:hover {
+                  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+                }
+              `
+            }} />
+          </div>
         )}
       </div>
     </div>

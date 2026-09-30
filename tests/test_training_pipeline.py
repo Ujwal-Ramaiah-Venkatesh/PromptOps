@@ -25,11 +25,12 @@ from unittest.mock import Mock, patch
 
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "phase5-mlops"))
 
-from phase5-mlops.training.sagemaker_training_generator import SageMakerTrainingGenerator
-from phase5-mlops.training.training_data_validator import TrainingDataValidator
-from phase5-mlops.training.mlflow_experiment_tracker import MLflowExperimentTracker
-from phase5-mlops.training.training_cost_estimator import TrainingCostEstimator
+from training.sagemaker_training_generator import SageMakerTrainingGenerator
+from training.training_data_validator import TrainingDataValidator
+from training.mlflow_experiment_tracker import MLflowExperimentTracker
+from training.training_cost_estimator import TrainingCostEstimator
 
 
 class TestSageMakerTrainingGenerator(unittest.TestCase):

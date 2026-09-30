@@ -1,0 +1,100 @@
+╔═══════════════════════════════════════════════════════════════════╗
+║  PromptOps Problem Video - Google Vids Quick Reference (48s)      ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+📋 6 CLIPS × 8 SECONDS = 48 SECONDS TOTAL
+
+CLIP 1 (0-8s): Cloud Complexity
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Text: "1,000+ Cloud Resources" → "3 Clouds, One View Needed"
+Colors: White → Cyan
+Style: DevOps engineer + 3 monitors (AWS, Azure, GCP)
+
+CLIP 2 (8-16s): Operational Burden
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Text: "80% Time on Incidents" → "Less Time for Innovation"
+Colors: Orange → White
+Style: Split screen - engineer + metrics dashboard
+
+CLIP 3 (16-24s): Cost Impact
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Text: "$5,600 Per Minute" → "35-40% Optimization"
+Colors: Red/Orange → Cyan
+Style: Financial dashboard + cost meters
+
+CLIP 4 (24-32s): Resource Waste
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Text: "$2.4M Potential Savings" → "70% From Config Gaps"
+Colors: Green → Orange
+Style: 3D cloud infrastructure + waste indicators
+
+CLIP 5 (32-40s): Traffic Spike
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Text: "6:00 PM: Normal" → "6:30 PM: 10X SPIKE"
+Colors: Green → Red (pulsing)
+Style: Monitoring dashboard - normal → crisis
+
+CLIP 6 (40-48s): Coordination Gap
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Text: "2.5 Hours = $840K" → "Better Coordination" → "Proactive"
+Colors: Orange → White → Cyan
+Style: Multi-cloud architecture + unified vision
+
+✅ TEXT REQUIREMENTS (ALL CLIPS):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ Font: Arial Black or Montserrat ExtraBold
+✓ Size: 90-110pt (EXTRA LARGE)
+✓ Outline: 5-6px black stroke
+✓ Shadow: Strong drop shadow
+✓ Background: Semi-transparent dark box (rgba(0,0,0,0.75))
+✓ Duration: 3+ seconds per text
+✓ High contrast colors
+
+🎯 WORKFLOW:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Open GOOGLE_VIDS_PROMPTS_45SEC.md
+2. Copy Clip 1 prompt → Paste in Google Vids → Generate
+3. Download as: promptops_clip_01_complexity.mp4
+4. Repeat for Clips 2-6
+5. Import all 6 clips into video editor (CapCut/DaVinci)
+6. Arrange in order (0-8s, 8-16s, etc.)
+7. Add 0.3s transitions (optional)
+8. Export: 1920×1080, 30fps, MP4
+
+🎨 COLOR PALETTE:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+White: #FFFFFF (general)
+Cyan: #00D9FF (positive/solutions)
+Orange: #FB923C (warnings/costs)
+Red: #EF4444 (critical/alerts)
+Green: #10B981 (savings/success)
+Black: #000000 (outline)
+
+📏 TECHNICAL SPECS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Resolution: 1920×1080 HD
+Frame rate: 30fps
+Format: MP4 (H.264)
+Duration: EXACTLY 8 seconds per clip
+Style: Professional B2B cinematic animation
+Music: Thoughtful ambient business music
+
+💡 PRO TIPS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Emphasize "EXTRA LARGE BOLD TEXT" in every prompt
+• Always request "black outline + drop shadow + dark background"
+• Mention "1920×1080 HD" and "30fps"
+• Specify exact text timing (seconds 0-4, 4-8)
+• Request "professional cinematic B2B style"
+• If text unclear, regenerate or add in editor
+
+🎬 FINAL RESULT:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+48-second professional problem statement video
+Perfect sync across all 6 clips
+Crystal clear text and visuals
+Ready for demo presentation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Full prompts: GOOGLE_VIDS_PROMPTS_45SEC.md
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

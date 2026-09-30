@@ -65,6 +65,46 @@ except Exception as e:
     logger.warning(f"Failed to import static_deploy_routes: {e}")
     static_deploy_router = None
 
+try:
+    from github_deploy_routes import router as github_deploy_router
+except Exception as e:
+    logger.warning(f"Failed to import github_deploy_routes: {e}")
+    github_deploy_router = None
+
+try:
+    from deployed_app_monitor import (
+        router as deployed_monitor_router,
+        monitored_apps,
+        perform_health_check,
+        health_history,
+        security_findings,
+    )
+except Exception as e:
+    logger.warning(f"Failed to import deployed_app_monitor: {e}")
+    deployed_monitor_router = None
+    monitored_apps = {}
+    perform_health_check = None
+    health_history = {}
+    security_findings = {}
+
+try:
+    from advanced_monitoring_routes import router as advanced_monitoring_router
+except Exception as e:
+    logger.warning(f"Failed to import advanced_monitoring_routes: {e}")
+    advanced_monitoring_router = None
+
+try:
+    from websocket.ws_server import router as websocket_router
+except Exception as e:
+    logger.warning(f"Failed to import websocket router: {e}")
+    websocket_router = None
+
+try:
+    from kubernetes_routes import router as kubernetes_router
+except Exception as e:
+    logger.warning(f"Failed to import Kubernetes router: {e}")
+    kubernetes_router = None
+
 # ============================================================================
 # FastAPI App Initialization
 # ============================================================================
@@ -115,11 +155,92 @@ if static_deploy_router:
 else:
     logger.warning("✗ Static deploy router could not be registered")
 
+if github_deploy_router:
+    app.include_router(github_deploy_router)
+    logger.info("✓ GitHub deploy router registered at /api/v1/deploy/github")
+else:
+    logger.warning("✗ GitHub deploy router could not be registered")
+
 if cloudwatch_router:
     app.include_router(cloudwatch_router)
     logger.info("✓ CloudWatch observability router registered at /api/v1/monitoring/cloudwatch")
 else:
     logger.warning("✗ CloudWatch router could not be registered")
+
+if deployed_monitor_router:
+    app.include_router(deployed_monitor_router)
+    logger.info("✓ Deployed app monitor router registered at /api/v1/monitor/deployed")
+else:
+    logger.warning("✗ Deployed app monitor router could not be registered")
+
+if advanced_monitoring_router:
+    app.include_router(advanced_monitoring_router)
+    logger.info("✓ Advanced monitoring router registered at /api/v1/advanced-monitoring")
+else:
+    logger.warning("✗ Advanced monitoring router could not be registered")
+
+if websocket_router:
+    app.include_router(websocket_router)
+    logger.info("✓ WebSocket router registered at /api/v1/websocket and /ws")
+else:
+    logger.warning("✗ Advanced monitoring router could not be registered")
+
+if kubernetes_router:
+    app.include_router(kubernetes_router)
+    logger.info("✓ Kubernetes router registered at /api/v1/kubernetes")
+else:
+    logger.warning("✗ Kubernetes router could not be registered")
+
+# Compatibility endpoints used by the current dashboard. The canonical
+# monitoring implementation remains under /api/v1/monitor/deployed.
+@app.get("/api/v1/monitoring/health/{app_name}", tags=["deployed-app-monitoring"])
+async def get_dashboard_health(app_name: str):
+    if app_name not in monitored_apps or perform_health_check is None:
+        raise HTTPException(status_code=404, detail=f"Application {app_name} is not being monitored")
+    result = await perform_health_check(monitored_apps[app_name])
+    health_history[app_name].append(result)
+    return {
+        "status": result.status.value,
+        "uptime": result.uptime_percentage or 0,
+        "lastCheck": result.timestamp.isoformat(),
+        "issues": [result.error_message] if result.error_message else [],
+        "current_health": result.dict(),
+    }
+
+
+@app.get("/api/v1/monitoring/logs/{app_name}", tags=["deployed-app-monitoring"])
+async def get_dashboard_logs(app_name: str, limit: int = 100):
+    if app_name not in monitored_apps:
+        raise HTTPException(status_code=404, detail=f"Application {app_name} is not being monitored")
+    history = health_history.get(app_name, [])[-max(1, min(limit, 1000)):]
+    return {
+        "app_name": app_name,
+        "logs": [
+            f"[{item.timestamp.isoformat()}] health={item.status.value} status_code={item.status_code}"
+            for item in history
+        ],
+    }
+
+
+@app.get("/api/v1/monitoring/alerts/{app_name}", tags=["deployed-app-monitoring"])
+async def get_dashboard_alerts(app_name: str):
+    if app_name not in monitored_apps:
+        raise HTTPException(status_code=404, detail=f"Application {app_name} is not being monitored")
+    return {
+        "app_name": app_name,
+        "alerts": [item.dict() for item in security_findings.get(app_name, [])],
+    }
+
+
+@app.get("/api/v1/deployments/list", tags=["Deployments"])
+async def list_dashboard_deployments():
+    return {
+        "total": len(monitored_apps),
+        "deployments": [
+            {"name": name, "url": str(config.deployment_url), "region": config.region}
+            for name, config in monitored_apps.items()
+        ],
+    }
 
 # ============================================================================
 # Pydantic Models
@@ -258,6 +379,12 @@ class AuditResponse(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class AuditLogRequest(BaseModel):
+    action: str = Field(..., min_length=1, max_length=200)
+    details: Dict[str, Any] = Field(default_factory=dict)
+    user: Optional[str] = None
 
 
 class DriftEvent(BaseModel):
@@ -627,6 +754,19 @@ async def get_execution_status(execution_id: str):
 # ============================================================================
 # Audit Trail
 # ============================================================================
+
+@app.post("/api/v1/audit/log", status_code=status.HTTP_201_CREATED, tags=["Audit"])
+async def create_audit_log(request: AuditLogRequest):
+    """Record a frontend activity event without blocking the user workflow."""
+    entry = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "user": request.user or "anonymous",
+        "command": request.action,
+        "status": "completed",
+        "details": request.details,
+    }
+    audit_store.append(entry)
+    return {"success": True, "entry": entry}
 
 @app.get("/api/v1/audit", response_model=AuditResponse, tags=["Audit"])
 async def get_audit_trail(

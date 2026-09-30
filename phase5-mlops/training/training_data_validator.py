@@ -119,7 +119,10 @@ class TrainingDataValidator:
         """Load dataset from CSV or Parquet."""
         try:
             if data_path.endswith('.csv'):
-                return pd.read_csv(data_path)
+                try:
+                    return pd.read_csv(data_path)
+                except pd.errors.EmptyDataError:
+                    return pd.DataFrame()
             elif data_path.endswith('.parquet'):
                 return pd.read_parquet(data_path)
             else:
@@ -247,7 +250,7 @@ class TrainingDataValidator:
                 min_count = min(class_counts.values())
                 imbalance_ratio = max_count / min_count if min_count > 0 else float('inf')
 
-                if imbalance_ratio > 20:
+                if imbalance_ratio >= 10:
                     results["checks_failed"] += 1
                     results["warnings"].append(
                         f"Severe class imbalance detected (ratio: {imbalance_ratio:.1f}:1)"

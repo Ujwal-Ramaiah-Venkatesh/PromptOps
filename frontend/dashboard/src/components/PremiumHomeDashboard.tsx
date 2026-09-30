@@ -102,14 +102,7 @@ export const PremiumHomeDashboard: React.FC<PremiumHomeDashboardProps> = ({ onNa
 
             <div className="phd-welcome-icon-container">
               <div className="phd-devops-background">
-                {/* Center Logo/Main Icon */}
-                <div className="phd-center-icon">
-                  <div className="phd-icon-ring"></div>
-                  <div className="phd-icon-ring phd-ring-2"></div>
-                  <span className="phd-main-icon">⚡</span>
-                </div>
-
-                {/* Orbiting DevOps Icons */}
+                {/* DevOps Icons */}
                 <div className="phd-orbit-container">
                   <div className="phd-devops-icon phd-orbit-icon phd-orbit-1">
                     <span className="phd-icon-wrapper">☁️</span>

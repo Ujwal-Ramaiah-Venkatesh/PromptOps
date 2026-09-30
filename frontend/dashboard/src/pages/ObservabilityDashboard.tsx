@@ -79,27 +79,88 @@ export const ObservabilityDashboard: React.FC = () => {
   const fetchDeployments = async () => {
     try {
       setLoading(true);
-      const response = await apiClient.get('/api/v1/deployments/list');
-      setDeployments(response.data.deployments || []);
-      if (response.data.deployments?.length > 0) {
-        setSelectedDeployment(response.data.deployments[0]);
+
+      // Try to get monitored applications from the new monitoring API
+      try {
+        const monitoredApps = await apiClient.get('/api/v1/monitor/deployed/list');
+        if (monitoredApps.applications && monitoredApps.applications.length > 0) {
+          const deployments: DeploymentInfo[] = monitoredApps.applications.map((app: any) => ({
+            name: app.app_name,
+            environment: 'production',
+            version: 'v1.0.0',
+            deployedAt: new Date().toISOString(),
+            url: app.deployment_url,
+            region: app.region || 'us-east-1',
+            provider: 'AWS'
+          }));
+          setDeployments(deployments);
+          if (deployments.length > 0) {
+            setSelectedDeployment(deployments[0]);
+          }
+          setLoading(false);
+          return;
+        }
+      } catch (monitorError) {
+        console.log('No monitored apps found, checking recent deployments...');
       }
-    } catch (error) {
-      console.error('Failed to fetch deployments:', error);
-      // Load mock data for demo
-      const mockDeployments: DeploymentInfo[] = [
+
+      // Fallback: Check localStorage for recent deployments
+      const recentDeployments = localStorage.getItem('promptops_recent_deployments');
+      if (recentDeployments) {
+        try {
+          const parsed = JSON.parse(recentDeployments);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const deployments: DeploymentInfo[] = parsed.map((deploy: any) => ({
+              name: deploy.app_name || deploy.name || 'unknown-app',
+              environment: 'production',
+              version: 'v1.0.0',
+              deployedAt: deploy.deployed_at || new Date().toISOString(),
+              url: deploy.website_url || deploy.url,
+              region: deploy.region || 'us-east-1',
+              provider: 'AWS'
+            }));
+            setDeployments(deployments);
+            if (deployments.length > 0) {
+              setSelectedDeployment(deployments[0]);
+            }
+            setLoading(false);
+            return;
+          }
+        } catch (parseError) {
+          console.error('Failed to parse recent deployments:', parseError);
+        }
+      }
+
+      // Final fallback: Show demo deployment with mock data
+      const noDeployments: DeploymentInfo[] = [
         {
-          name: 'jewelry-vault',
-          environment: 'production',
-          version: 'v1.2.3',
+          name: 'No deployments found',
+          environment: 'Demo Mode',
+          version: 'N/A',
           deployedAt: new Date().toISOString(),
-          url: 'https://app-promptops-891400.s3.us-east-1.amazonaws.com/index.html',
+          url: undefined,
           region: 'us-east-1',
           provider: 'AWS'
         }
       ];
-      setDeployments(mockDeployments);
-      setSelectedDeployment(mockDeployments[0]);
+      setDeployments(noDeployments);
+      setSelectedDeployment(noDeployments[0]);
+
+      // Immediately show demo metrics so charts aren't empty
+      setMetrics(generateMockMetrics(1));
+      setHealthStatus({
+        status: 'unknown',
+        uptime: 0,
+        lastCheck: new Date().toISOString(),
+        issues: ['No active deployments - Deploy an app to start monitoring']
+      });
+      setLogs([
+        `[${new Date().toISOString()}] ℹ️  No active deployments to monitor`,
+        `[${new Date().toISOString()}] 💡 Deploy an application to start seeing real metrics`,
+        `[${new Date().toISOString()}] 🚀 Go to Home → "Deploy my-app to AWS" to get started`
+      ]);
+    } catch (error) {
+      console.error('Failed to fetch deployments:', error);
     } finally {
       setLoading(false);
     }
@@ -108,6 +169,12 @@ export const ObservabilityDashboard: React.FC = () => {
   const fetchMetrics = async (deployment: DeploymentInfo) => {
     try {
       const hours = timeRange === '1h' ? 1 : timeRange === '6h' ? 6 : timeRange === '24h' ? 24 : 168;
+
+      // If no real deployment, show demo data immediately
+      if (deployment.name === 'No deployments found') {
+        setMetrics(generateMockMetrics(hours));
+        return;
+      }
 
       // Fetch CloudWatch metrics from backend
       const response = await apiClient.get(`/api/v1/monitoring/cloudwatch/metrics`, {
@@ -128,6 +195,17 @@ export const ObservabilityDashboard: React.FC = () => {
 
   const fetchHealthStatus = async (deployment: DeploymentInfo) => {
     try {
+      // If no real deployment, show demo health status
+      if (deployment.name === 'No deployments found') {
+        setHealthStatus({
+          status: 'unknown',
+          uptime: 0,
+          lastCheck: new Date().toISOString(),
+          issues: ['No active deployments to monitor']
+        });
+        return;
+      }
+
       const response = await apiClient.get(`/api/v1/monitoring/health/${deployment.name}`);
       setHealthStatus(response.data);
     } catch (error) {
@@ -143,6 +221,17 @@ export const ObservabilityDashboard: React.FC = () => {
 
   const fetchRecentLogs = async (deployment: DeploymentInfo) => {
     try {
+      // If no real deployment, show demo logs
+      if (deployment.name === 'No deployments found') {
+        const now = new Date();
+        setLogs([
+          `[${now.toISOString()}] ℹ️  No active deployments to monitor`,
+          `[${now.toISOString()}] 💡 Deploy an application to start seeing real metrics`,
+          `[${now.toISOString()}] 🚀 Go to Home → "Deploy my-app to AWS" to get started`
+        ]);
+        return;
+      }
+
       const response = await apiClient.get(`/api/v1/monitoring/logs/${deployment.name}`, {
         params: { limit: 100 }
       });
@@ -225,6 +314,11 @@ export const ObservabilityDashboard: React.FC = () => {
     const min = Math.min(...data.map(d => d.value));
     const range = max - min || 1;
 
+    // SVG viewBox dimensions
+    const width = 300;
+    const height = 100;
+    const padding = 10;
+
     return (
       <div
         style={styles.metricCard}
@@ -243,16 +337,43 @@ export const ObservabilityDashboard: React.FC = () => {
           {data[data.length - 1]?.value.toFixed(2)} {data[0]?.unit}
         </div>
         <div style={styles.chartContainer} className="chart-container">
-          <svg width="100%" height="100" style={{ display: 'block' }}>
+          <svg
+            width="100%"
+            height="100"
+            viewBox={`0 0 ${width} ${height}`}
+            preserveAspectRatio="none"
+            style={{ display: 'block' }}
+          >
+            {/* Background grid lines */}
+            <line x1="0" y1={height/2} x2={width} y2={height/2} stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+
+            {/* Chart line */}
             <polyline
               points={data.map((d, i) => {
-                const x = (i / (data.length - 1)) * 100;
-                const y = 100 - ((d.value - min) / range) * 80 - 10;
-                return `${x}%,${y}`;
+                const x = padding + (i / (data.length - 1)) * (width - 2 * padding);
+                const y = height - padding - ((d.value - min) / range) * (height - 2 * padding);
+                return `${x},${y}`;
               }).join(' ')}
               fill="none"
               stroke={color}
-              strokeWidth="2"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+
+            {/* Area fill */}
+            <polygon
+              points={[
+                `${padding},${height}`,
+                ...data.map((d, i) => {
+                  const x = padding + (i / (data.length - 1)) * (width - 2 * padding);
+                  const y = height - padding - ((d.value - min) / range) * (height - 2 * padding);
+                  return `${x},${y}`;
+                }),
+                `${width - padding},${height}`
+              ].join(' ')}
+              fill={color}
+              fillOpacity="0.15"
             />
           </svg>
         </div>

@@ -44,8 +44,8 @@ export const LoginPage: React.FC = () => {
             alt="PromptOps Logo"
             className="premium-login-logo"
             style={{
-              width: '100px',
-              height: '100px',
+              width: '140px',
+              height: '140px',
               objectFit: 'contain',
               borderRadius: '12px'
             }}
